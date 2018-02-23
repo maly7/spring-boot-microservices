@@ -24,9 +24,20 @@ subprojects {
     }
 }
 
-subprojects {
-    plugins.withType(JavaPlugin) {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
+configure(subprojects.findAll { it.plugins.withType(JavaPlugin) }) {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
+
+task dockerComposeUp(type: Exec) {
+    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
+    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
+    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+task dockerComposeDown(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
+dockerComposeUp.mustRunAfter dockerComposeDown
