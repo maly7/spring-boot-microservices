@@ -10,6 +10,7 @@ before_script:
 cache:
   paths:
     - .gradle/wrapper
+    - .gradle/cache
 
 build:
   stage: build
