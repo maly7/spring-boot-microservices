@@ -34,7 +34,7 @@ task integTest(type: Test) {
     classpath = sourceSets.integTest.runtimeClasspath
 }
 
-[bootRun, test]*.configure {
+[bootRun, test, integTest]*.configure {
     systemProperties System.properties
 }
 
