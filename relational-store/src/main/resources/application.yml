@@ -13,7 +13,6 @@ spring:
       ddl-auto: validate
     database: mysql
 
-# TODO: don't expose these in the future
 management:
   endpoints:
     web:
