@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles(profiles = {"integration"})
-public class ApplicationStartupTest {
+public class ApplicationStartupTests {
 
     @Test
     public void contextLoads() {
