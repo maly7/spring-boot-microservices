@@ -1,9 +1,13 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.10.RELEASE'
+        springBootVersion = '2.0.0.RC2'
     }
 
     repositories {
+        maven {
+            url 'https://repo.spring.io/milestone/'
+            name 'spring-milestones'
+        }
         jcenter()
     }
 
@@ -20,13 +24,28 @@ allprojects {
 
 subprojects {
     repositories {
+        maven {
+            url 'https://repo.spring.io/milestone/'
+            name 'spring-milestones'
+        }
         jcenter()
     }
 }
 
-subprojects {
-    plugins.withType(JavaPlugin) {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
+configure(subprojects.findAll { it.plugins.withType(JavaPlugin) }) {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
+
+task dockerComposeUp(type: Exec) {
+    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
+    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
+    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+task dockerComposeDown(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
+dockerComposeUp.mustRunAfter dockerComposeDown

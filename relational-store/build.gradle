@@ -1,9 +1,42 @@
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceSets {
+    integTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+        }
+    }
+}
+
+configurations {
+    integTestCompile.extendsFrom testCompile
+    integTestRuntime.extendsFrom testRuntime
+}
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    runtime 'mysql:mysql-connector-java'
+
+    testRuntime 'com.h2database:h2'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
+
+task integTest(type: Test) {
+    description = 'Run integration tests (located in src/integTest)'
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+}
+
+[bootRun, test]*.configure {
+    systemProperties System.properties
+}
+
+bootRun.dependsOn rootProject.dockerComposeUp
+check.dependsOn integTest

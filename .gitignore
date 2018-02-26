@@ -95,3 +95,4 @@ hs_err_pid*
 /publisher/build/
 /spring-data-with-pub-sub-integration.iml
 !/gradle/wrapper/gradle-wrapper.jar
+/gradle.properties
