@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: ${MONGODB_USER}
+      password: ${MONGODB_PASSWORD}
+      database: kryption
+      host: localhost
+      port: 27017
+      uri: mongodb://localhost/kryption

@@ -32,9 +32,39 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll { it.plugins.withType(JavaPlugin) }) {
+configure([project(':relational-store'), project(':document-store')]) {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    sourceSets {
+        integTest {
+            java {
+                compileClasspath += main.output
+                runtimeClasspath += main.output
+            }
+        }
+    }
+
+    configurations {
+        integTestCompile.extendsFrom testCompile
+        integTestRuntime.extendsFrom testRuntime
+    }
+
+    task integTest(type: Test) {
+        description = 'Run integration tests (located in src/integTest)'
+        testClassesDirs = sourceSets.integTest.output.classesDirs
+        classpath = sourceSets.integTest.runtimeClasspath
+    }
+
+    [bootRun, test, integTest]*.configure {
+        systemProperties System.properties
+    }
+
+    check.dependsOn integTest
 }
 
 task dockerComposeUp(type: Exec) {
@@ -43,7 +73,7 @@ task dockerComposeUp(type: Exec) {
     environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
     environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
     environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
-    
+
     commandLine 'docker-compose', 'up', '-d'
 }
 
