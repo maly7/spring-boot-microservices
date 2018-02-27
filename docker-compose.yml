@@ -3,15 +3,28 @@ version: '3'
 services:
   mysql:
     image: mysql:5.7
+    container_name: mysql
     environment:
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: relational_data
+      MYSQL_DATABASE: kryption
     ports:
       - "3306:3306"
     expose:
       - "3306"
+    networks:
+      - main
+  mongodb:
+    image: mongo:3.6.3
+    container_name: "mongodb"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGODB_USER}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGODB_PASSWORD}"
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
     networks:
       - main
 
