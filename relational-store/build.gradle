@@ -21,5 +21,17 @@ task writeDockerfile(type: Dockerfile) {
     exposePort 8180
 }
 
+task runMysql(type: Exec) {
+    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
+    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
+    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
+
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+task stopMysql(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
 writeDockerfile.dependsOn assemble
-bootRun.dependsOn rootProject.dockerComposeUp
+bootRun.dependsOn runMysql

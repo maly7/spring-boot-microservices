@@ -19,5 +19,16 @@ task writeDockerfile(type: Dockerfile) {
     exposePort 8280
 }
 
+task runMongo(type: Exec) {
+    environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
+    environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
+
+    commandLine 'docker-compose', 'up', '-d', '--build'
+}
+
+task stopMongo(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
 writeDockerfile.dependsOn assemble
-bootRun.dependsOn rootProject.dockerComposeUp
+bootRun.dependsOn runMongo
