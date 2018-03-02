@@ -10,10 +10,17 @@ spring:
       database: kryption
       host: localhost
       port: 27017
-      uri: mongodb://localhost/kryption
+      uri: ${MONGODB_URL:mongodb://localhost/kryption}
 
 management:
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
         include: '*'
+
+logging:
+  level:
+    com.gitlab.maly7: debug
