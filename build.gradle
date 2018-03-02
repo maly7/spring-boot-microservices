@@ -77,7 +77,7 @@ configure([project(':relational-store'), project(':document-store')]) {
     check.dependsOn integTest
 }
 
-task dockerComposeUp(type: Exec) {
+task run(type: Exec) {
     dependsOn getTasksByName('writeDockerfile', true)
 
     environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
@@ -89,8 +89,8 @@ task dockerComposeUp(type: Exec) {
     commandLine 'docker-compose', 'up', '-d', '--build'
 }
 
-task dockerComposeDown(type: Exec) {
+task stop(type: Exec) {
     commandLine 'docker-compose', 'down'
 }
 
-dockerComposeUp.mustRunAfter dockerComposeDown
+run.mustRunAfter stop
