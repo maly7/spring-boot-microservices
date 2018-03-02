@@ -1,3 +1,4 @@
 rootProject.name = 'firestore-replacement'
 include 'relational-store'
+include 'document-store'
 

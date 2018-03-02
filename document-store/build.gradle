@@ -1,11 +1,9 @@
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
-    runtime 'mysql:mysql-connector-java'
-
-    testRuntime 'com.h2database:h2'
+    testRuntime 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
