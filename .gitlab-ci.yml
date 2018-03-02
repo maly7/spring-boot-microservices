@@ -22,8 +22,8 @@ test:
     - ./gradlew check
   artifacts:
     paths:
-      - document-store/build/reports
-      - relational-store/build/reports
+      - firestore-replacement/document-store/build/reports
+      - firestore-replacement/relational-store/build/reports
 
 after_script:
   - echo "End CI"
