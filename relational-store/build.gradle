@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -8,6 +10,15 @@ dependencies {
     testRuntime 'com.h2database:h2'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+}
+
+task writeDockerFile(type: Dockerfile) {
+    destFile project.file('build/Dockerfile')
+    from 'java:8'
+    workingDir '/app'
+    addFile("libs/${project.name}-${project.version}.jar", '/app')
+    entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+    exposePort 8180
 }
 
 bootRun.dependsOn rootProject.dockerComposeUp
