@@ -2,13 +2,4 @@ spring:
   data:
     mongodb:
       port: 27017
-  mongodb:
-    embedded:
-      version: 3.6.2
-      features:
-        - SYNC_DELAY
-        - ONLY_64BIT
-        - STORAGE_ENGINE
-        - NO_CHUNKSIZE_ARG
-        - MONGOS_CONFIGDB_SET_STYLE
-        - ONLY_WINDOWS_2008_SERVER
+
