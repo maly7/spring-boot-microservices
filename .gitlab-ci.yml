@@ -21,6 +21,7 @@ test:
   script:
     - ./gradlew check
   artifacts:
+    when: always
     paths:
       - firestore-replacement/document-store/build/reports
       - firestore-replacement/relational-store/build/reports
