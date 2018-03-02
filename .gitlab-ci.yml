@@ -23,8 +23,8 @@ test:
   artifacts:
     when: always
     paths:
-      - firestore-replacement/document-store/build/reports
-      - firestore-replacement/relational-store/build/reports
+      - document-store/build/reports
+      - relational-store/build/reports
 
 after_script:
   - echo "End CI"
