@@ -78,6 +78,8 @@ configure([project(':relational-store'), project(':document-store')]) {
 }
 
 task dockerComposeUp(type: Exec) {
+    dependsOn getTasksByName('writeDockerfile', true)
+
     environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
     environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
     environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"

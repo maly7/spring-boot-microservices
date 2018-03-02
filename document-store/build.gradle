@@ -10,7 +10,7 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-task writeDockerFile(type: Dockerfile) {
+task writeDockerfile(type: Dockerfile) {
     destFile project.file('build/Dockerfile')
     from 'java:8'
     workingDir '/app'
