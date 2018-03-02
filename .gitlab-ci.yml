@@ -20,6 +20,9 @@ test:
   stage: test
   script:
     - ./gradlew check
+  artifacts:
+    - document-store/build/reports
+    - relational-store/build/reports
 
 after_script:
   - echo "End CI"
