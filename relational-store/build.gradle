@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -10,4 +12,26 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootRun.dependsOn rootProject.dockerComposeUp
+task writeDockerfile(type: Dockerfile) {
+    destFile project.file('build/Dockerfile')
+    from 'java:8'
+    workingDir '/app'
+    addFile("libs/${project.name}-${project.version}.jar", '/app')
+    entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+    exposePort 8180
+}
+
+task runMysql(type: Exec) {
+    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
+    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
+    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
+
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+task stopMysql(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
+writeDockerfile.dependsOn assemble
+bootRun.dependsOn runMysql

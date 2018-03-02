@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -8,4 +10,25 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootRun.dependsOn rootProject.dockerComposeUp
+task writeDockerfile(type: Dockerfile) {
+    destFile project.file('build/Dockerfile')
+    from 'java:8'
+    workingDir '/app'
+    addFile("libs/${project.name}-${project.version}.jar", '/app')
+    entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+    exposePort 8280
+}
+
+task runMongo(type: Exec) {
+    environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
+    environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
+
+    commandLine 'docker-compose', 'up', '-d', '--build'
+}
+
+task stopMongo(type: Exec) {
+    commandLine 'docker-compose', 'down'
+}
+
+writeDockerfile.dependsOn assemble
+bootRun.dependsOn runMongo

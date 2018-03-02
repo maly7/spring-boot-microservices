@@ -17,7 +17,7 @@ services:
       - main
   mongodb:
     image: mongo:3.6.3
-    container_name: "mongodb"
+    container_name: mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: "${MONGODB_USER}"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGODB_PASSWORD}"
@@ -25,6 +25,34 @@ services:
       - "27017:27017"
     expose:
       - "27017"
+    networks:
+      - main
+  relational:
+    build: ./relational-store/build
+    container_name: relational-store
+    ports:
+      - "8180:8180"
+    expose:
+      - "8180"
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      RELATIONAL_JDBC_URL: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
+    networks:
+      - main
+  document:
+    build: ./document-store/build
+    container_name: document-store
+    ports:
+      - "8280:8280"
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_USER: "${MONGODB_USER}"
+      MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
+      MONGODB_URL: mongodb://mongodb/kryption
     networks:
       - main
 

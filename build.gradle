@@ -1,6 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.0.RC2'
+        springBootVersion = '2.0.0.RELEASE'
+        dockerPluginVersion = '3.2.4'
+        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement'
     }
 
     repositories {
@@ -8,11 +10,18 @@ buildscript {
             url 'https://repo.spring.io/milestone/'
             name 'spring-milestones'
         }
+
+        maven {
+            url "https://plugins.gradle.org/m2/"
+            name 'gradle-plugins'
+        }
+
         jcenter()
     }
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "com.bmuschko:gradle-docker-plugin:${dockerPluginVersion}"
     }
 }
 
@@ -34,6 +43,7 @@ subprojects {
 
 configure([project(':relational-store'), project(':document-store')]) {
     apply plugin: 'java'
+    apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
@@ -67,18 +77,20 @@ configure([project(':relational-store'), project(':document-store')]) {
     check.dependsOn integTest
 }
 
-task dockerComposeUp(type: Exec) {
+task run(type: Exec) {
+    dependsOn getTasksByName('writeDockerfile', true)
+
     environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
     environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
     environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
     environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
     environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
 
-    commandLine 'docker-compose', 'up', '-d'
+    commandLine 'docker-compose', 'up', '-d', '--build'
 }
 
-task dockerComposeDown(type: Exec) {
+task stop(type: Exec) {
     commandLine 'docker-compose', 'down'
 }
 
-dockerComposeUp.mustRunAfter dockerComposeDown
+run.mustRunAfter stop
