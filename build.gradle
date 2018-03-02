@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.0.RC2'
+        springBootVersion = '2.0.0.RELEASE'
         dockerPluginVersion = '3.2.4'
         dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement'
     }
@@ -86,7 +86,7 @@ task dockerComposeUp(type: Exec) {
     environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
     environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
 
-    commandLine 'docker-compose', 'up', '-d'
+    commandLine 'docker-compose', 'up', '-d', '--build'
 }
 
 task dockerComposeDown(type: Exec) {

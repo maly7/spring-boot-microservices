@@ -11,3 +11,9 @@ spring:
       host: localhost
       port: 27017
       uri: mongodb://localhost/kryption
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

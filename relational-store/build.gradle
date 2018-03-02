@@ -21,4 +21,5 @@ task writeDockerfile(type: Dockerfile) {
     exposePort 8180
 }
 
+writeDockerfile.dependsOn assemble
 bootRun.dependsOn rootProject.dockerComposeUp
