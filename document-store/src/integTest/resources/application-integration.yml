@@ -2,4 +2,6 @@ spring:
   data:
     mongodb:
       port: 27017
-
+  mongodb:
+    embedded:
+      version: 3.2.2
