@@ -15,6 +15,8 @@ services:
       - "3306"
     networks:
       - main
+    volumes:
+      - "mysql-data:/var/lib/mysql"
   mongodb:
     image: mongo:3.6.3
     container_name: mongodb
@@ -58,3 +60,5 @@ services:
 
 networks:
   main:
+volumes:
+  mysql-data:
