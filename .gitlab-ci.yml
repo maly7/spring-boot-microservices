@@ -33,9 +33,8 @@ test:
 publish:
   stage: publish
   script:
-    - ./gradlew buildDockerImage
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-    - docker push $REGISTRY/document-store
-    - docker push $REGISTRY/relational-store
+    - ./gradlew buildDockerImage
+    - ./gradlew publishDockerImage
   only:
     - master
