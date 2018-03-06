@@ -1,8 +1,12 @@
 image: java:8-jdk
 
+variables:
+  REGISTRY: registry.gitlab.com/maly7/firestore-replacement
+
 stages:
   - build
   - test
+  - publish
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -26,5 +30,12 @@ test:
       - document-store/build/reports
       - relational-store/build/reports
 
-after_script:
-  - echo "End CI"
+publish:
+  stage: publish
+  script:
+    - ./gradlew buildDockerImage
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
+    - docker push $REGISTRY/document-store
+    - docker push $REGISTRY/relational-store
+  only:
+    - master

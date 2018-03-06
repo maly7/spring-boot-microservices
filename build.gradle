@@ -1,8 +1,11 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
-        dockerPluginVersion = '3.2.4'
-        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement'
+        dockerPluginVersion = '3.2.5'
+        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement/'
     }
 
     repositories {
@@ -75,6 +78,22 @@ configure([project(':relational-store'), project(':document-store')]) {
     }
 
     check.dependsOn integTest
+
+    task writeDockerfile(type: Dockerfile) {
+        destFile project.file('build/Dockerfile')
+        from 'java:8'
+        workingDir '/app'
+        addFile("libs/${project.name}-${project.version}.jar", '/app')
+        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+    }
+
+    task buildDockerImage(type: DockerBuildImage) {
+        inputDir = writeDockerfile.destFile.parentFile
+        tag = "${dockerRegistry}${project.name}:${project.version}"
+    }
+
+    writeDockerfile.dependsOn assemble
+    buildDockerImage.dependsOn writeDockerfile
 }
 
 task run(type: Exec) {
