@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
 buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
@@ -75,6 +77,16 @@ configure([project(':relational-store'), project(':document-store')]) {
     }
 
     check.dependsOn integTest
+
+    task writeDockerfile(type: Dockerfile) {
+        destFile project.file('build/Dockerfile')
+        from 'java:8'
+        workingDir '/app'
+        addFile("libs/${project.name}-${project.version}.jar", '/app')
+        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+    }
+
+    writeDockerfile.dependsOn assemble
 }
 
 task run(type: Exec) {

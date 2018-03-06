@@ -1,5 +1,3 @@
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -8,15 +6,6 @@ dependencies {
     testRuntime 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-}
-
-task writeDockerfile(type: Dockerfile) {
-    destFile project.file('build/Dockerfile')
-    from 'java:8'
-    workingDir '/app'
-    addFile("libs/${project.name}-${project.version}.jar", '/app')
-    entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
-    exposePort 8280
 }
 
 task runMongo(type: Exec) {
@@ -30,5 +19,5 @@ task stopMongo(type: Exec) {
     commandLine 'docker-compose', 'down'
 }
 
-writeDockerfile.dependsOn assemble
+writeDockerfile.exposePort 8280
 bootRun.dependsOn runMongo
