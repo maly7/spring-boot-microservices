@@ -1,10 +1,12 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
-        dockerPluginVersion = '3.2.4'
-        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement'
+        dockerPluginVersion = '3.2.5'
+        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement/'
     }
 
     repositories {
@@ -66,6 +68,15 @@ configure([project(':relational-store'), project(':document-store')]) {
         integTestRuntime.extendsFrom testRuntime
     }
 
+    docker {
+        registryCredentials {
+            url = dockerRegistry
+            username = System.properties['REGISTRY_USER']
+            password = System.properties['REGISTRY_PASSWORD']
+            email = System.properties['REGISTRY_EMAIL=']
+        }
+    }
+
     task integTest(type: Test) {
         description = 'Run integration tests (located in src/integTest)'
         testClassesDirs = sourceSets.integTest.output.classesDirs
@@ -86,7 +97,18 @@ configure([project(':relational-store'), project(':document-store')]) {
         entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
     }
 
+    task buildDockerImage(type: DockerBuildImage) {
+        inputDir = writeDockerfile.destFile.parentFile
+        tag = "${dockerRegistry}${project.name}:${project.version}"
+    }
+
+    task publishDockerImage(type: DockerPushImage) {
+        imageName = "${dockerRegistry}${project.name}:${project.version}"
+    }
+
     writeDockerfile.dependsOn assemble
+    buildDockerImage.dependsOn writeDockerfile
+    publishDockerImage.dependsOn buildDockerImage
 }
 
 task run(type: Exec) {
