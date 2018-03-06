@@ -11,5 +11,4 @@
 Our custom docker images are built and published to the gitlab docker repository after each master build. But should you need to publish images do the following:
 1. run `docker login registry.gitlab.com/maly7/firestore-replacement/`
 1. enter your gitlab credentials at the prompts
-1. run `docker push registry.gitlab.com/maly7/firestore-replacement/document-store`
-1. run `docker push registry.gitlab.com/maly7/firestore-replacement/relational-store` 
+1. run `./gradlew publishDockerImage` 

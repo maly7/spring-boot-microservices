@@ -1,4 +1,3 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
@@ -87,13 +86,17 @@ configure([project(':relational-store'), project(':document-store')]) {
         entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
     }
 
-    task buildDockerImage(type: DockerBuildImage) {
-        inputDir = writeDockerfile.destFile.parentFile
-        tag = "${dockerRegistry}${project.name}:${project.version}"
+    task buildDockerImage(type: Exec) {
+        commandLine 'docker', 'build', '-t', "${dockerRegistry}${project.name}:${project.version}", "${writeDockerfile.destFile.parentFile.name}"
+    }
+
+    task publishDockerImage(type: Exec) {
+        commandLine 'docker', 'push', "${dockerRegistry}${project.name}"
     }
 
     writeDockerfile.dependsOn assemble
     buildDockerImage.dependsOn writeDockerfile
+    publishDockerImage.dependsOn buildDockerImage
 }
 
 task run(type: Exec) {
