@@ -1,5 +1,4 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
@@ -68,15 +67,6 @@ configure([project(':relational-store'), project(':document-store')]) {
         integTestRuntime.extendsFrom testRuntime
     }
 
-    docker {
-        registryCredentials {
-            url = dockerRegistry
-            username = System.properties['REGISTRY_USER']
-            password = System.properties['REGISTRY_PASSWORD']
-            email = System.properties['REGISTRY_EMAIL=']
-        }
-    }
-
     task integTest(type: Test) {
         description = 'Run integration tests (located in src/integTest)'
         testClassesDirs = sourceSets.integTest.output.classesDirs
@@ -100,10 +90,6 @@ configure([project(':relational-store'), project(':document-store')]) {
     task buildDockerImage(type: DockerBuildImage) {
         inputDir = writeDockerfile.destFile.parentFile
         tag = "${dockerRegistry}${project.name}:${project.version}"
-    }
-
-    task publishDockerImage(type: DockerPushImage) {
-        imageName = "${dockerRegistry}${project.name}:${project.version}"
     }
 
     writeDockerfile.dependsOn assemble
