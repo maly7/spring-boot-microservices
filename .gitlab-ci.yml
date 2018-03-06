@@ -1,4 +1,4 @@
-image: cloudbees/java-with-docker-client
+image: docker:latest
 
 variables:
   REGISTRY: registry.gitlab.com/maly7/firestore-replacement
