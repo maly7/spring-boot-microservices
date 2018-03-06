@@ -94,7 +94,6 @@ configure([project(':relational-store'), project(':document-store')]) {
 
     writeDockerfile.dependsOn assemble
     buildDockerImage.dependsOn writeDockerfile
-    publishDockerImage.dependsOn buildDockerImage
 }
 
 task run(type: Exec) {
