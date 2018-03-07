@@ -79,7 +79,7 @@ configure([project(':relational-store'), project(':document-store')]) {
     check.dependsOn integTest
 
     task writeDockerfile(type: Dockerfile) {
-        destFile project.file('build/Dockerfile')
+        destFile project.file('Dockerfile')
         from 'java:8'
         workingDir '/app'
         addFile("libs/${project.name}-${project.version}.jar", '/app')

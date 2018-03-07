@@ -34,14 +34,13 @@ test:
 
 publish:
   stage: publish
-  image: jtwalraven/java-docker-ci:latest
+  image: docker:latest
   services:
     - docker:dind
   script:
-    - ./gradlew writeDockerfile
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/document-store:1.0-SNAPSHOT document-store/build
-    - docker build -t $CI_REGISTRY/relational-store:1.0-SNAPSHOT relational-store/build
+    - docker build -t $CI_REGISTRY/document-store:1.0-SNAPSHOT document-store/
+    - docker build -t $CI_REGISTRY/relational-store:1.0-SNAPSHOT relational-store/
     - docker push $CI_REGISTRY/document-store
     - docker push $CI_REGISTRY/relational-store
   only:
