@@ -1,20 +1,16 @@
-image: jtwalraven/java-docker-ci:latest
+image: java:8-jdk
 
 variables:
   DOCKER_DRIVER: overlay
 
-services:
-  - docker:dind
-
 stages:
   - build
   - test
+  - dockerfiles
   - publish
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - export DOCKER_HOST="tcp://localhost:2375"
-  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 cache:
   paths:
@@ -37,10 +33,23 @@ test:
       - document-store/build/reports
       - relational-store/build/reports
 
+dockerfiles:
+  stage: dockerfiles
+  only:
+    - master
+  script:
+    ./gradlew writeDockerfile
+
 publish:
   stage: publish
+  image: docker:latest
+  services:
+    - docker:dind
   script:
-    - ./gradlew buildDockerImage
-    - ./gradlew publishDockerImage
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/document-store:1.0-SNAPSHOT document-store/build
+    - docker build -t $CI_REGISTRY/relational-store:1.0-SNAPSHOT relational-store/build
+    - docker push $CI_REGISTRY/document-store
+    - docker push $CI_REGISTRY/relational-store
   only:
     - master

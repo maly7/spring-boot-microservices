@@ -1,3 +1,0 @@
-[[runners]]
-  [runners.docker]
-    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
