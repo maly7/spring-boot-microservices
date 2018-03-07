@@ -30,9 +30,9 @@ services:
     networks:
       - main
     volumes:
-      - "mongodb-data:/data/db"7
+      - "mongodb-data:/data/db"
   relational:
-    build: ./relational-store/build
+    build: ./relational-store/
     container_name: relational-store
     ports:
       - "8180:8180"
@@ -47,7 +47,7 @@ services:
     networks:
       - main
   document:
-    build: ./document-store/build
+    build: ./document-store/
     container_name: document-store
     ports:
       - "8280:8280"

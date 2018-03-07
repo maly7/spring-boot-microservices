@@ -82,7 +82,7 @@ configure([project(':relational-store'), project(':document-store')]) {
         destFile project.file('Dockerfile')
         from 'java:8'
         workingDir '/app'
-        addFile("libs/${project.name}-${project.version}.jar", '/app')
+        addFile("build/libs/${project.name}-${project.version}.jar", '/app')
         entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
     }
 
