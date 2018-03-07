@@ -1,5 +1,8 @@
 image: jtwalraven/java-docker-ci:latest
 
+variables:
+  DOCKER_DRIVER: overlay
+
 services:
   - docker:dind
 
