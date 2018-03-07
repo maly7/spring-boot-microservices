@@ -1,0 +1,7 @@
+[[runners]]
+  [runners.docker]
+    tls_verify = false
+    privileged = true
+    disable_cache = false
+    cache_dir = "cache"
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
