@@ -1,7 +1,7 @@
 image: jtwalraven/java-docker-ci:latest
 
-variables:
-  REGISTRY: registry.gitlab.com/maly7/firestore-replacement
+services:
+  - docker:dind
 
 stages:
   - build
@@ -10,10 +10,14 @@ stages:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - export DOCKER_HOST="tcp://localhost:2375"
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 cache:
   paths:
     - .gradle/wrapper
+    - document-store/build
+    - relational-store/build
 
 build:
   stage: build
@@ -33,7 +37,6 @@ test:
 publish:
   stage: publish
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
     - ./gradlew buildDockerImage
     - ./gradlew publishDockerImage
   only:
