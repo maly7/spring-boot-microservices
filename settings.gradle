@@ -1,4 +1,4 @@
-rootProject.name = 'firestore-replacement'
+rootProject.name = 'kryption-api'
 include 'relational-store'
 include 'document-store'
 

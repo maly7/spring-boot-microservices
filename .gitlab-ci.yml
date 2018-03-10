@@ -2,7 +2,7 @@ image: java:8-jdk
 
 variables:
   DOCKER_DRIVER: overlay
-  REGISTRY: registry.gitlab.com/maly7/firestore-replacement
+  REGISTRY: registry.gitlab.com/maly7/kryption-api
 
 stages:
   - build
