@@ -31,9 +31,9 @@ services:
       - main
     volumes:
       - "mongodb-data:/data/db"
-  relational:
-    build: ./relational-store/
-    container_name: relational-store
+  user-api:
+    build: ./user-api/
+    container_name: user-api
     ports:
       - "8180:8180"
     expose:
@@ -46,9 +46,9 @@ services:
       RELATIONAL_JDBC_URL: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
     networks:
       - main
-  document:
-    build: ./document-store/
-    container_name: document-store
+  conversation-api:
+    build: ./conversation-api/
+    container_name: conversation-api
     ports:
       - "8280:8280"
     depends_on:

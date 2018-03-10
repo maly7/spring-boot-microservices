@@ -1,0 +1,26 @@
+server:
+  port: 8280
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: ${MONGODB_USER}
+      password: ${MONGODB_PASSWORD}
+      database: kryption
+      host: localhost
+      port: 27017
+      uri: ${MONGODB_URL:mongodb://localhost/kryption}
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+logging:
+  level:
+    io.echoseven.kryption: debug

@@ -4,7 +4,7 @@ buildscript {
     ext {
         springBootVersion = '2.0.0.RELEASE'
         dockerPluginVersion = '3.2.5'
-        dockerRegistry = 'registry.gitlab.com/maly7/firestore-replacement/'
+        dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
 
     repositories {
@@ -43,7 +43,7 @@ subprojects {
     }
 }
 
-configure([project(':relational-store'), project(':document-store')]) {
+configure([project(':user-api'), project(':conversation-api')]) {
     apply plugin: 'java'
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.springframework.boot'

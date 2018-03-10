@@ -2,7 +2,7 @@ image: java:8-jdk
 
 variables:
   DOCKER_DRIVER: overlay
-  REGISTRY: registry.gitlab.com/maly7/firestore-replacement
+  REGISTRY: registry.gitlab.com/maly7/kryption-api
 
 stages:
   - build
@@ -15,8 +15,8 @@ before_script:
 cache:
   paths:
     - .gradle/wrapper
-    - document-store/build
-    - relational-store/build
+    - conversation-api/build
+    - user-api/build
 
 build:
   stage: build
@@ -30,8 +30,8 @@ test:
   artifacts:
     when: always
     paths:
-      - document-store/build/reports
-      - relational-store/build/reports
+      - conversation-api/build/reports
+      - user-api/build/reports
 
 publish:
   stage: publish
@@ -40,9 +40,9 @@ publish:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-    - docker build -t $REGISTRY/document-store:1.0-SNAPSHOT document-store/
-    - docker build -t $REGISTRY/relational-store:1.0-SNAPSHOT relational-store/
-    - docker push $REGISTRY/document-store
-    - docker push $REGISTRY/relational-store
+    - docker build -t $REGISTRY/conversation-api:1.0-SNAPSHOT conversation-api/
+    - docker build -t $REGISTRY/user-api:1.0-SNAPSHOT user-api/
+    - docker push $REGISTRY/conversation-api
+    - docker push $REGISTRY/user-api
   only:
     - master
