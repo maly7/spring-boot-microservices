@@ -43,7 +43,7 @@ subprojects {
     }
 }
 
-configure([project(':user-api'), project(':document-store')]) {
+configure([project(':user-api'), project(':conversation-api')]) {
     apply plugin: 'java'
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.springframework.boot'
