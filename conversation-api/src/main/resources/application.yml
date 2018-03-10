@@ -23,4 +23,4 @@ management:
 
 logging:
   level:
-    com.gitlab.maly7: debug
+    io.echoseven.kryption: debug
