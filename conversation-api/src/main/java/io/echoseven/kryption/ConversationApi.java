@@ -1,11 +1,11 @@
-package com.gitlab.maly7.document;
+package io.echoseven.kryption;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DocumentStoreApp {
+public class ConversationApi {
     public static void main(String[] args) {
-        SpringApplication.run(DocumentStoreApp.class, args);
+        SpringApplication.run(ConversationApi.class, args);
     }
 }

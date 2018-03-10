@@ -1,4 +1,4 @@
-package com.gitlab.maly7.document;
+package io.echoseven.kryption;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
