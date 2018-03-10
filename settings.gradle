@@ -1,4 +1,4 @@
 rootProject.name = 'kryption-api'
-include 'relational-store'
+include 'user-api'
 include 'document-store'
 

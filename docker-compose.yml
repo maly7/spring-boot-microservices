@@ -32,8 +32,8 @@ services:
     volumes:
       - "mongodb-data:/data/db"
   relational:
-    build: ./relational-store/
-    container_name: relational-store
+    build: ./user-api/
+    container_name: user-api
     ports:
       - "8180:8180"
     expose:

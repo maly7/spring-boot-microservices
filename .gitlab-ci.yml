@@ -16,7 +16,7 @@ cache:
   paths:
     - .gradle/wrapper
     - document-store/build
-    - relational-store/build
+    - user-api/build
 
 build:
   stage: build
@@ -31,7 +31,7 @@ test:
     when: always
     paths:
       - document-store/build/reports
-      - relational-store/build/reports
+      - user-api/build/reports
 
 publish:
   stage: publish
@@ -41,8 +41,8 @@ publish:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
     - docker build -t $REGISTRY/document-store:1.0-SNAPSHOT document-store/
-    - docker build -t $REGISTRY/relational-store:1.0-SNAPSHOT relational-store/
+    - docker build -t $REGISTRY/user-api:1.0-SNAPSHOT user-api/
     - docker push $REGISTRY/document-store
-    - docker push $REGISTRY/relational-store
+    - docker push $REGISTRY/user-api
   only:
     - master
