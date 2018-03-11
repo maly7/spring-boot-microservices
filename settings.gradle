@@ -1,4 +1,3 @@
 rootProject.name = 'kryption-api'
 include 'user-api'
 include 'conversation-api'
-

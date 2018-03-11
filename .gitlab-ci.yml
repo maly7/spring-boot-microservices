@@ -22,6 +22,11 @@ build:
   stage: build
   script:
     - ./gradlew assemble
+  artifacts:
+    paths:
+      - conversation-api/build
+      - user-api/build
+    untracked: true
 
 test:
   stage: test
