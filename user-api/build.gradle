@@ -21,6 +21,10 @@ task runMysql(type: Exec) {
     environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
 
     commandLine 'docker-compose', 'up', '-d'
+
+    doLast {
+        sleep(10000) // delay so we can wait for mysql to be up before we bootRun
+    }
 }
 
 task stopMysql(type: Exec) {
