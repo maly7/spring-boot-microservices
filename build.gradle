@@ -84,6 +84,18 @@ configure([project(':user-api'), project(':conversation-api')]) {
         integTestRuntime.extendsFrom testRuntime
     }
 
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-web'
+        compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+        compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
+        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        compile 'org.jetbrains.kotlin:kotlin-reflect'
+        
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+        testCompile 'org.jetbrains.kotlin:kotlin-test'
+    }
+
     task integTest(type: Test) {
         description = 'Run integration tests (located in src/integTest)'
         testClassesDirs = sourceSets.integTest.output.classesDirs
