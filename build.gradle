@@ -47,7 +47,7 @@ subprojects {
     }
 }
 
-configure([project(':user-api'), project(':conversation-api')]) {
+configure([project(':authentication-service'), project(':conversation-api')]) {
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
     apply plugin: 'com.bmuschko.docker-remote-api'
