@@ -1,3 +1,5 @@
 rootProject.name = 'kryption-api'
 include 'authentication-service'
 include 'chat-service'
+include 'service-registry'
+
