@@ -91,7 +91,7 @@ configure([project(':authentication-service'), project(':chat-service')]) {
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
         compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         compile 'org.jetbrains.kotlin:kotlin-reflect'
-        
+
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile 'org.jetbrains.kotlin:kotlin-test'
     }
@@ -114,14 +114,6 @@ configure([project(':authentication-service'), project(':chat-service')]) {
         workingDir '/app'
         addFile("build/libs/${project.name}-${project.version}.jar", '/app')
         entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
-    }
-
-    task buildDockerImage(type: Exec) {
-        commandLine 'docker', 'build', '-t', "${dockerRegistry}${project.name}:${project.version}", "${writeDockerfile.destFile.parentFile.name}"
-    }
-
-    task publishDockerImage(type: Exec) {
-        commandLine 'docker', 'push', "${dockerRegistry}${project.name}"
     }
 
     writeDockerfile.dependsOn assemble
