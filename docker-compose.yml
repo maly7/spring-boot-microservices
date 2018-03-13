@@ -46,9 +46,9 @@ services:
       RELATIONAL_JDBC_URL: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
     networks:
       - main
-  conversation-api:
-    build: ./conversation-api/
-    container_name: conversation-api
+  chat-service:
+    build: ./chat-service/
+    container_name: chat-service
     ports:
       - "8280:8280"
     depends_on:
