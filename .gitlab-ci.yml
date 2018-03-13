@@ -15,7 +15,7 @@ before_script:
 cache:
   paths:
     - .gradle/wrapper
-    - conversation-api/build
+    - chat-service/build
     - authentication-service/build
 
 build:
@@ -24,7 +24,7 @@ build:
     - ./gradlew assemble
   artifacts:
     paths:
-      - conversation-api/build
+      - chat-service/build
       - authentication-service/build
     untracked: true
 
@@ -35,7 +35,7 @@ test:
   artifacts:
     when: always
     paths:
-      - conversation-api/build/reports
+      - chat-service/build/reports
       - authentication-service/build/reports
 
 publish:
@@ -45,9 +45,9 @@ publish:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-    - docker build -t $REGISTRY/conversation-api:1.0-SNAPSHOT conversation-api/
+    - docker build -t $REGISTRY/chat-service:1.0-SNAPSHOT chat-service/
     - docker build -t $REGISTRY/authentication-service:1.0-SNAPSHOT authentication-service/
-    - docker push $REGISTRY/conversation-api
+    - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
   only:
     - master
