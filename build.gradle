@@ -32,7 +32,7 @@ buildscript {
 }
 
 allprojects {
-    group 'com.gitlab.maly'
+    group 'io.echoseven.kryption'
     version '1.0-SNAPSHOT'
 }
 
