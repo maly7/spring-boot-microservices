@@ -9,10 +9,12 @@
 
 ### Publishing Docker Images
 Our custom docker images are built and published to the gitlab docker repository after each master build. But should you need to publish images do the following:
-1. run `docker login registry.gitlab.com/maly7/kryption-api/`
+1. run `docker login registry.gitlab.com/maly7/kryption-api/ -u $username`
 1. enter your gitlab credentials at the prompts
-1. run `./gradlew publishDockerImage` 
-
+1. ` docker build -t registry.gitlab.com/maly7/kryption-api/chat-service:$version ./chat-service`
+1. `docker build -t registry.gitlab.com/maly7/kryption-api/authentication-service:$version ./authentication-service/`
+1. `docker push registry.gitlab.com/maly7/kryption-api/authentication-service`
+1. `docker push registry.gitlab.com/maly7/kryption-api/chat-service`
 
 ### Running Tests
 1. The chat-service tests require a 64-bit version of java to run the embedded MongoDB
