@@ -16,7 +16,7 @@ cache:
   paths:
     - .gradle/wrapper
     - conversation-api/build
-    - user-api/build
+    - authentication-service/build
 
 build:
   stage: build
@@ -25,7 +25,7 @@ build:
   artifacts:
     paths:
       - conversation-api/build
-      - user-api/build
+      - authentication-service/build
     untracked: true
 
 test:
@@ -36,7 +36,7 @@ test:
     when: always
     paths:
       - conversation-api/build/reports
-      - user-api/build/reports
+      - authentication-service/build/reports
 
 publish:
   stage: publish
@@ -46,8 +46,8 @@ publish:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
     - docker build -t $REGISTRY/conversation-api:1.0-SNAPSHOT conversation-api/
-    - docker build -t $REGISTRY/user-api:1.0-SNAPSHOT user-api/
+    - docker build -t $REGISTRY/authentication-service:1.0-SNAPSHOT authentication-service/
     - docker push $REGISTRY/conversation-api
-    - docker push $REGISTRY/user-api
+    - docker push $REGISTRY/authentication-service
   only:
     - master

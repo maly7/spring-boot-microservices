@@ -31,9 +31,9 @@ services:
       - main
     volumes:
       - "mongodb-data:/data/db"
-  user-api:
-    build: ./user-api/
-    container_name: user-api
+  authentication-service:
+    build: ./authentication-service/
+    container_name: authentication-service
     ports:
       - "8180:8180"
     expose:
