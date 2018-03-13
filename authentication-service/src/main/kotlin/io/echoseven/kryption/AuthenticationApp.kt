@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class UserApi
+class AuthenticationApp
 
 fun main(args: Array<String>) {
-    runApplication<UserApi>(*args)
+    runApplication<AuthenticationApp>(*args)
 }
