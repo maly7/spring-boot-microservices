@@ -32,7 +32,7 @@ buildscript {
 }
 
 allprojects {
-    group 'com.gitlab.maly'
+    group 'io.echoseven.kryption'
     version '1.0-SNAPSHOT'
 }
 
@@ -47,7 +47,7 @@ subprojects {
     }
 }
 
-configure([project(':user-api'), project(':conversation-api')]) {
+configure([project(':authentication-service'), project(':chat-service')]) {
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
     apply plugin: 'com.bmuschko.docker-remote-api'
@@ -91,7 +91,7 @@ configure([project(':user-api'), project(':conversation-api')]) {
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
         compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         compile 'org.jetbrains.kotlin:kotlin-reflect'
-        
+
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile 'org.jetbrains.kotlin:kotlin-test'
     }
@@ -116,17 +116,7 @@ configure([project(':user-api'), project(':conversation-api')]) {
         entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
     }
 
-    task buildDockerImage(type: Exec) {
-        commandLine 'docker', 'build', '-t', "${dockerRegistry}${project.name}:${project.version}", "${writeDockerfile.destFile.parentFile.name}"
-    }
-
-    task publishDockerImage(type: Exec) {
-        commandLine 'docker', 'push', "${dockerRegistry}${project.name}"
-    }
-
     writeDockerfile.dependsOn assemble
-    buildDockerImage.dependsOn writeDockerfile
-    publishDockerImage.dependsOn buildDockerImage
 }
 
 task run(type: Exec) {
