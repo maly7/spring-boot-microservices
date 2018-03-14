@@ -31,6 +31,15 @@ services:
       - main
     volumes:
       - "mongodb-data:/data/db"
+  service-registry:
+    build: ./service-registry/
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    expose:
+      - "8761"
+    networks:
+      - main
   authentication-service:
     build: ./authentication-service/
     container_name: authentication-service
@@ -40,10 +49,12 @@ services:
       - "8180"
     depends_on:
       - mysql
+      - service-registry
     environment:
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       RELATIONAL_JDBC_URL: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
+      EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
   chat-service:
@@ -53,10 +64,12 @@ services:
       - "8280:8280"
     depends_on:
       - mongodb
+      - service-registry
     environment:
       MONGODB_USER: "${MONGODB_USER}"
       MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
       MONGODB_URL: mongodb://mongodb/kryption
+      EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
 
