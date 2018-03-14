@@ -47,9 +47,9 @@ publish:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-    - docker build -t $REGISTRY/chat-service:1.0-SNAPSHOT chat-service/
-    - docker build -t $REGISTRY/authentication-service:1.0-SNAPSHOT authentication-service/
-    - docker build -t $REGISTRY/service-registry:1.0-SNAPSHOT service-registry/
+    - docker build -t $REGISTRY/chat-service:latest chat-service/
+    - docker build -t $REGISTRY/authentication-service:latest authentication-service/
+    - docker build -t $REGISTRY/service-registry:latest service-registry/
     - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
     - docker push $REGISTRY/service-registry
