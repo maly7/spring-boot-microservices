@@ -17,3 +17,27 @@ management:
 logging:
   level:
     io.echoseven.kryption: debug
+
+eureka:
+  client:
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    appname: api-gateway
+    status-page-url-path: /actuator/info
+    health-check-url-path: /actuator/health
+
+zuul:
+  routes:
+    auth:
+      path: /auth/**
+      service-id: authentication-service
+    chat:
+      path: /chat/**
+      service-id: chat-service
+  ignored-services:
+    - service-registry
+    - authentication-service
+    - chat-service
