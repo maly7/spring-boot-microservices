@@ -1,5 +1,6 @@
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$springCloudVersion"
 
     runtime 'mysql:mysql-connector-java'
 
