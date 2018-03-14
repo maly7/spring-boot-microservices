@@ -72,6 +72,19 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
+  api-gateway:
+    build: ./api-gateway/
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-registry
+      - authentication-service
+      - chat-service
+    environment:
+      EUREKA_URL: http://service-registry:8761/eureka/
+    networks:
+      - main
 
 networks:
   main:
