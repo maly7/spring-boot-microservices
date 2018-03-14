@@ -25,3 +25,7 @@ task stopMysql(type: Exec) {
 
 writeDockerfile.exposePort 8180
 bootRun.dependsOn runMysql
+
+bootRun {
+    systemProperty 'spring.profiles.active', 'local'
+}

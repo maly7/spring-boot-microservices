@@ -116,7 +116,8 @@ configure([project(':authentication-service'), project(':chat-service'), project
         workingDir '/app'
         addFile("build/libs/${project.name}-${project.version}.jar", '/app')
         environmentVariable('ACTIVE_PROFILE', 'cloud')
-        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-jar', "${project.name}-${project.version}.jar")
+        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=cloud',
+                '-jar', "${project.name}-${project.version}.jar")
     }
 
     writeDockerfile.dependsOn assemble

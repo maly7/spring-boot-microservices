@@ -32,12 +32,3 @@ management:
 logging:
   level:
     io.echoseven.kryption: debug
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    appname: authentication-service
-    status-page-url-path: /actuator/info
-    health-check-url-path: /actuator/health
