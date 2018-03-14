@@ -2,6 +2,10 @@ server:
   port: 8280
 
 spring:
+  application:
+    name: chat-service
+  profiles:
+    active: local
   data:
     mongodb:
       authentication-database: admin
