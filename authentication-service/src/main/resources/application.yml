@@ -1,11 +1,11 @@
-spring:
-  application:
-    name: authentication-service
-
 server:
   port: 8180
 
 spring:
+  application:
+    name: authentication-service
+  profiles:
+    active: local
   datasource:
     url: ${RELATIONAL_JDBC_URL:jdbc:mysql://localhost:3306/kryption}
     username: ${MYSQL_USER}
