@@ -46,6 +46,14 @@ publish:
   services:
     - docker:dind
   script:
-    - ./build-and-push-docker-images
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
+    - docker build -t $REGISTRY/chat-service:latest chat-service/
+    - docker build -t $REGISTRY/authentication-service:latest authentication-service/
+    - docker build -t $REGISTRY/service-registry:latest service-registry/
+    - docker build -t $REGISTRY/api-gateway:latest api-gateway/
+    - docker push $REGISTRY/chat-service
+    - docker push $REGISTRY/authentication-service
+    - docker push $REGISTRY/service-registry
+    - docker push $REGISTRY/api-gateway
   only:
     - master
