@@ -5,6 +5,7 @@ buildscript {
         kotlinVersion = '1.2.30'
         springBootVersion = '2.0.0.RELEASE'
         springCloudVersion = '2.0.0.M7'
+        openFeignVersion = '2.0.0.M6'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -49,7 +50,7 @@ subprojects {
     }
 }
 
-configure([project(':authentication-service'), project(':chat-service'), project(':service-registry')]) {
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
     apply plugin: 'com.bmuschko.docker-remote-api'

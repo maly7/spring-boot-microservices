@@ -1,0 +1,7 @@
+dependencies {
+    compile "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$springCloudVersion"
+    compile "org.springframework.cloud:spring-cloud-starter-netflix-zuul:$springCloudVersion"
+    compile "org.springframework.cloud:spring-cloud-starter-openfeign:$openFeignVersion"
+}
+
+writeDockerfile.exposePort 8080
