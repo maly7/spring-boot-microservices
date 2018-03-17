@@ -6,3 +6,8 @@ spring:
     password:
   jpa:
     database: h2
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
