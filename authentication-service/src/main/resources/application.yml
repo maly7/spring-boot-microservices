@@ -19,6 +19,10 @@ spring:
     hibernate:
       ddl-auto: validate
     database: mysql
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
 management:
   endpoint:

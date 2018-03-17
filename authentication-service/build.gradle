@@ -2,6 +2,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$springCloudVersion"
 
+    compile 'org.flywaydb:flyway-core'
+
     runtime 'mysql:mysql-connector-java'
 
     testRuntime 'com.h2database:h2'
