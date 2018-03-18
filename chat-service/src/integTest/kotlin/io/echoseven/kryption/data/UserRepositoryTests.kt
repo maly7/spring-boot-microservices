@@ -2,9 +2,10 @@ package io.echoseven.kryption.data
 
 import io.echoseven.kryption.domain.User
 import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize
+import org.junit.After
 import org.junit.Assert.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +33,7 @@ class UserRepositoryTests {
     @Autowired
     lateinit var mongoOperations: MongoOperations
 
-    @Before
+    @After
     fun setup() {
         userRepository.deleteAll()
     }
@@ -77,5 +78,15 @@ class UserRepositoryTests {
         val users = mongoOperations.query(User::class).inCollection("users").all()
         assertThat("The created user should exist in the users collection", users, hasItem(updatedUser))
         assertThat("The users collection should have only one document", users, hasSize(1))
+    }
+
+    @Test
+    fun `delete an existing user`() {
+        val user = userRepository.save(User("user@deleteme.com"))
+
+        assertThat("The user should exist in the db", userRepository.findAll(), hasItem(user))
+
+        userRepository.delete(user)
+        assertThat("The user should be deleted", userRepository.findAll(), empty())
     }
 }
