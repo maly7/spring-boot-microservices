@@ -30,7 +30,6 @@ buildscript {
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}"
     }
 }
 
@@ -54,7 +53,6 @@ subprojects {
 configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
-    apply plugin: 'kotlin-jpa' //TODO: only apply this to auth service
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
