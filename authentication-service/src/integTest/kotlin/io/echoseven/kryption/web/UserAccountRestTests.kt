@@ -2,6 +2,7 @@ package io.echoseven.kryption.web
 
 import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.web.resource.UserAccountResource
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,13 +35,12 @@ class UserAccountRestTests {
     @Test
     fun `A POST to the user endpoint should create a new User Account`() {
         val userToCreate = UserAccount("email@foo.com", "password")
-        val response: ResponseEntity<UserAccount> = restTemplate.postForEntity("/user", userToCreate, UserAccount::class.java)
+        val response = restTemplate.postForEntity("/user", userToCreate, UserAccountResource::class.java)
 
         assertTrue(response.statusCode.is2xxSuccessful, "The response status should be 200 successful")
 
         val createdUser = response.body!!
         assertEquals(userToCreate.email, createdUser.email)
         assertEquals(userToCreate.isVerified, createdUser.isVerified)
-        assertNull(createdUser.password, "We should not send the password in the response")
     }
 }
