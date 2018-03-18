@@ -1,0 +1,12 @@
+package io.echoseven.kryption.auditing
+
+import org.springframework.data.auditing.DateTimeProvider
+import java.time.LocalDateTime
+import java.time.temporal.TemporalAccessor
+import java.util.*
+
+class LocalDateTimeProvider : DateTimeProvider {
+    override fun getNow(): Optional<TemporalAccessor> {
+        return Optional.of(LocalDateTime.now())
+    }
+}
