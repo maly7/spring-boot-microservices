@@ -1,10 +1,10 @@
 package io.echoseven.kryption.data
 
 import io.echoseven.kryption.domain.User
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.hasItem
-import org.junit.Assert
+import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,6 +32,11 @@ class UserRepositoryTests {
     @Autowired
     lateinit var mongoOperations: MongoOperations
 
+    @Before
+    fun setup() {
+        userRepository.deleteAll()
+    }
+
     @Test
     fun `create a new user`() {
         val user = userRepository.save(User("email@foo.com"))
@@ -53,7 +58,24 @@ class UserRepositoryTests {
         assertTrue(mongoTemplate.collectionExists("users"), "The users collection should exist")
 
         val users = mongoOperations.query(User::class).inCollection("users").all()
-
         assertThat("The created user should exist in the users collection", users, hasItem(user))
+    }
+
+    @Test
+    fun `update an existing user`() {
+        val originalUser = userRepository.save(User("email@foo.com"))
+        val newImageUrl = "https://image.com"
+        val newUserName = "Test User"
+        originalUser.profileImageUrl = newImageUrl
+        originalUser.name = newUserName
+
+        val updatedUser = userRepository.save(originalUser)
+
+        assertEquals(newImageUrl, updatedUser.profileImageUrl)
+        assertEquals(newUserName, updatedUser.name)
+
+        val users = mongoOperations.query(User::class).inCollection("users").all()
+        assertThat("The created user should exist in the users collection", users, hasItem(updatedUser))
+        assertThat("The users collection should have only one document", users, hasSize(1))
     }
 }
