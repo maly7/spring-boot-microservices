@@ -1,6 +1,8 @@
 package io.echoseven.kryption.web
 
+import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +22,14 @@ class UserAccountRestTests {
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
+
+    @Autowired
+    lateinit var userAccountRepository: UserAccountRepository
+
+    @After
+    fun cleanup() {
+        userAccountRepository.deleteAll()
+    }
 
     @Test
     fun `A POST to the user endpoint should create a new User Account`() {

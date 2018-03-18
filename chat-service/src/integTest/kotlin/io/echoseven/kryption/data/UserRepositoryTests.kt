@@ -34,7 +34,7 @@ class UserRepositoryTests {
     lateinit var mongoOperations: MongoOperations
 
     @After
-    fun setup() {
+    fun cleanup() {
         userRepository.deleteAll()
     }
 
