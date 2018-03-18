@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class UserAccount(@NotBlank @Column(name = "email", nullable = false) var email: String,
+data class UserAccount(@NotBlank @Column(name = "email", nullable = false) var email: String,
                   @NotBlank @Column(name = "password", nullable = false) var password: String,
                   @Column(name = "verified") var isVerified: Boolean) {
     @Id
