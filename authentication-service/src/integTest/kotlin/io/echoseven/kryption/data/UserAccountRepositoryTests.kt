@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -44,6 +45,14 @@ class UserAccountRepositoryTests {
         assertEquals(newPassword, updatedAccount.password, "The password should update")
         assertEquals(newEmail, updatedAccount.email, "The email should be updated")
         assertTrue(updatedAccount.isVerified, "The account should now be verified")
+    }
 
+    @Test
+    fun `user account deletion`() {
+        val originalAccount = userAccountRepository.save(UserAccount("email@foo.com", "p@ssw0rd", false))
+
+        userAccountRepository.deleteById(originalAccount.id!!)
+
+        assertFalse(userAccountRepository.findById(originalAccount.id!!).isPresent, "The user account should be deleted")
     }
 }
