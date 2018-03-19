@@ -5,7 +5,7 @@ buildscript {
         kotlinVersion = '1.2.30'
         springBootVersion = '2.0.0.RELEASE'
         springCloudVersion = '2.0.0.M7'
-        openFeignVersion = '2.0.0.M6'
+        openFeignVersion = '2.0.0.M1'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
