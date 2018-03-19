@@ -9,11 +9,10 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
@@ -38,6 +37,7 @@ class UserAccountRestTests {
         val response = restTemplate.postForEntity("/user", userToCreate, UserAccountResource::class.java)
 
         assertTrue(response.statusCode.is2xxSuccessful, "The response status should be 200 successful")
+        assertEquals(response.statusCode, HttpStatus.CREATED)
 
         val createdUser = response.body!!
         assertEquals(userToCreate.email, createdUser.email)
