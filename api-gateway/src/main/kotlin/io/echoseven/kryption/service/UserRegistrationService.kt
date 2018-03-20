@@ -6,6 +6,7 @@ import io.echoseven.kryption.domain.UserResponse
 import io.echoseven.kryption.domain.UserSignup
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ServerErrorException
 
 @Service
 class UserRegistrationService(private val chatClient: ChatClient,
@@ -18,9 +19,15 @@ class UserRegistrationService(private val chatClient: ChatClient,
         log.debug("User [{}] successfully created in chat service", chatUser)
 
         userSignup.id = chatUser.id
-        val authUser = authenticationClient.createUser(userSignup)
-        log.debug("User [{}] successfully created in auth service", authUser)
 
-        return authUser
+        try {
+            val authUser = authenticationClient.createUser(userSignup)
+            log.debug("User [{}] successfully created in auth service", authUser)
+            return authUser
+        } catch (e: Exception) {
+            log.error("Error occurred during creation of user account [{}] in auth service, attempting to rollback chat service user", userSignup.email)
+            chatClient.deleteUser(chatUser.id)
+            throw ServerErrorException("User Creation Failed")
+        }
     }
 }
