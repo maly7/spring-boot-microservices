@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
@@ -44,6 +45,18 @@ class UserRestTests {
 
         val foundUser = userRepository.findById(createdUser.id!!).get()
         assertEquals(foundUser, createdUser, "The response should match what's in the database")
+    }
+
+    @Test
+    fun `Delete an existing user by id`() {
+        val userToCreate = User("email@foo.com")
+        val response = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+        assertTrue(response.statusCode.is2xxSuccessful, "The user should exist prior to deleting")
+
+        restTemplate.delete("/user/{id}", userToCreate.id)
+
+        val emptyUser = userRepository.findById(response.body.id)
+        assertFalse(emptyUser.isPresent, "The user should no longer be found by the repository")
     }
 
     @Test
