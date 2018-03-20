@@ -45,4 +45,17 @@ class UserRestTests {
         val foundUser = userRepository.findById(createdUser.id!!).get()
         assertEquals(foundUser, createdUser, "The response should match what's in the database")
     }
+
+    @Test
+    fun `Attempting to create the same user twice should fail`() {
+        val userToCreate = User("email@foo.com")
+
+        val response = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+
+        assertTrue(response.statusCode.is2xxSuccessful, "The response status should be 200 successful the first time")
+        assertEquals(response.statusCode, HttpStatus.CREATED)
+
+        val failedResponse = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+        assertTrue(failedResponse.statusCode.is4xxClientError, "We should not be able to create the user twice")
+    }
 }
