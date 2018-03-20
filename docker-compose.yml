@@ -68,6 +68,7 @@ services:
     environment:
       MONGODB_USER: "${MONGODB_USER}"
       MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
+      MONGODB_HOST: mongodb
       MONGODB_URL: mongodb://mongodb/kryption
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:

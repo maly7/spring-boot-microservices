@@ -12,7 +12,7 @@ spring:
       username: ${MONGODB_USER}
       password: ${MONGODB_PASSWORD}
       database: kryption
-      host: localhost
+      host: ${MONGODB_HOST:localhost}
       port: 27017
       uri: ${MONGODB_URL:mongodb://localhost/kryption}
 

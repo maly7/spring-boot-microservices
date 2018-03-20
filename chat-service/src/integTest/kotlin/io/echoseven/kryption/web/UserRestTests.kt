@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
@@ -44,5 +45,30 @@ class UserRestTests {
 
         val foundUser = userRepository.findById(createdUser.id!!).get()
         assertEquals(foundUser, createdUser, "The response should match what's in the database")
+    }
+
+    @Test
+    fun `Delete an existing user by id`() {
+        val userToCreate = User("email@foo.com")
+        val response = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+        assertTrue(response.statusCode.is2xxSuccessful, "The user should exist prior to deleting")
+
+        restTemplate.delete("/user/{id}", userToCreate.id)
+
+        val emptyUser = userRepository.findById(response.body.id)
+        assertFalse(emptyUser.isPresent, "The user should no longer be found by the repository")
+    }
+
+    @Test
+    fun `Attempting to create the same user twice should fail`() {
+        val userToCreate = User("email@foo.com")
+
+        val response = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+
+        assertTrue(response.statusCode.is2xxSuccessful, "The response status should be 200 successful the first time")
+        assertEquals(response.statusCode, HttpStatus.CREATED)
+
+        val failedResponse = restTemplate.postForEntity("/user", userToCreate, String::class.java)
+        assertTrue(failedResponse.statusCode.is4xxClientError, "We should not be able to create the user twice")
     }
 }

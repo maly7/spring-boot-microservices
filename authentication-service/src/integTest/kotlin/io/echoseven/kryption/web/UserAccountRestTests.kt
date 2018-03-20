@@ -43,4 +43,17 @@ class UserAccountRestTests {
         assertEquals(userToCreate.email, createdUser.email)
         assertEquals(userToCreate.isVerified, createdUser.isVerified)
     }
+
+    @Test
+    fun `Attempting to create the same user account twice should fail`() {
+        val userToCreate = UserAccount("email@foo.com", "password")
+        val response = restTemplate.postForEntity("/user", userToCreate, UserAccountResource::class.java)
+
+        assertTrue(response.statusCode.is2xxSuccessful, "The first user create should succeed")
+        assertEquals(response.statusCode, HttpStatus.CREATED)
+
+        val sameEmailUser = UserAccount("email@foo.com", "different password")
+        val failedResponse = restTemplate.postForEntity("/user", sameEmailUser, String::class.java)
+        assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "We should not be able to create the same user twice")
+    }
 }
