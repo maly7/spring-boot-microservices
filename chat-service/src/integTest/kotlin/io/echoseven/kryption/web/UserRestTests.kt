@@ -55,7 +55,7 @@ class UserRestTests {
         assertTrue(response.statusCode.is2xxSuccessful, "The response status should be 200 successful the first time")
         assertEquals(response.statusCode, HttpStatus.CREATED)
 
-        val failedResponse = restTemplate.postForEntity("/user", userToCreate, User::class.java)
+        val failedResponse = restTemplate.postForEntity("/user", userToCreate, String::class.java)
         assertTrue(failedResponse.statusCode.is4xxClientError, "We should not be able to create the user twice")
     }
 }
