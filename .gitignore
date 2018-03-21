@@ -99,4 +99,5 @@ hs_err_pid*
 
 *.iml
 
-/keys
+*.pem
+*.der
