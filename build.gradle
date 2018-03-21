@@ -99,6 +99,8 @@ configure([project(':authentication-service'), project(':chat-service'), project
 
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile 'org.jetbrains.kotlin:kotlin-test'
+
+        testCompile 'com.beust:klaxon:2.1.13'
     }
 
     task integTest(type: Test) {
