@@ -7,6 +7,7 @@ import io.echoseven.kryption.tokens.TokenIssuer
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class AuthenticationService(private val userAccountService: UserAccountService,
@@ -18,7 +19,7 @@ class AuthenticationService(private val userAccountService: UserAccountService,
         val requestEmail = authRequest.email!!
         log.debug("Received login request for user email: [{}]", requestEmail)
 
-        val userAccountOptional = userAccountService.get(requestEmail)
+        val userAccountOptional = userAccountService.getByEmail(requestEmail)
 
         if (!userAccountOptional.isPresent) {
             log.warn("Failed login attempt for email [{}] because the user was not found", requestEmail)
@@ -33,5 +34,10 @@ class AuthenticationService(private val userAccountService: UserAccountService,
         }
 
         return tokenIssuer.issueToken(existingUser)
+    }
+
+    fun authenticate(token: String): Optional<UserAccount> {
+        val id = tokenIssuer.getIdFromToken(token)
+        return userAccountService.getById(id)
     }
 }
