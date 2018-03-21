@@ -1,6 +1,7 @@
 package io.echoseven.kryption.web
 
 import com.beust.klaxon.Klaxon
+import io.echoseven.kryption.IntegrationTest
 import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.tokens.TokenIssuer
@@ -10,17 +11,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
-@ActiveProfiles("local", "integration")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@IntegrationTest
 class UserLoginTests {
 
     @Autowired
