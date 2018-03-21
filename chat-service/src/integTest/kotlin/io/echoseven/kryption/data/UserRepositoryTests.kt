@@ -1,5 +1,6 @@
 package io.echoseven.kryption.data
 
+import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.domain.User
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.Matchers.empty
@@ -9,19 +10,16 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
-@ActiveProfiles("local", "integration")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ChatIntegrationTest
 class UserRepositoryTests {
 
     @Autowired

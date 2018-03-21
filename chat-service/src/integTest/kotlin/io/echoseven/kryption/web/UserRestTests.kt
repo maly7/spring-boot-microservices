@@ -1,23 +1,21 @@
 package io.echoseven.kryption.web
 
+import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
-@ActiveProfiles("local", "integration")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ChatIntegrationTest
 class UserRestTests {
 
     @Autowired
