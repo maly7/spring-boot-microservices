@@ -3,11 +3,13 @@ package io.echoseven.kryption.service
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.exception.UnauthorizedException
 import io.echoseven.kryption.exception.UserNotFoundException
+import io.echoseven.kryption.tokens.TokenIssuer
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthenticationService(private val userAccountService: UserAccountService,
+                            private val tokenIssuer: TokenIssuer,
                             private val passwordEncoder: PasswordEncoder) {
 
     fun authenticate(authRequest: UserAccount): String {
@@ -23,6 +25,6 @@ class AuthenticationService(private val userAccountService: UserAccountService,
             throw UnauthorizedException("Password provided does not match")
         }
 
-        return "hello"
+        return tokenIssuer.issueToken(existingUser)
     }
 }
