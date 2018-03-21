@@ -12,5 +12,6 @@ import javax.validation.Valid
 class AuthenticationController(private val authenticationService: AuthenticationService) {
 
     @PostMapping(path = ["/login"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
-    fun login(@Valid @RequestBody userAccount: UserAccount): String = authenticationService.authenticate(userAccount)
+    fun login(@Valid @RequestBody userAccount: UserAccount): String =
+            authenticationService.authenticate(userAccount)
 }
