@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @SpringBootTest
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IntegrationTest {
+public @interface AuthIntegrationTest {
 
     @AliasFor(annotation = ActiveProfiles.class, attribute = "profiles")
     String[] profiles() default {"local", "integration"};
