@@ -48,4 +48,12 @@ class UserLoginTests {
         assertTrue(failedResponse.statusCode.is4xxClientError, "The login request should fail")
         assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode)
     }
+
+    @Test
+    fun `Attempting to login with a bad password should fail`() {
+        val failedResponse = restTemplate.postForEntity("/login", UserAccount(userEmail, "bad password"), String::class.java)
+
+        assertTrue(failedResponse.statusCode.is4xxClientError, "The login request should fail")
+        assertEquals(HttpStatus.UNAUTHORIZED, failedResponse.statusCode)
+    }
 }
