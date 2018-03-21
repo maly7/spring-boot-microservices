@@ -1,7 +1,10 @@
 package io.echoseven.kryption.web
 
+import com.beust.klaxon.Klaxon
 import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.tokens.TokenIssuer
+import io.echoseven.kryption.web.resource.TokenResource
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -26,14 +29,15 @@ class UserLoginTests {
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
-    lateinit var existingUser: UserAccount
+    @Autowired
+    lateinit var tokenIssuer: TokenIssuer
 
     private val userEmail = "login-user@email.com"
     private val userPassword = "login-password"
 
     @Before
     fun setup() {
-        existingUser = userAccountRepository.save(UserAccount(email = userEmail, password = userPassword))
+        restTemplate.postForEntity("/user", UserAccount(userEmail, userPassword), String::class.java)
     }
 
     @After
@@ -55,5 +59,17 @@ class UserLoginTests {
 
         assertTrue(failedResponse.statusCode.is4xxClientError, "The login request should fail")
         assertEquals(HttpStatus.UNAUTHORIZED, failedResponse.statusCode)
+    }
+
+    @Test
+    fun `Using the right credentials should login successfully`() {
+        val successfulResponse = restTemplate.postForEntity("/login", UserAccount(userEmail, userPassword), String::class.java)
+
+        assertTrue(successfulResponse.statusCode.is2xxSuccessful, "The login request should succeed")
+        assertEquals(HttpStatus.OK, successfulResponse.statusCode)
+
+        val token: String = Klaxon().parse<TokenResource>(successfulResponse.body!!)?.token ?: ""
+
+        assertEquals(userEmail, tokenIssuer.getEmailFromToken(token))
     }
 }
