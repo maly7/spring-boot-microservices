@@ -6,6 +6,7 @@ import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.tokens.TokenIssuer
 import io.echoseven.kryption.web.resource.TokenResource
+import io.echoseven.kryption.web.resource.UserAccountResource
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,5 +71,24 @@ class UserLoginTests {
 
         assertEquals(userEmail, tokenIssuer.getEmailFromToken(token))
         assertEquals(userAccountRepository.findByEmail(userEmail).get().id, tokenIssuer.getIdFromToken(token))
+    }
+
+    @Test
+    fun `Users can be retrieved with their JWT tokens`() {
+        val successfulResponse = restTemplate.postForEntity("/login", UserAccount(userEmail, userPassword), String::class.java)
+
+        assertTrue(successfulResponse.statusCode.is2xxSuccessful, "The login request should succeed")
+        assertEquals(HttpStatus.OK, successfulResponse.statusCode)
+
+        val token: String = Klaxon().parse<TokenResource>(successfulResponse.body!!)?.token ?: ""
+
+        val userLookupResponse = restTemplate.postForEntity("/authenticate", TokenResource(token), UserAccountResource::class.java)
+
+        assertTrue(userLookupResponse.statusCode.is2xxSuccessful, "The lookup request should succeed")
+        assertEquals(HttpStatus.OK, userLookupResponse.statusCode)
+
+        val user = userLookupResponse.body
+
+        assertEquals(userEmail, user?.email, "The token user email should be the same as what we used to login with")
     }
 }

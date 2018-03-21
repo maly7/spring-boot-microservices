@@ -5,7 +5,6 @@ import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.tokens.TokenIssuer
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserAccountService(private val userAccountRepository: UserAccountRepository,
@@ -17,12 +16,9 @@ class UserAccountService(private val userAccountRepository: UserAccountRepositor
         return userAccountRepository.save(user)
     }
 
-    fun get(email: String) = userAccountRepository.findByEmail(email)
+    fun getByEmail(email: String) = userAccountRepository.findByEmail(email)
 
-    fun getFromToken(token: String): Optional<UserAccount> {
-        val id = tokenIssuer.getIdFromToken(token)
-        return userAccountRepository.findById(id)
-    }
+    fun getById(id: String) = userAccountRepository.findById(id)
 
     // TODO: remove with #19
     fun deleteAllUsers() = userAccountRepository.deleteAll()
