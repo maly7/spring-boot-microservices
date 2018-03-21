@@ -36,3 +36,7 @@ management:
 logging:
   level:
     io.echoseven.kryption: debug
+
+kryption:
+  jwt:
+    secret: ${JWT_SECRET:kryption-secret}
