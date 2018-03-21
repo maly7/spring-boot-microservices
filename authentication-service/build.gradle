@@ -12,9 +12,11 @@ apply plugin: 'kotlin-jpa'
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$springCloudVersion"
+    compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     compile 'org.flywaydb:flyway-core'
+    compile 'io.jsonwebtoken:jjwt'
+    compile 'commons-io:commons-io'
 
     runtime 'mysql:mysql-connector-java'
 

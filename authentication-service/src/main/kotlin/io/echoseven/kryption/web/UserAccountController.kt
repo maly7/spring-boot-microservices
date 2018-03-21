@@ -14,7 +14,7 @@ class UserAccountController(private val userAccountService: UserAccountService) 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/user"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
     fun createUser(@Valid @RequestBody userAccount: UserAccount): UserAccountResource =
-            userAccountService.createUser(userAccount)
+            UserAccountResource(userAccountService.create(userAccount))
 
     // TODO: remove with #19
     @ResponseStatus(HttpStatus.NO_CONTENT)
