@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.*
@@ -27,6 +28,9 @@ class UserAccountRestTests {
 
     @Autowired
     lateinit var userAccountRepository: UserAccountRepository
+
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
 
     @After
     fun cleanup() {
@@ -71,5 +75,6 @@ class UserAccountRestTests {
         val repositoryUser = userAccountRepository.findById(body.get().id).get()
 
         assertNotEquals(userToCreate.password, repositoryUser.password, "The stored password should not match the input password")
+        assertTrue(passwordEncoder.matches(userToCreate.password, repositoryUser.password), "The password should match the encoded version")
     }
 }
