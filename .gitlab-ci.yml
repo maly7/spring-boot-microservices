@@ -24,7 +24,7 @@ build:
   stage: build
   script:
     - mkdir $AUTH_KEY_LOC
-    - cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1 > pass
+    - cat /proc/sys/kernel/random/uuid > pass
     - openssl genrsa -out $AUTH_KEY_LOC/private_key.pem 2048 -passout file:pass
     - openssl pkcs8 -topk8 -inform PEM -outform DER -in $AUTH_KEY_LOC/private_key.pem -out $AUTH_KEY_LOC/private_key.der -passin file:pass
     - openssl rsa -in $AUTH_KEY_LOC/private_key.pem -pubout -outform DER -out $AUTH_KEY_LOC/public_key.der -passin file:pass
