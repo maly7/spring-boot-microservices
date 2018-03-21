@@ -37,6 +37,9 @@ zuul:
     chat:
       path: /chat/**
       service-id: chat-service
+    login:
+      path: /login
+      service-id: authentication-service
   ignored-services:
     - service-registry
     - authentication-service
