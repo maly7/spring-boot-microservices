@@ -71,5 +71,6 @@ class UserLoginTests {
         val token: String = Klaxon().parse<TokenResource>(successfulResponse.body!!)?.token ?: ""
 
         assertEquals(userEmail, tokenIssuer.getEmailFromToken(token))
+        assertEquals(userAccountRepository.findByEmail(userEmail).get().id, tokenIssuer.getIdFromToken(token))
     }
 }

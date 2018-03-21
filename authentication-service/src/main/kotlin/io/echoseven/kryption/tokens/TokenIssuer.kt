@@ -17,9 +17,9 @@ class TokenIssuer(private val tokenSettings: TokenSettings) {
                 .compact()
     }
 
-    fun getEmailFromToken(token: String): String {
-        return parseClaims(token).subject
-    }
+    fun getEmailFromToken(token: String): String = parseClaims(token).subject
+
+    fun getIdFromToken(token: String): String = parseClaims(token).id
 
     private fun parseClaims(token: String): Claims {
         return Jwts.parser()
