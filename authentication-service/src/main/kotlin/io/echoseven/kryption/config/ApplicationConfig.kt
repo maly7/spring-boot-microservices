@@ -22,8 +22,8 @@ class ApplicationConfig {
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun signingKey(signatureAlgorithm: SignatureAlgorithm): Key {
-        val bytes = IOUtils.toByteArray(ClassPathResource("keys/private_key.der").inputStream)
+    fun signingKey(signatureAlgorithm: SignatureAlgorithm, tokenSettings: TokenSettings): Key {
+        val bytes = IOUtils.toByteArray(ClassPathResource(tokenSettings.secret).inputStream)
         val keySpec = PKCS8EncodedKeySpec(bytes)
         return KeyFactory.getInstance(signatureAlgorithm.familyName).generatePrivate(keySpec)
     }
