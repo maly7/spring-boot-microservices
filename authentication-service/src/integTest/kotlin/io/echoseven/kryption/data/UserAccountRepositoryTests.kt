@@ -1,6 +1,6 @@
 package io.echoseven.kryption.data
 
-import io.echoseven.kryption.IntegrationTest
+import io.echoseven.kryption.AuthIntegrationTest
 import io.echoseven.kryption.domain.UserAccount
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,7 +12,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
-@IntegrationTest
+@AuthIntegrationTest
 class UserAccountRepositoryTests {
 
     @Autowired

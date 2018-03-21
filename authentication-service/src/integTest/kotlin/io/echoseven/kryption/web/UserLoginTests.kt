@@ -1,7 +1,7 @@
 package io.echoseven.kryption.web
 
 import com.beust.klaxon.Klaxon
-import io.echoseven.kryption.IntegrationTest
+import io.echoseven.kryption.AuthIntegrationTest
 import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.tokens.TokenIssuer
@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
-@IntegrationTest
+@AuthIntegrationTest
 class UserLoginTests {
 
     @Autowired
