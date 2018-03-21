@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service
 class UserAccountService(private val userAccountRepository: UserAccountRepository,
                          private val passwordEncoder: PasswordEncoder) {
 
-    fun createUser(user: UserAccount): UserAccountResource {
+    fun create(user: UserAccount): UserAccountResource {
         user.password = passwordEncoder.encode(user.password)
         return UserAccountResource(userAccountRepository.save(user))
     }
+
+    fun get(email: String) = userAccountRepository.findByEmail(email)
 
     // TODO: remove with #19
     fun deleteAllUsers() = userAccountRepository.deleteAll()
