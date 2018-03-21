@@ -98,3 +98,5 @@ hs_err_pid*
 /gradle.properties
 
 *.iml
+
+/keys
