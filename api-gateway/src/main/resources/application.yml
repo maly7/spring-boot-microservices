@@ -34,9 +34,11 @@ zuul:
     auth:
       path: /auth/**
       service-id: authentication-service
+      sensitive-headers:
     chat:
       path: /chat/**
       service-id: chat-service
+      sensitive-headers:
     login:
       path: /login
       service-id: authentication-service
