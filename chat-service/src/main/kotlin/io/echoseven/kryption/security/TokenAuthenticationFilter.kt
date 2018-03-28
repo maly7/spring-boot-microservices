@@ -5,17 +5,17 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import javax.servlet.http.HttpServletRequest
 
 class TokenAuthenticationFilter : AbstractPreAuthenticatedProcessingFilter() {
-    override fun getPreAuthenticatedCredentials(request: HttpServletRequest?): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getPreAuthenticatedCredentials(request: HttpServletRequest?): Any = authenticate(request!!).credentials
 
-    override fun getPreAuthenticatedPrincipal(request: HttpServletRequest?): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getPreAuthenticatedPrincipal(request: HttpServletRequest?): Any = authenticate(request!!).principal
 
-    private fun authenticate(request: HttpServletRequest): Any {
-        var token = request.getHeader(HttpHeaders.AUTHORIZATION)
+    private fun authenticate(request: HttpServletRequest): ChatUser {
+        val token = request.getHeader(HttpHeaders.AUTHORIZATION)
 
+        // look up user in auth service
+        // fail if no user
+        // set the security context
 
+        return ChatUser(token, "", "")
     }
 }
