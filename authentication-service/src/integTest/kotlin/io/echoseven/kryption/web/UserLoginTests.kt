@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpStatus
+import org.springframework.http.*
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -83,6 +83,30 @@ class UserLoginTests {
         val token: String = Klaxon().parse<TokenResource>(successfulResponse.body!!)?.token ?: ""
 
         val userLookupResponse = restTemplate.postForEntity("/authenticate", TokenResource(token), UserAccountResource::class.java)
+
+        assertTrue(userLookupResponse.statusCode.is2xxSuccessful, "The lookup request should succeed")
+        assertEquals(HttpStatus.OK, userLookupResponse.statusCode)
+
+        val user = userLookupResponse.body
+
+        assertEquals(userEmail, user?.email, "The token user email should be the same as what we used to login with")
+    }
+
+    @Test
+    fun `Users can be retrieved with their JWT token in a header`() {
+        val successfulResponse = restTemplate.postForEntity("/login", UserAccount(userEmail, userPassword), String::class.java)
+
+        assertTrue(successfulResponse.statusCode.is2xxSuccessful, "The login request should succeed")
+        assertEquals(HttpStatus.OK, successfulResponse.statusCode)
+        val token: String = Klaxon().parse<TokenResource>(successfulResponse.body!!)?.token ?: ""
+
+        val headers = HttpHeaders()
+        headers.accept = listOf(MediaType.APPLICATION_JSON_UTF8)
+        headers[HttpHeaders.AUTHORIZATION] = listOf(token)
+
+        val entity = HttpEntity("", headers)
+
+        val userLookupResponse = restTemplate.exchange("/authenticate", HttpMethod.GET, entity, UserAccountResource::class.java)
 
         assertTrue(userLookupResponse.statusCode.is2xxSuccessful, "The lookup request should succeed")
         assertEquals(HttpStatus.OK, userLookupResponse.statusCode)
