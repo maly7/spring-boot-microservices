@@ -4,8 +4,8 @@ buildscript {
     ext {
         kotlinVersion = '1.2.31'
         springBootVersion = '2.0.0.RELEASE'
-        springCloudVersion = '2.0.0.M7'
-        openFeignVersion = '2.0.0.M1'
+        springCloudVersion = '2.0.0.M8'
+        openFeignVersion = '2.0.0.M2'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -40,6 +40,9 @@ allprojects {
 
 
 subprojects {
+    apply plugin: 'kotlin'
+    apply plugin: 'kotlin-spring'
+
     repositories {
         maven {
             url 'https://repo.spring.io/milestone/'
@@ -48,17 +51,6 @@ subprojects {
 
         jcenter()
     }
-}
-
-configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
-    apply plugin: 'kotlin'
-    apply plugin: 'kotlin-spring'
-    apply plugin: 'com.bmuschko.docker-remote-api'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 
     compileKotlin {
         kotlinOptions {
@@ -72,6 +64,20 @@ configure([project(':authentication-service'), project(':chat-service'), project
             jvmTarget = "1.8"
         }
     }
+
+    dependencies {
+        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        compile 'org.jetbrains.kotlin:kotlin-reflect'
+    }
+}
+
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
+    apply plugin: 'com.bmuschko.docker-remote-api'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     sourceSets {
         integTest {
@@ -99,14 +105,13 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 
     dependencies {
+        compile project(':commons')
+
         compile 'org.springframework.boot:spring-boot-starter-web'
         compile 'org.springframework.boot:spring-boot-starter-actuator'
 
         compile 'org.springframework.boot:spring-boot-configuration-processor'
-
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
-        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        compile 'org.jetbrains.kotlin:kotlin-reflect'
 
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile 'org.jetbrains.kotlin:kotlin-test'
