@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-data class ChatUser(var token: String, var email: String, var userName: String) : Authentication, UserDetails {
+data class ChatSecurityContextUser(var token: String, var email: String, var userName: String) : Authentication, UserDetails {
     private var authenticated: Boolean = true
 
     override fun getUsername(): String = email
