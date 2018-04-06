@@ -3,7 +3,7 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 buildscript {
     ext {
         kotlinVersion = '1.2.31'
-        springBootVersion = '2.0.0.RELEASE'
+        springBootVersion = '2.0.1.RELEASE'
         springCloudVersion = '2.0.0.M8'
         openFeignVersion = '2.0.0.M2'
         dockerPluginVersion = '3.2.5'
