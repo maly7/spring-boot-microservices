@@ -25,11 +25,4 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.POST, "/user/**").permitAll()
                 .and().addFilter(tokenAuthenticationFilter).anonymous().disable()
     }
-
-    @Bean
-    fun tokenAuthenticationFilter(): TokenAuthenticationFilter {
-        var tokenFilter = TokenAuthenticationFilter()
-        tokenFilter.setCheckForPrincipalChanges(true)
-        return tokenFilter
-    }
 }
