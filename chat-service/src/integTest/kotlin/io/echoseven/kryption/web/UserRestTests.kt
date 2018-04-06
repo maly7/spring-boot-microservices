@@ -53,7 +53,7 @@ class UserRestTests {
 
         restTemplate.delete("/user/{id}", userToCreate.id)
 
-        val emptyUser = userRepository.findById(response.body.id)
+        val emptyUser = userRepository.findById(response.body!!.id!!)
         assertFalse(emptyUser.isPresent, "The user should no longer be found by the repository")
     }
 
