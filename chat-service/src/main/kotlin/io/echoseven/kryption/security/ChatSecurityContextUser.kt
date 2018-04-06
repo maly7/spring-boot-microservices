@@ -1,37 +1,26 @@
 package io.echoseven.kryption.security
 
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-data class ChatSecurityContextUser(var token: String, var email: String, var userName: String) : Authentication, UserDetails {
-    private var authenticated: Boolean = true
+data class ChatSecurityContextUser(val email: String,
+                                   private val authorities: MutableCollection<out GrantedAuthority>) : UserDetails {
 
-    override fun getUsername(): String = email
+    var id: String = ""
+    var name: String = ""
 
-    override fun getName(): String = userName
+    override fun getUsername() = email
 
-    override fun getPrincipal(): Any = this
+    override fun getAuthorities() = authorities
 
-    override fun getDetails(): Any = emptyMap<String, String>()
+    override fun isEnabled() = true
 
-    override fun getCredentials(): String = token
+    override fun isCredentialsNonExpired() = true
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = mutableListOf()
+    override fun getPassword() = ""
 
-    override fun isCredentialsNonExpired(): Boolean = true
+    override fun isAccountNonExpired() = true
 
-    override fun isEnabled(): Boolean = true
+    override fun isAccountNonLocked() = true
 
-    override fun isAccountNonLocked(): Boolean = true
-
-    override fun isAccountNonExpired(): Boolean = true
-
-    override fun isAuthenticated(): Boolean = authenticated
-
-    override fun setAuthenticated(isAuthenticated: Boolean) {
-        this.authenticated = isAuthenticated
-    }
-
-    override fun getPassword(): String = ""
 }
