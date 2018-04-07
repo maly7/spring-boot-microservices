@@ -18,4 +18,8 @@ class AuthenticationToken(authorities: MutableCollection<out GrantedAuthority>?)
         return userDetails
             ?: throw AuthenticationServiceException("Either the user was not full authenticated before retrieving details or we couldn't look them up")
     }
+
+    override fun toString(): String {
+        return "AuthenticationToken(token='$token', id='$id', userDetails=$userDetails)"
+    }
 }
