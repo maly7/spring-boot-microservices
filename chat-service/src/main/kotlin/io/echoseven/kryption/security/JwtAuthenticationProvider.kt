@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 
 @Component
-class ChatUserAuthenticationProvider(private val userRepository: UserRepository) : AuthenticationProvider {
-    private val log = LoggerFactory.getLogger(ChatUserAuthenticationProvider::class.java)
+class JwtAuthenticationProvider(private val userRepository: UserRepository) : AuthenticationProvider {
+    private val log = LoggerFactory.getLogger(JwtAuthenticationProvider::class.java)
 
     override fun authenticate(authentication: Authentication?): Authentication? {
         if (authentication !is AuthenticationToken) {
@@ -21,9 +22,7 @@ class ChatUserAuthenticationProvider(private val userRepository: UserRepository)
             BadCredentialsException("Unable to lookup user with provided token id ${authentication.id}")
         }
 
-        val securityContextUser = ChatSecurityContextUser(user.email, authentication.authorities)
-        securityContextUser.id = authentication.id
-        securityContextUser.name = user.name
+        val securityContextUser = User(user.name, authentication.token, authentication.authorities)
         log.debug("User [{}] is authenticated and ready to go", securityContextUser)
 
         authentication.userDetails = securityContextUser
