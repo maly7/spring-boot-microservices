@@ -112,6 +112,7 @@ configure([project(':authentication-service'), project(':chat-service'), project
         testCompile 'org.jetbrains.kotlin:kotlin-test'
 
         testCompile 'com.beust:klaxon:2.1.13'
+        testCompile 'com.github.tomakehurst:wiremock-standalone:2.16.0'
     }
 
     task integTest(type: Test) {
