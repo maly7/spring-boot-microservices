@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.support.tokenHeaders
@@ -34,7 +35,7 @@ class UserRestTests {
 
     @Rule
     @JvmField
-    final val wireMock: WireMockRule = WireMockRule(8089)
+    final val wireMock: WireMockRule = WireMockRule(AUTH_SERVICE_PORT)
 
     @After
     fun cleanup() {
