@@ -69,4 +69,9 @@ class UserRestTests {
         val failedResponse = restTemplate.postForEntity("/user", userToCreate, String::class.java)
         assertTrue(failedResponse.statusCode.is4xxClientError, "We should not be able to create the user twice")
     }
+
+    @Test
+    fun `Only an authenticated user should be able to request their own user info`() {
+
+    }
 }
