@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Bean
 class RibbonClientConfig {
     @Bean
     fun ribbonServerList(): ServerList<Server> {
-        return StaticServerList(Server("localhost", 8089))
+        return StaticServerList(Server("localhost", AUTH_SERVICE_PORT))
     }
 }
