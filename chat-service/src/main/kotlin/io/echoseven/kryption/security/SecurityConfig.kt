@@ -1,5 +1,6 @@
 package io.echoseven.kryption.security
 
+import io.echoseven.kryption.clients.AuthenticationClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -12,21 +13,20 @@ import org.springframework.security.config.http.SessionCreationPolicy
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    lateinit var tokenAuthenticationFilter: TokenAuthenticationFilter
+    lateinit var authenticationProvider: JwtAuthenticationProvider
 
     @Autowired
-    lateinit var authenticationProvider: ChatUserAuthenticationProvider
+    lateinit var authenticationClient: AuthenticationClient
 
-    override fun configure(http: HttpSecurity?) {
-        http!!
-
+    override fun configure(http: HttpSecurity) {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests().anyRequest().authenticated()
-                .antMatchers("/actuator/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
-                .and().addFilter(tokenAuthenticationFilter).anonymous().disable()
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().authorizeRequests()
+            .antMatchers("/actuator/**").permitAll()
+            .antMatchers("/user/**").permitAll()
+            .anyRequest().authenticated()
+            .and().addFilter(JwtAuthorizationFilter(authenticationManager(), authenticationClient)).anonymous().disable()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
