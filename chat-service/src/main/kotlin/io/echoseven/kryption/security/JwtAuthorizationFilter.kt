@@ -4,7 +4,6 @@ import io.echoseven.kryption.clients.AuthenticationClient
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import javax.servlet.FilterChain
@@ -32,7 +31,7 @@ class JwtAuthorizationFilter(
     private fun authenticate(token: String) {
         val authUser = authenticationClient.authenticate(token)
 
-        val auth = AuthenticationToken(mutableListOf(SimpleGrantedAuthority("Kryption-User")))
+        val auth = AuthenticationToken(mutableListOf())
         auth.token = token
         auth.id = authUser.id
         log.debug("Successfully filtered authentication for [{}]", auth.token)
