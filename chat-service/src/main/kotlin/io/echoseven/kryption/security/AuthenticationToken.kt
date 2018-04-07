@@ -16,6 +16,6 @@ class AuthenticationToken(authorities: MutableCollection<out GrantedAuthority>?)
 
     override fun getPrincipal(): Any {
         return userDetails
-                ?: throw AuthenticationServiceException("Either the user was not full authenticated before retrieving details or we couldn't look them up")
+            ?: throw AuthenticationServiceException("Either the user was not full authenticated before retrieving details or we couldn't look them up")
     }
 }
