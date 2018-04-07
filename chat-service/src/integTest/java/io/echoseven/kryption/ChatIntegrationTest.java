@@ -1,5 +1,6 @@
 package io.echoseven.kryption;
 
+import io.echoseven.kryption.support.RibbonClientConfig;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,5 +22,6 @@ public @interface ChatIntegrationTest {
     SpringBootTest.WebEnvironment webEnv() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     @AliasFor(annotation = SpringBootTest.class, attribute = "classes")
-    Class<?>[] classes() default {};
+    Class<?>[] classes() default {ChatApp.class, RibbonClientConfig.class
+    };
 }
