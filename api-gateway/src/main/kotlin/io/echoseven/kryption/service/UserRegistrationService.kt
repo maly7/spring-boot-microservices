@@ -2,8 +2,8 @@ package io.echoseven.kryption.service
 
 import io.echoseven.kryption.clients.AuthenticationClient
 import io.echoseven.kryption.clients.ChatClient
-import io.echoseven.kryption.domain.UserRegistration
 import io.echoseven.kryption.domain.UserResponse
+import io.echoseven.kryption.domain.UserRegistration
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -21,8 +21,14 @@ class UserRegistrationService(
 
         userRegistration.id = chatUser.id
 
-        val authUser = authenticationClient.createUser(userRegistration)
-        log.debug("User [{}] successfully created in auth service", authUser)
-        return authUser
+        try {
+            val authUser = authenticationClient.createUser(userRegistration)
+            log.debug("User [{}] successfully created in auth service", authUser)
+            return authUser
+        } catch (e: Exception) {
+            log.error("Error occurred during creation of user account [{}] in auth service, attempting to rollback chat service user", userRegistration.email)
+            chatClient.deleteUser(chatUser.id)
+            throw IllegalStateException("User Creation Failed", e)
+        }
     }
 }
