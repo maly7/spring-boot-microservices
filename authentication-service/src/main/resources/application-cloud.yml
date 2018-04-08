@@ -6,3 +6,6 @@ eureka:
     appname: authentication-service
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
+
+logging:
+  file: /data/logs/auth-service.log

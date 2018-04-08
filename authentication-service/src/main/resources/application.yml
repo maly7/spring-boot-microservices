@@ -39,4 +39,4 @@ logging:
 
 kryption:
   jwt:
-    secret: ${JWT_SECRET:kryption-secret}
+    secret: keys/private_key.der

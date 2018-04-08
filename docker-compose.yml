@@ -17,6 +17,7 @@ services:
       - main
     volumes:
       - "mysql-data:/var/lib/mysql"
+      - "mysql-logs:/var/log/mysql"
   mongodb:
     image: mongo:3.6.3
     container_name: mongodb
@@ -40,6 +41,8 @@ services:
       - "8761"
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   authentication-service:
     build: ./authentication-service/
     container_name: authentication-service
@@ -57,6 +60,8 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   chat-service:
     build: ./chat-service/
     container_name: chat-service
@@ -73,6 +78,8 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   api-gateway:
     build: ./api-gateway/
     container_name: api-gateway
@@ -86,9 +93,11 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
-
+    volumes:
+      - ./logs:/data/logs
 networks:
   main:
 volumes:
   mysql-data:
+  mysql-logs:
   mongodb-data:

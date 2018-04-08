@@ -11,3 +11,6 @@ eureka:
     health-check-url-path: /actuator/health
   client:
     fetch-registry: false
+
+logging:
+  file: /data/logs/registry.log
