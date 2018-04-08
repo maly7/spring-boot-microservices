@@ -99,4 +99,5 @@ networks:
   main:
 volumes:
   mysql-data:
+  mysql-logs:
   mongodb-data:
