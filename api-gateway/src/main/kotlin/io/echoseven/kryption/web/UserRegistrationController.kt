@@ -16,7 +16,7 @@ class UserRegistrationController(private val userRegistrationService: UserRegist
 
     @PostMapping(path = ["/user/registration"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
     fun registerUser(@Valid @RequestBody userRegistration: UserRegistration): UserResponse {
-        log.debug("Received registration request for user with email [{}}", userRegistration.email)
+        log.debug("Received registration request for user with email [{}]", userRegistration.email)
         return userRegistrationService.registerUser(userRegistration)
     }
 }
