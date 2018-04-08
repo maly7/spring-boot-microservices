@@ -15,5 +15,4 @@ class TestJwtConfig {
     @Bean
     @Primary
     fun signatureAlgorithm(): SignatureAlgorithm = SignatureAlgorithm.HS256
-
 }
