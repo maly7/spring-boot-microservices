@@ -1,7 +1,7 @@
 package io.echoseven.kryption.clients
 
 import io.echoseven.kryption.domain.UserResponse
-import io.echoseven.kryption.domain.UserSignup
+import io.echoseven.kryption.domain.UserRegistration
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 
@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PostMapping
 interface AuthenticationClient {
 
     @PostMapping("/user")
-    fun createUser(userSignup: UserSignup): UserResponse
+    fun createUser(userRegistration: UserRegistration): UserResponse
 }

@@ -13,7 +13,7 @@ class DuplicateKeyAdvice {
 
     @ExceptionHandler(value = [DuplicateKeyException::class])
     fun handleDuplicateKeyException(ex: DuplicateKeyException, response: HttpServletResponse) {
-        log.error("Duplicate Key Exception occurred, probably due to a duplicate email during signup")
+        log.error("Duplicate Key Exception occurred, probably due to a duplicate email during registration")
         response.sendError(BAD_REQUEST.value(), "Duplicate data provided")
     }
 }
