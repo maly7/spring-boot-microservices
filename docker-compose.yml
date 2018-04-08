@@ -40,6 +40,8 @@ services:
       - "8761"
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   authentication-service:
     build: ./authentication-service/
     container_name: authentication-service
@@ -57,6 +59,8 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   chat-service:
     build: ./chat-service/
     container_name: chat-service
@@ -73,6 +77,8 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
+    volumes:
+      - ./logs:/data/logs
   api-gateway:
     build: ./api-gateway/
     container_name: api-gateway
@@ -86,7 +92,8 @@ services:
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
-
+    volumes:
+      - ./logs:/data/logs
 networks:
   main:
 volumes:
