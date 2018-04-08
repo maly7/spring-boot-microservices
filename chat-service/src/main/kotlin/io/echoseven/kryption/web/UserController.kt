@@ -25,7 +25,10 @@ class UserController(private val userRepository: UserRepository) {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
-    fun createUser(@Valid @RequestBody user: User): User = userRepository.save(user)
+    fun createUser(@Valid @RequestBody user: User): User {
+        log.debug("Creating User [{}]", user)
+        return userRepository.save(user)
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
