@@ -61,7 +61,6 @@ class UserAccountRestTests {
         assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "We should not be able to create the same user twice")
     }
 
-
     @Test
     fun `user account passwords should be encoded`() {
         val userToCreate = UserAccount("email@foo.com", "password")

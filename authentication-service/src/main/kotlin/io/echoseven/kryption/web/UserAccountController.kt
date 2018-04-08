@@ -18,11 +18,10 @@ class UserAccountController(private val userAccountService: UserAccountService) 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/user"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
     fun createUser(@Valid @RequestBody userAccount: UserAccount): UserAccountResource =
-            UserAccountResource(userAccountService.create(userAccount))
+        UserAccountResource(userAccountService.create(userAccount))
 
     // TODO: remove with #19
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/user")
     fun deleteAllUsers(): Unit = userAccountService.deleteAllUsers()
-
 }
