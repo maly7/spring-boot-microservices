@@ -1,6 +1,6 @@
 package io.echoseven.kryption.web
 
-import io.echoseven.kryption.domain.UserRegistration
+import io.echoseven.kryption.domain.UserAuth
 import io.echoseven.kryption.domain.UserResponse
 import io.echoseven.kryption.service.UserRegistrationService
 import org.slf4j.LoggerFactory
@@ -15,8 +15,8 @@ class UserRegistrationController(private val userRegistrationService: UserRegist
     private val log = LoggerFactory.getLogger(UserRegistrationController::class.java)
 
     @PostMapping(path = ["/user/registration"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
-    fun registerUser(@Valid @RequestBody userRegistration: UserRegistration): UserResponse {
-        log.debug("Received registration request for user with email [{}]", userRegistration.email)
-        return userRegistrationService.registerUser(userRegistration)
+    fun registerUser(@Valid @RequestBody userAuth: UserAuth): UserResponse {
+        log.debug("Received registration request for user with email [{}]", userAuth.email)
+        return userRegistrationService.registerUser(userAuth)
     }
 }

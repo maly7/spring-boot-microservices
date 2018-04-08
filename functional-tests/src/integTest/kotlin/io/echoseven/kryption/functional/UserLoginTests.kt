@@ -7,37 +7,32 @@ import io.echoseven.kryption.functional.support.password
 import io.echoseven.kryption.functional.support.userAuthJson
 import io.restassured.RestAssured.given
 import io.restassured.http.Header
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.isEmptyOrNullString
+import org.hamcrest.Matchers.*
 import org.junit.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-class UserRegistrationTests {
+class UserLoginTests {
 
     @Test
-    fun `A new User should be able to register`() {
+    fun `A User should be able to login with their credentials`() {
         val email = email()
+        val password = password()
+
+        createUser(email, password)
+
         given()
-            .body(userAuthJson(email, password()))
+            .body(userAuthJson(email, password))
             .header(Header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
         .When()
-            .post("/user/registration")
+            .post("/login")
         .then()
-            .body("email", equalTo(email))
-            .body("id", not(isEmptyOrNullString()))
             .statusCode(HttpStatus.OK.value())
-    }
-
-    @Test
-    fun `A User should not be able to register twice`() {
-        val email = email()
-        createUser(email, password())
-
-        createUser(email, password()).then()
-            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("email", equalTo(email))
+            .body("token", not(isEmptyOrNullString()))
+            .body("onlineStatus", equalTo(false))
+            .body("profileImageUrl", equalTo("noPhoto"))
+            .body("name", equalTo("Tap to update your name"))
     }
 }
-
