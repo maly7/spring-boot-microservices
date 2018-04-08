@@ -15,5 +15,4 @@ interface ChatClient {
 
     @DeleteMapping("/user/{id}")
     fun deleteUser(@PathVariable id: String?)
-
 }

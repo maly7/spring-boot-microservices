@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class UserRegistrationService(
     private val chatClient: ChatClient,
-    private val authenticationClient: AuthenticationClient) {
+    private val authenticationClient: AuthenticationClient
+) {
 
     private val log = LoggerFactory.getLogger(UserRegistrationService::class.java)
 

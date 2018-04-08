@@ -10,5 +10,4 @@ interface AuthenticationClient {
 
     @PostMapping("/user")
     fun createUser(userSignup: UserSignup): UserResponse
-
 }
