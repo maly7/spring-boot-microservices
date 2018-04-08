@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse
 
 class JwtAuthorizationFilter(
     authenticationManager: AuthenticationManager?,
-    private val authenticationClient: AuthenticationClient) : BasicAuthenticationFilter(authenticationManager) {
+    private val authenticationClient: AuthenticationClient
+) : BasicAuthenticationFilter(authenticationManager) {
 
     private val log = LoggerFactory.getLogger(JwtAuthorizationFilter::class.java)
 
