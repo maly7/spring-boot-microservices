@@ -80,7 +80,7 @@ class UserRestTests {
         assertEquals(response.statusCode, HttpStatus.CREATED)
 
         val failedResponse = restTemplate.postForEntity("/user", userToCreate, String::class.java)
-        assertTrue(failedResponse.statusCode.is4xxClientError, "We should not be able to create the user twice")
+        assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "We should not be able to create the user twice")
     }
 
     @Test
