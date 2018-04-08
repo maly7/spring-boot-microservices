@@ -19,8 +19,10 @@ class JwtAuthorizationFilter(
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val token: String? = request.getHeader(HttpHeaders.AUTHORIZATION)
+        log.debug("Attempting to authenticate for token [{}]", token)
 
         if (token == null || token.isBlank()) {
+            log.warn("Missing [{}] Header", HttpHeaders.AUTHORIZATION)
             chain.doFilter(request, response)
             return
         }
