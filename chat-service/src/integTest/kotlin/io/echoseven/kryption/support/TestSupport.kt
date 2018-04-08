@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
 val objectMapper: ObjectMapper = ObjectMapper()
-const val AUTH_SERVICE_PORT: Int = 80889
+const val AUTH_SERVICE_PORT: Int = 8089
 
 fun stubAuthUser(rule: WireMockRule, token: String, user: AuthUser) {
     rule.stubFor(get(urlEqualTo("/authenticate"))
