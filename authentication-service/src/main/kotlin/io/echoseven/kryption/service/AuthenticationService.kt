@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service
 import java.util.Optional
 
 @Service
-class AuthenticationService(private val userAccountService: UserAccountService,
-                            private val tokenIssuer: TokenIssuer,
-                            private val passwordEncoder: PasswordEncoder) {
+class AuthenticationService(
+    private val userAccountService: UserAccountService,
+    private val tokenIssuer: TokenIssuer,
+    private val passwordEncoder: PasswordEncoder
+) {
     private val log = LoggerFactory.getLogger(AuthenticationService::class.java)
 
     fun authenticate(authRequest: UserAccount): String {

@@ -7,9 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserAccountService(private val userAccountRepository: UserAccountRepository,
-                         private val passwordEncoder: PasswordEncoder,
-                         private val tokenIssuer: TokenIssuer) {
+class UserAccountService(
+    private val userAccountRepository: UserAccountRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val tokenIssuer: TokenIssuer
+) {
 
     fun create(user: UserAccount): UserAccount {
         user.password = passwordEncoder.encode(user.password)
