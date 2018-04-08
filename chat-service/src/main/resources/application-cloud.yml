@@ -2,6 +2,8 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    fetch-registry: true
+    registry-fetch-interval-seconds: 30
   instance:
     appname: chat-service
     status-page-url-path: /actuator/info

@@ -2,10 +2,10 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
     ext {
-        kotlinVersion = '1.2.30'
-        springBootVersion = '2.0.0.RELEASE'
-        springCloudVersion = '2.0.0.M7'
-        openFeignVersion = '2.0.0.M1'
+        kotlinVersion = '1.2.31'
+        springBootVersion = '2.0.1.RELEASE'
+        springCloudVersion = '2.0.0.M8'
+        openFeignVersion = '2.0.0.M2'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -112,6 +112,7 @@ configure([project(':authentication-service'), project(':chat-service'), project
         testCompile 'org.jetbrains.kotlin:kotlin-test'
 
         testCompile 'com.beust:klaxon:2.1.13'
+        testCompile 'com.github.tomakehurst:wiremock-standalone:2.16.0'
     }
 
     task integTest(type: Test) {
