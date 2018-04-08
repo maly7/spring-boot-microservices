@@ -17,6 +17,7 @@ services:
       - main
     volumes:
       - "mysql-data:/var/lib/mysql"
+      - "mysql-logs:/var/log/mysql"
   mongodb:
     image: mongo:3.6.3
     container_name: mongodb
