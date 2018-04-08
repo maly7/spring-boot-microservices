@@ -21,7 +21,7 @@ cache:
     - service-registry/build
 
 build:
-  stage: build
+  stage: build -x :functional-tests:assemble
   script:
     - openssl genrsa -out $AUTH_KEY_LOC/private_key.pem 2048
     - openssl pkcs8 -topk8 -inform PEM -outform DER -in $AUTH_KEY_LOC/private_key.pem -out $AUTH_KEY_LOC/private_key.der -nocrypt
@@ -32,12 +32,13 @@ build:
       - chat-service/build
       - authentication-service/build
       - service-registry/build
+      - api-gateway/build
     untracked: true
 
 test:
   stage: test
   script:
-    - ./gradlew check
+    - ./gradlew check -x :functional-tests:check
   artifacts:
     when: always
     paths:
