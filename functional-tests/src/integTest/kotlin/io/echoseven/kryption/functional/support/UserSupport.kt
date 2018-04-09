@@ -17,5 +17,5 @@ fun createUser(email: String, password: String) =
     given()
         .body(userAuthJson(email, password))
         .header(Header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .When()
+    .When()
         .post("/user/registration")

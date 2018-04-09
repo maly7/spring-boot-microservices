@@ -21,6 +21,8 @@ class UserLoginTests {
         val password = password()
 
         createUser(email, password)
+            .then()
+            .statusCode(HttpStatus.OK.value())
 
         given()
             .body(userAuthJson(email, password))
