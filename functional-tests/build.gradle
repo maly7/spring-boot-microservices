@@ -1,0 +1,3 @@
+dependencies {
+    integTestCompile 'io.rest-assured:rest-assured:3.0.7'
+}

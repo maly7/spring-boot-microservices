@@ -49,12 +49,9 @@ subprojects {
 
         jcenter()
     }
-}
 
-configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
-    apply plugin: 'org.jlleitschuh.gradle.ktlint'
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
@@ -128,6 +125,10 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 
     check.dependsOn integTest
+}
+
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
+    apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
     task writeDockerfile(type: Dockerfile) {
         destFile project.file('Dockerfile')

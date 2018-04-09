@@ -4,8 +4,13 @@
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
 1. To run the full stack run `./gradlew run`, then to stop it `./gradlew stop`
-1. To run just the relational store run `./gradlew :a-s:bootRun` this will start a mysql container and then bootRun the relational store. To stop the mysql container run `./gradlew stopMysql`
-1. To run just the document store run `./gradlew :c-s:bootRun` this will start a mongo db container and then bootRun the document store. To stop the mongo db container run `./gradlew stopMongo`
+1. To run just the authentication service run `./gradlew :a-s:bootRun` this will start a mysql container and then bootRun the relational store. To stop the mysql container run `./gradlew stopMysql`
+1. To run just the chat service run `./gradlew :c-s:bootRun` this will start a mongo db container and then bootRun the document store. To stop the mongo db container run `./gradlew stopMongo`
+
+### Functional Tests
+The functional-tests project contains a set of api-based functional tests written using [Rest Assured](https://github.com/rest-assured/rest-assured/). These tests should be run periodically and before every merge. In the future this will be part of the CI build.
+
+To run the functional tests, first start the entire application with `./gradlew run`. Once everything is up an running run `./gradlew :f-t:integTest`. 
 
 ### Generating RSA Key
 1. `openssl genrsa -out authentication-service/src/main/resources/keys/private_key.pem 2048`
