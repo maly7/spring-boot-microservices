@@ -101,3 +101,5 @@ hs_err_pid*
 
 *.pem
 *.der
+
+./logs/*
