@@ -40,9 +40,6 @@ zuul:
       path: /chat/**
       service-id: chat-service
       sensitive-headers:
-    login:
-      path: /login
-      service-id: authentication-service
   ignored-services:
     - service-registry
     - authentication-service
