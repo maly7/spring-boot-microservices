@@ -21,12 +21,12 @@ cache:
     - service-registry/build
 
 build:
-  stage: build -x :functional-tests:assemble
+  stage: build
   script:
     - openssl genrsa -out $AUTH_KEY_LOC/private_key.pem 2048
     - openssl pkcs8 -topk8 -inform PEM -outform DER -in $AUTH_KEY_LOC/private_key.pem -out $AUTH_KEY_LOC/private_key.der -nocrypt
     - openssl rsa -in $AUTH_KEY_LOC/private_key.pem -pubout -outform DER -out $AUTH_KEY_LOC/public_key.der
-    - ./gradlew assemble
+    - ./gradlew assemble -x :functional-tests:assemble
   artifacts:
     paths:
       - chat-service/build
