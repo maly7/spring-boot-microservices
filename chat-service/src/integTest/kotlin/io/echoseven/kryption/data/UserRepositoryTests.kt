@@ -3,8 +3,7 @@ package io.echoseven.kryption.data
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.domain.User
 import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.Matchers.empty
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -86,5 +85,17 @@ class UserRepositoryTests {
 
         userRepository.delete(user)
         assertThat("The user should be deleted", userRepository.findAll(), empty())
+    }
+
+    @Test
+    fun `Add a user contact`() {
+        val user = userRepository.save(User("email@foo.com"))
+        val contact = userRepository.save(User("contact@foo.com"))
+
+        user.contacts = setOf(contact)
+
+        val userWithContacts = userRepository.save(user)
+
+        assertThat("The contact should be in the original user's lists now", contact, isIn(userWithContacts.contacts))
     }
 }
