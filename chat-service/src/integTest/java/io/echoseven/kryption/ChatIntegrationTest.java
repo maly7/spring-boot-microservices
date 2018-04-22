@@ -22,6 +22,5 @@ public @interface ChatIntegrationTest {
     SpringBootTest.WebEnvironment webEnv() default SpringBootTest.WebEnvironment.RANDOM_PORT;
 
     @AliasFor(annotation = SpringBootTest.class, attribute = "classes")
-    Class<?>[] classes() default {ChatApp.class, RibbonClientConfig.class
-    };
+    Class<?>[] classes() default {ChatApp.class, RibbonClientConfig.class};
 }
