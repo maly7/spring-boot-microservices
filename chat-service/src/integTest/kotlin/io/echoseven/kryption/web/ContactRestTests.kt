@@ -23,4 +23,9 @@ class ContactRestTests {
     fun `Attempting to add a non-existent user as a contact should fail`() {
 
     }
+
+    @Test
+    fun `A User should be able to delete a Contact`() {
+
+    }
 }
