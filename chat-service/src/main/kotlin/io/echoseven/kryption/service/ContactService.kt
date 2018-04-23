@@ -15,7 +15,7 @@ class ContactService(
 ) {
 
     fun getContacts(): List<Contact> {
-        return userService.getCurrentUser().contacts.map { Contact(it.email, it.onlineStatus, it.profileImageUrl) }
+        return userService.getCurrentUser().contacts.map { it.asContact() }
     }
 
     fun addContact(contactRequest: ContactRequest): List<Contact> {
