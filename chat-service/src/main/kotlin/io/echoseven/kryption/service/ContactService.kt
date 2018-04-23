@@ -2,7 +2,6 @@ package io.echoseven.kryption.service
 
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.exception.BadRequestException
-import io.echoseven.kryption.exception.NotFoundException
 import io.echoseven.kryption.web.resource.Contact
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.apache.commons.lang3.StringUtils
@@ -19,16 +18,30 @@ class ContactService(
     }
 
     fun addContact(contactRequest: ContactRequest): List<Contact> {
-        if (StringUtils.isBlank(contactRequest.email)) {
-            throw BadRequestException("A Contact request must have an email")
-        }
+        guardAgainstBadRequests(contactRequest)
 
-        val contact = userRepository.findByEmail(contactRequest.email!!).orElseThrow { NotFoundException("No user found with email ${contactRequest.email}") }
+        val contact = userService.findByEmail(contactRequest.email!!)
         val currentUser = userService.getCurrentUser()
 
         currentUser.contacts += contact
         userRepository.save(currentUser)
 
         return getContacts()
+    }
+
+    fun removeContact(contactRequest: ContactRequest) {
+        guardAgainstBadRequests(contactRequest)
+
+        val contact = userService.findByEmail(contactRequest.email!!)
+        val currentUser = userService.getCurrentUser()
+
+        currentUser.contacts -= contact
+        userRepository.save(currentUser)
+    }
+
+    private fun guardAgainstBadRequests(contactRequest: ContactRequest) {
+        if (StringUtils.isBlank(contactRequest.email)) {
+            throw BadRequestException("A Contact request must have an email")
+        }
     }
 }
