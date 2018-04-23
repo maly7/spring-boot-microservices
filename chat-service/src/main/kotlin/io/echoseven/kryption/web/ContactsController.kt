@@ -10,5 +10,4 @@ class ContactsController {
     // PUT /contacts - update the entire list of contacts
     // PUT /contact - add a single contact
     // DELETE /contact - delete a single contact
-    // GET /search?q={email} - search for a contact to add
 }

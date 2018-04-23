@@ -4,6 +4,7 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.exception.NotFoundException
 import io.echoseven.kryption.security.AuthenticationToken
+import io.echoseven.kryption.web.resource.UserSearchRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE
@@ -45,6 +46,17 @@ class UserController(private val userRepository: UserRepository) {
         log.debug("Fetching user data for [{}]", auth)
         return userRepository.findById(auth.id).orElseThrow {
             NotFoundException("A User could not be found for the current user, this should never happen")
+        }
+    }
+
+    @PostMapping(path = ["/search"], consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
+    fun search(@Valid @RequestBody searchRequest: UserSearchRequest): List<User> {
+        val userOptional = userRepository.findByEmail(searchRequest.email!!)
+
+        return if (userOptional.isPresent) {
+            listOf(userOptional.get())
+        } else {
+            emptyList()
         }
     }
 }
