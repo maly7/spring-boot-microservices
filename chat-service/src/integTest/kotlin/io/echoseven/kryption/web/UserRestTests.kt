@@ -8,7 +8,11 @@ import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.support.tokenHeaders
+import io.echoseven.kryption.web.resource.UserSearchRequest
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.empty
 import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,5 +107,13 @@ class UserRestTests {
 
         assertEquals(secondUser, secondUserLookup, "The second user should match the second created user")
         assertNotEquals(userLookupResponse, secondUserLookup, "The two fetched users should not match")
+    }
+
+    @Test
+    fun `Searching for a bad email should return nothing`() {
+        val searchResponse = restTemplate.postForEntity("/user/search", UserSearchRequest("bad-email@email.com"), List::class.java)
+
+        assertEquals(HttpStatus.OK, searchResponse.statusCode, "No error should occur")
+        assertThat("The result set should be empty", searchResponse.body, `is`(empty()))
     }
 }
