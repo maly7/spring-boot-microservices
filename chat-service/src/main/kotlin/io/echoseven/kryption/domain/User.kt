@@ -1,5 +1,6 @@
 package io.echoseven.kryption.domain
 
+import io.echoseven.kryption.web.resource.Contact
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.DBRef
@@ -16,4 +17,6 @@ data class User(
 ) {
     @Id
     var id: String? = null
+
+    fun asContact() = Contact(email, onlineStatus, profileImageUrl)
 }
