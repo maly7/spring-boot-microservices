@@ -7,6 +7,7 @@ import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
 import io.echoseven.kryption.support.createUser
+import io.echoseven.kryption.support.getForEntity
 import io.echoseven.kryption.support.stubAuthUser
 import org.junit.After
 import org.junit.Rule
@@ -14,8 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
@@ -89,8 +88,7 @@ class UserRestTests {
         val originalUser = createUser(User("email@foo.com"), restTemplate)
         stubAuthUser(wireMock, token, originalUser)
 
-        val entity = HttpEntity("", authHeaders(token))
-        val userLookupResponse: User = restTemplate.exchange("/user", HttpMethod.GET, entity, User::class.java).body!!
+        val userLookupResponse: User = restTemplate.getForEntity("/user", authHeaders(token), User::class.java).body!!
 
         assertEquals(originalUser, userLookupResponse, "The retrieved user should be the same as the created user")
 
@@ -98,8 +96,7 @@ class UserRestTests {
         val secondToken = "other-user"
         stubAuthUser(wireMock, secondToken, secondUser)
 
-        val secondEntity = HttpEntity("", authHeaders(secondToken))
-        val secondUserLookup = restTemplate.exchange("/user", HttpMethod.GET, secondEntity, User::class.java).body!!
+        val secondUserLookup = restTemplate.getForEntity("/user", authHeaders(secondToken), User::class.java).body!!
 
         assertEquals(secondUser, secondUserLookup, "The second user should match the second created user")
         assertNotEquals(userLookupResponse, secondUserLookup, "The two fetched users should not match")
