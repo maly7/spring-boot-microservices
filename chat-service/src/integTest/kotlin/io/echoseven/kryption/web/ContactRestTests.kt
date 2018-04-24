@@ -6,11 +6,11 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.containsEmail
-import io.echoseven.kryption.support.countEmail
+import io.echoseven.kryption.extensions.containsEmail
+import io.echoseven.kryption.extensions.countEmail
 import io.echoseven.kryption.support.createContact
 import io.echoseven.kryption.support.createUser
-import io.echoseven.kryption.support.getForEntity
+import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.junit.After

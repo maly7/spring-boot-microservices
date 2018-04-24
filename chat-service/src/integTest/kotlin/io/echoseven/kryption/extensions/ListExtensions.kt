@@ -1,4 +1,4 @@
-package io.echoseven.kryption.support
+package io.echoseven.kryption.extensions
 
 fun List<LinkedHashMap<*, *>>.containsValue(propertyName: String, value: Any) = this.any { it[propertyName] == value }
 

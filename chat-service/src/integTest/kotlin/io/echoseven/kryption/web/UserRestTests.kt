@@ -7,7 +7,7 @@ import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
 import io.echoseven.kryption.support.createUser
-import io.echoseven.kryption.support.getForEntity
+import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.stubAuthUser
 import org.junit.After
 import org.junit.Rule

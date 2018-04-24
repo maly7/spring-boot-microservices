@@ -3,7 +3,7 @@ package io.echoseven.kryption.data
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.domain.User
 import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Test
