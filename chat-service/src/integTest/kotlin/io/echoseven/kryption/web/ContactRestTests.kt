@@ -12,6 +12,7 @@ import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +30,7 @@ import kotlin.test.assertTrue
 @ChatIntegrationTest
 class ContactRestTests {
     val userToken = "user-token"
+    lateinit var currentUser: User
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
@@ -40,6 +42,12 @@ class ContactRestTests {
     @JvmField
     final val wireMock: WireMockRule = WireMockRule(AUTH_SERVICE_PORT)
 
+    @Before
+    fun setup() {
+        currentUser = createUser(User("user@email.com"), restTemplate)
+        stubAuthUser(wireMock, userToken, currentUser)
+    }
+
     @After
     fun cleanup() {
         userRepository.deleteAll()
@@ -48,10 +56,6 @@ class ContactRestTests {
     @Test
     fun `A User Should be able to add a Contact`() {
         val contact = createUser(User("contact@email.com"), restTemplate)
-        val user = createUser(User("user@email.com"), restTemplate)
-
-        stubAuthUser(wireMock, userToken, user)
-
         val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(userToken))
         val contactResponse = restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, List::class.java)
         val contacts = contactResponse.body!! as List<LinkedHashMap<*, *>>
