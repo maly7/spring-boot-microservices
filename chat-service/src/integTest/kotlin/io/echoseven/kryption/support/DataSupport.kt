@@ -1,7 +1,7 @@
 package io.echoseven.kryption.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wildcard-imports
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.clients.AuthUser
 import io.echoseven.kryption.domain.User
@@ -9,7 +9,6 @@ import io.echoseven.kryption.web.resource.ContactRequest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.util.UUID
@@ -44,7 +43,7 @@ fun createContact(restTemplate: TestRestTemplate, token: String, contact: Contac
     createUser(User(contact.email!!), restTemplate)
 
     val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
-    restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, String::class.java)
+    restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)
     return contact.email.toString()
 }
 
