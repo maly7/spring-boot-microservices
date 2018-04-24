@@ -4,16 +4,19 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
-import io.echoseven.kryption.support.AUTH_SERVICE_PORT
-import io.echoseven.kryption.support.authHeaders
 import io.echoseven.kryption.extensions.containsEmail
 import io.echoseven.kryption.extensions.countEmail
-import io.echoseven.kryption.support.createContact
-import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.extensions.getForEntity
+import io.echoseven.kryption.support.AUTH_SERVICE_PORT
+import io.echoseven.kryption.support.addContact
+import io.echoseven.kryption.support.authHeaders
+import io.echoseven.kryption.support.createUser
+import io.echoseven.kryption.support.createUserAsContact
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
+import org.hamcrest.Matchers.hasSize
 import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,7 +73,7 @@ class ContactRestTests {
     fun `A User should be able to retrieve their Contacts`() {
         val addedContacts = mutableListOf<String>()
         for (i in 1..5) {
-            addedContacts.add(createContact(restTemplate, userToken))
+            addedContacts.add(createUserAsContact(restTemplate, userToken))
         }
 
         val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)
@@ -88,6 +91,16 @@ class ContactRestTests {
 
     @Test
     fun `Contact lists should not contain duplicates`() {
+        val contact = createUser(User("other-user@email.com"), restTemplate)
+
+        for (i in 1..5) {
+            addContact(restTemplate, userToken, contact)
+        }
+
+        val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)
+        val contacts = contactsResponse.body!! as List<LinkedHashMap<*, *>>
+
+        assertThat("There should only be one contact", contacts, hasSize(1))
     }
 
     @Test
