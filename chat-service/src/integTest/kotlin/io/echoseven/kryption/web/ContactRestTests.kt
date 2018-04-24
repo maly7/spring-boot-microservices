@@ -6,6 +6,8 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
+import io.echoseven.kryption.support.containsValue
+import io.echoseven.kryption.support.countValue
 import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
 class ContactRestTests {
@@ -51,16 +54,11 @@ class ContactRestTests {
 
         val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(userToken))
         val contactResponse = restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, List::class.java)
+        val contacts = contactResponse.body!! as List<LinkedHashMap<*, *>>
 
         assertEquals(HttpStatus.OK, contactResponse.statusCode, "The status code should be 200 successful")
-
-        assertTrue(contactResponse.body!!.any {
-            (it as Map<*, *>)["email"] == contact.email
-        }, "The contact should be in the list of returned contacts")
-
-        assertEquals(1, contactResponse.body!!.count {
-            (it as Map<*, *>)["email"] == contact.email
-        }, "There should be only one contact with that email")
+        assertTrue(contacts.containsValue("email", contact.email), "The contact email should be in the list of returned contacts")
+        assertEquals(1, contacts.countValue("email", contact.email), "There should be only one contact with that email")
     }
 
     @Test
