@@ -5,10 +5,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wi
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.clients.AuthUser
 import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.web.resource.ContactRequest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import java.util.UUID
 
 val objectMapper: ObjectMapper = ObjectMapper()
 const val AUTH_SERVICE_PORT: Int = 8089
@@ -35,3 +39,11 @@ fun authHeaders(token: String): HttpHeaders {
 fun createUser(user: User, restTemplate: TestRestTemplate): User {
     return restTemplate.postForEntity("/user", user, User::class.java).body!!
 }
+
+fun addContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
+    val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
+    restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, String::class.java)
+    return contact.email.toString()
+}
+
+fun contactRequest(email: String = "${UUID.randomUUID()}@email.com") = ContactRequest(email)
