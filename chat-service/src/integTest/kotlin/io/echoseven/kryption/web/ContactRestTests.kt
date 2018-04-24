@@ -21,7 +21,6 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
@@ -59,7 +58,7 @@ class ContactRestTests {
     fun `A User Should be able to add a Contact`() {
         val contact = createUser(User("contact@email.com"), restTemplate)
         val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(userToken))
-        val contactResponse = restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, List::class.java)
+        val contactResponse = restTemplate.postForEntity("/contacts", contactRequestEntity, List::class.java)
         val contacts = contactResponse.body!! as List<LinkedHashMap<*, *>>
 
         assertEquals(HttpStatus.OK, contactResponse.statusCode, "The status code should be 200 successful")
