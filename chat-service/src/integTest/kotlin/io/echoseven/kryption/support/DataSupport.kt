@@ -40,7 +40,9 @@ fun createUser(user: User, restTemplate: TestRestTemplate): User {
     return restTemplate.postForEntity("/user", user, User::class.java).body!!
 }
 
-fun addContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
+fun createContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
+    createUser(User(contact.email!!), restTemplate)
+
     val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
     restTemplate.exchange("/contacts", HttpMethod.POST, contactRequestEntity, String::class.java)
     return contact.email.toString()
