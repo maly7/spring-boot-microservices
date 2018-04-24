@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import java.util.UUID
 
 val objectMapper: ObjectMapper = ObjectMapper()
@@ -39,12 +40,17 @@ fun createUser(user: User, restTemplate: TestRestTemplate): User {
     return restTemplate.postForEntity("/user", user, User::class.java).body!!
 }
 
-fun createContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
+fun createUserAsContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
     createUser(User(contact.email!!), restTemplate)
 
     val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
     restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)
     return contact.email.toString()
+}
+
+fun addContact(restTemplate: TestRestTemplate, token: String, contact: User): ResponseEntity<String>? {
+    val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
+    return restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)
 }
 
 fun contactRequest(email: String = "${UUID.randomUUID()}@email.com") = ContactRequest(email)
