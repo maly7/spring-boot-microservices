@@ -1,4 +1,4 @@
-package io.echoseven.kryption.support
+package io.echoseven.kryption.extensions
 
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
