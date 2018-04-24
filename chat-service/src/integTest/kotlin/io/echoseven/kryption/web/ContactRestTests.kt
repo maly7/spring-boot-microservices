@@ -6,9 +6,11 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.containsValue
-import io.echoseven.kryption.support.countValue
+import io.echoseven.kryption.support.containsEmail
+import io.echoseven.kryption.support.countEmail
+import io.echoseven.kryption.support.createContact
 import io.echoseven.kryption.support.createUser
+import io.echoseven.kryption.support.getForEntity
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.junit.After
@@ -61,12 +63,24 @@ class ContactRestTests {
         val contacts = contactResponse.body!! as List<LinkedHashMap<*, *>>
 
         assertEquals(HttpStatus.OK, contactResponse.statusCode, "The status code should be 200 successful")
-        assertTrue(contacts.containsValue("email", contact.email), "The contact email should be in the list of returned contacts")
-        assertEquals(1, contacts.countValue("email", contact.email), "There should be only one contact with that email")
+        assertTrue(contacts.containsEmail(contact.email), "The contact email should be in the list of returned contacts")
+        assertEquals(1, contacts.countEmail(contact.email), "There should be only one contact with that email")
     }
 
     @Test
     fun `A User should be able to retrieve their Contacts`() {
+        val addedContacts = mutableListOf<String>()
+        for (i in 1..5) {
+            addedContacts.add(createContact(restTemplate, userToken))
+        }
+
+        val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)
+        val contacts = contactsResponse.body!! as List<LinkedHashMap<*, *>>
+
+        addedContacts.forEach { contact ->
+            assertTrue(contacts.containsEmail(contact), "$contact should be in the list of returned contacts")
+            assertEquals(1, contacts.countEmail(contact), "There should be only one of $contact in the list of contacts")
+        }
     }
 
     @Test
