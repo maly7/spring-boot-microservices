@@ -25,7 +25,7 @@ fun stubAuthUser(rule: WireMockRule, token: String, user: AuthUser) {
 fun stubAuthUser(rule: WireMockRule, token: String, user: User) =
     stubAuthUser(rule, token, AuthUser(user.id.toString(), user.email, true))
 
-fun tokenHeaders(token: String): HttpHeaders {
+fun authHeaders(token: String): HttpHeaders {
     val headers = HttpHeaders()
     headers.accept = listOf(MediaType.APPLICATION_JSON_UTF8)
     headers[HttpHeaders.AUTHORIZATION] = listOf(token)

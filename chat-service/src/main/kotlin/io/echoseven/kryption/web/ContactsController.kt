@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/user/contacts")
+@RequestMapping("/contacts")
 class ContactsController(val contactService: ContactService) {
 
     @GetMapping(produces = [APPLICATION_JSON_UTF8_VALUE])
