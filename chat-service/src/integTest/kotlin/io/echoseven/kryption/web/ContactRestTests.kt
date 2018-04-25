@@ -106,4 +106,9 @@ class ContactRestTests {
     @Test
     fun `A User should be able to delete a Contact`() {
     }
+
+    @Test
+    fun `Contacts should not be bi-directional`() {
+
+    }
 }
