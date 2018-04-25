@@ -4,8 +4,7 @@ buildscript {
     ext {
         kotlinVersion = '1.2.40'
         springBootVersion = '2.0.1.RELEASE'
-        springCloudVersion = '2.0.0.M8'
-        openFeignVersion = '2.0.0.M2'
+        springCloudVersion = '2.0.0.RC1'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -93,7 +92,7 @@ subprojects {
             dependency "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$springCloudVersion"
             dependency "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:$springCloudVersion"
             dependency "org.springframework.cloud:spring-cloud-starter-netflix-zuul:$springCloudVersion"
-            dependency "org.springframework.cloud:spring-cloud-starter-openfeign:$openFeignVersion"
+            dependency "org.springframework.cloud:spring-cloud-starter-openfeign:$springCloudVersion"
         }
     }
 
