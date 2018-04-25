@@ -13,9 +13,23 @@ fun userAuthJson(email: String, password: String): String {
     return toJson(user)
 }
 
+fun contactJson(email: String): String {
+    val contact = mapOf("email" to email)
+    return toJson(contact)
+}
+
 fun createUser(email: String, password: String) =
     given()
         .body(userAuthJson(email, password))
         .header(Header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
     .When()
         .post("/user/registration")
+
+fun login(email: String, password: String) =
+    given()
+        .body(userAuthJson(email, password))
+        .header(Header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE))
+    .When()
+        .post("/login")
+    .then()
+        .extract().path<String>("token")
