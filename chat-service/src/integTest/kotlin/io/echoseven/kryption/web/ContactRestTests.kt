@@ -9,6 +9,7 @@ import io.echoseven.kryption.extensions.containsEmail
 import io.echoseven.kryption.extensions.countEmail
 import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.createUserAsContact
+import io.echoseven.kryption.extensions.deleteContact
 import io.echoseven.kryption.extensions.getContacts
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.extensions.stubAuthUser
@@ -116,9 +117,18 @@ class ContactRestTests {
 
     @Test
     fun `A User should be able to delete a Contact`() {
+        val contactEmail = restTemplate.createUserAsContact(userToken)
+
+        var contacts = restTemplate.getContacts(userToken).body!! as List<LinkedHashMap<*, *>>
+        assertTrue(contacts.containsEmail(contactEmail), "$contactEmail should be in the list of returned contacts")
+
+        restTemplate.deleteContact(userToken, contactEmail)
+
+        contacts = restTemplate.getContacts(userToken).body!! as List<LinkedHashMap<*, *>>
+        assertFalse(contacts.containsEmail(contactEmail), "$contactEmail should have been deleted from the contact list")
     }
 
     @Test
-    fun `Contacts should not be bi-directional`() {
+    fun `Contacts should be unidirectional`() {
     }
 }
