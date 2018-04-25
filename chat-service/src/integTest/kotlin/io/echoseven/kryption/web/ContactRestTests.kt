@@ -130,5 +130,15 @@ class ContactRestTests {
 
     @Test
     fun `Contacts should be unidirectional`() {
+        val secondUser = restTemplate.createUser(User("other-user@email.org"))
+        val secondToken = "other-user"
+        wireMock.stubAuthUser(secondToken, secondUser)
+
+        restTemplate.addContact(userToken, secondUser)
+        val firstUserContacts = restTemplate.getContacts(userToken).body!! as List<LinkedHashMap<*, *>>
+        assertTrue(firstUserContacts.containsEmail(secondUser.email), "The original user should have the second user as a contact")
+
+        val secondUserContacts = restTemplate.getContacts(secondToken).body!! as List<LinkedHashMap<*, *>>
+        assertFalse(secondUserContacts.containsEmail(currentUser.email), "The second user should not have the original user as a contact")
     }
 }
