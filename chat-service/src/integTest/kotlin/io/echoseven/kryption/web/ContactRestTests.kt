@@ -6,11 +6,11 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.extensions.containsEmail
 import io.echoseven.kryption.extensions.countEmail
+import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.addContact
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.createUser
 import io.echoseven.kryption.support.createUserAsContact
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
@@ -48,7 +48,7 @@ class ContactRestTests {
 
     @Before
     fun setup() {
-        currentUser = createUser(User("user@email.com"), restTemplate)
+        currentUser = restTemplate.createUser(User("user@email.com"))
         stubAuthUser(wireMock, userToken, currentUser)
     }
 
@@ -59,7 +59,7 @@ class ContactRestTests {
 
     @Test
     fun `A User Should be able to add a Contact`() {
-        val contact = createUser(User("contact@email.com"), restTemplate)
+        val contact = restTemplate.createUser(User("contact@email.com"))
         val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(userToken))
         val contactResponse = restTemplate.postForEntity("/contacts", contactRequestEntity, List::class.java)
         val contacts = contactResponse.body!! as List<LinkedHashMap<*, *>>
@@ -91,7 +91,7 @@ class ContactRestTests {
 
     @Test
     fun `Contact lists should not contain duplicates`() {
-        val contact = createUser(User("other-user@email.com"), restTemplate)
+        val contact = restTemplate.createUser(User("other-user@email.com"))
 
         for (i in 1..5) {
             addContact(restTemplate, userToken, contact)
