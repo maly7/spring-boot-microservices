@@ -4,14 +4,14 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.extensions.addContact
 import io.echoseven.kryption.extensions.containsEmail
 import io.echoseven.kryption.extensions.countEmail
 import io.echoseven.kryption.extensions.createUser
+import io.echoseven.kryption.extensions.createUserAsContact
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
-import io.echoseven.kryption.support.addContact
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.createUserAsContact
 import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.hamcrest.Matchers.hasSize
@@ -73,7 +73,7 @@ class ContactRestTests {
     fun `A User should be able to retrieve their Contacts`() {
         val addedContacts = mutableListOf<String>()
         for (i in 1..5) {
-            addedContacts.add(createUserAsContact(restTemplate, userToken))
+            addedContacts.add(restTemplate.createUserAsContact(userToken))
         }
 
         val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)
@@ -94,7 +94,7 @@ class ContactRestTests {
         val contact = restTemplate.createUser(User("other-user@email.com"))
 
         for (i in 1..5) {
-            addContact(restTemplate, userToken, contact)
+            restTemplate.addContact(userToken, contact)
         }
 
         val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)

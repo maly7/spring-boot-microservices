@@ -1,18 +1,14 @@
 package io.echoseven.kryption.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wildcard-imports
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.clients.AuthUser
 import io.echoseven.kryption.domain.User
-import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.web.resource.ContactRequest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import java.util.UUID
 
 val objectMapper: ObjectMapper = ObjectMapper()
@@ -37,17 +33,4 @@ fun authHeaders(token: String): HttpHeaders {
     return headers
 }
 
-fun createUserAsContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
-    restTemplate.createUser(User(contact.email!!))
-
-    val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
-    restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)
-    return contact.email.toString()
-}
-
-fun addContact(restTemplate: TestRestTemplate, token: String, contact: User): ResponseEntity<String>? {
-    val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
-    return restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)
-}
-
-fun contactRequest(email: String = "${UUID.randomUUID()}@email.com") = ContactRequest(email)
+fun generateContactRequest() = ContactRequest("${UUID.randomUUID()}@email.com")
