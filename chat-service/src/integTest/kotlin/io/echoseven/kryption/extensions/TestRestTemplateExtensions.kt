@@ -31,3 +31,8 @@ fun TestRestTemplate.createUserAsContact(authToken: String, contact: ContactRequ
 }
 
 fun TestRestTemplate.getContacts(authToken: String) = this.getForEntity("/contacts", authHeaders(authToken), List::class.java)
+
+fun TestRestTemplate.deleteContact(authToken: String, email: String) {
+    val requestEntity = HttpEntity(ContactRequest(email), authHeaders(authToken))
+    this.exchange("/contacts", HttpMethod.DELETE, requestEntity, Any::class.java)
+}
