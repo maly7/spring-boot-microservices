@@ -9,6 +9,7 @@ import io.echoseven.kryption.extensions.containsEmail
 import io.echoseven.kryption.extensions.countEmail
 import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.createUserAsContact
+import io.echoseven.kryption.extensions.getContacts
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
@@ -27,6 +28,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("UNCHECKED_CAST")
@@ -76,17 +78,26 @@ class ContactRestTests {
             addedContacts.add(restTemplate.createUserAsContact(userToken))
         }
 
-        val contactsResponse = restTemplate.getForEntity("/contacts", authHeaders(userToken), List::class.java)
+        val contactsResponse = restTemplate.getContacts(userToken)
         val contacts = contactsResponse.body!! as List<LinkedHashMap<*, *>>
 
         addedContacts.forEach { contact ->
             assertTrue(contacts.containsEmail(contact), "$contact should be in the list of returned contacts")
             assertEquals(1, contacts.countEmail(contact), "There should be only one of $contact in the list of contacts")
         }
+        assertThat("There should be no excess contacts", contacts, hasSize(5))
     }
 
     @Test
     fun `Attempting to add a non-existent user as a contact should fail`() {
+        val badEmail = "non-existent@email.com"
+        val response = restTemplate.addContact(userToken, User(badEmail))
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode, "The response status should be ${HttpStatus.BAD_REQUEST.value()}")
+
+        val contacts = restTemplate.getContacts(userToken).body!! as List<LinkedHashMap<*, *>>
+
+        assertFalse(contacts.containsEmail(badEmail), "The non-existent user email should not be in the contacts list")
     }
 
     @Test
@@ -109,6 +120,5 @@ class ContactRestTests {
 
     @Test
     fun `Contacts should not be bi-directional`() {
-
     }
 }
