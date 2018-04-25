@@ -29,3 +29,5 @@ fun TestRestTemplate.createUserAsContact(authToken: String, contact: ContactRequ
     this.postForEntity("/contacts", requestEntity, String::class.java)
     return contact.email!!
 }
+
+fun TestRestTemplate.getContacts(authToken: String) = this.getForEntity("/contacts", authHeaders(authToken), List::class.java)
