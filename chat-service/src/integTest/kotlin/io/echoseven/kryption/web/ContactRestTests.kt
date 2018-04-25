@@ -10,9 +10,9 @@ import io.echoseven.kryption.extensions.countEmail
 import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.createUserAsContact
 import io.echoseven.kryption.extensions.getForEntity
+import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.stubAuthUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
@@ -49,7 +49,7 @@ class ContactRestTests {
     @Before
     fun setup() {
         currentUser = restTemplate.createUser(User("user@email.com"))
-        stubAuthUser(wireMock, userToken, currentUser)
+        wireMock.stubAuthUser(userToken, currentUser)
     }
 
     @After

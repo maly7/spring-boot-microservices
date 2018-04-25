@@ -6,9 +6,9 @@ import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.getForEntity
+import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.stubAuthUser
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -86,7 +86,7 @@ class UserRestTests {
     fun `Only an authenticated user should be able to request their own user info`() {
         val token = "foo-user"
         val originalUser = restTemplate.createUser(User("email@foo.com"))
-        stubAuthUser(wireMock, token, originalUser)
+        wireMock.stubAuthUser(token, originalUser)
 
         val userLookupResponse: User = restTemplate.getForEntity("/user", authHeaders(token), User::class.java).body!!
 
@@ -94,7 +94,7 @@ class UserRestTests {
 
         val secondUser = restTemplate.createUser(User("second.user@foo.com"))
         val secondToken = "other-user"
-        stubAuthUser(wireMock, secondToken, secondUser)
+        wireMock.stubAuthUser(secondToken, secondUser)
 
         val secondUserLookup = restTemplate.getForEntity("/user", authHeaders(secondToken), User::class.java).body!!
 
