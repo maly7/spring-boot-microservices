@@ -1,7 +1,7 @@
 package io.echoseven.kryption.support
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wildcard-imports
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.clients.AuthUser
 import io.echoseven.kryption.domain.User
