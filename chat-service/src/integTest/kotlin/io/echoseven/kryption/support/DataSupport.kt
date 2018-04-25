@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wi
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.clients.AuthUser
 import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.web.resource.ContactRequest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
@@ -36,12 +37,8 @@ fun authHeaders(token: String): HttpHeaders {
     return headers
 }
 
-fun createUser(user: User, restTemplate: TestRestTemplate): User {
-    return restTemplate.postForEntity("/user", user, User::class.java).body!!
-}
-
 fun createUserAsContact(restTemplate: TestRestTemplate, token: String, contact: ContactRequest = contactRequest()): String {
-    createUser(User(contact.email!!), restTemplate)
+    restTemplate.createUser(User(contact.email!!))
 
     val contactRequestEntity = HttpEntity(ContactRequest(contact.email), authHeaders(token))
     restTemplate.postForEntity("/contacts", contactRequestEntity, String::class.java)

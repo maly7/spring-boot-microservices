@@ -4,10 +4,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.extensions.createUser
+import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
-import io.echoseven.kryption.support.createUser
-import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.support.stubAuthUser
 import org.junit.After
 import org.junit.Rule
@@ -85,14 +85,14 @@ class UserRestTests {
     @Test
     fun `Only an authenticated user should be able to request their own user info`() {
         val token = "foo-user"
-        val originalUser = createUser(User("email@foo.com"), restTemplate)
+        val originalUser = restTemplate.createUser(User("email@foo.com"))
         stubAuthUser(wireMock, token, originalUser)
 
         val userLookupResponse: User = restTemplate.getForEntity("/user", authHeaders(token), User::class.java).body!!
 
         assertEquals(originalUser, userLookupResponse, "The retrieved user should be the same as the created user")
 
-        val secondUser = createUser(User("second.user@foo.com"), restTemplate)
+        val secondUser = restTemplate.createUser(User("second.user@foo.com"))
         val secondToken = "other-user"
         stubAuthUser(wireMock, secondToken, secondUser)
 
