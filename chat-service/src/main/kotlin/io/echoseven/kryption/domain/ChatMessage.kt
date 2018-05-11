@@ -11,8 +11,8 @@ data class ChatMessage(
     var fromId: String,
     var toId: String,
     var timestamp: ZonedDateTime,
-    var imageHeight: Int?,
-    var imageWidth: Int?,
+    var imageHeight: Int? = null,
+    var imageWidth: Int? = null,
     var imageUrl: String? = null
 ) {
     @Id
