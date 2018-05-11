@@ -13,7 +13,8 @@ data class User(
     var name: String = "Tap to update your name",
     var onlineStatus: Boolean = false,
     var profileImageUrl: String = "noPhoto",
-    @DBRef var contacts: Set<User> = emptySet()
+    @DBRef var contacts: Set<User> = emptySet(),
+    @DBRef var chats: List<Chat> = emptyList()
 ) {
     @Id
     var id: String? = null
