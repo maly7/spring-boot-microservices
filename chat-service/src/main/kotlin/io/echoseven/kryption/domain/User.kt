@@ -18,5 +18,5 @@ data class User(
     @Id
     var id: String? = null
 
-    fun asContact() = Contact(email, onlineStatus, profileImageUrl)
+    fun asContact() = Contact(id, email, onlineStatus, profileImageUrl)
 }
