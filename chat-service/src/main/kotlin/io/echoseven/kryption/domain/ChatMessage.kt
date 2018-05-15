@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank
 data class ChatMessage(
     @NotBlank var message: String? = null,
     var fromId: String? = null,
-    var toId: String? = null,
+    @NotBlank var toId: String? = null,
     var timestamp: Date? = null,
     var imageHeight: Int? = null,
     var imageWidth: Int? = null,
