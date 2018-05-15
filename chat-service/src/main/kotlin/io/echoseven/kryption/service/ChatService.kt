@@ -32,9 +32,9 @@ class ChatService(
         val fromId = chatMessage.fromId!!
 
         val existingChat = chatRepository.findByParticipantsContaining(toId)
-            .orElse(chatRepository.save(Chat(participants = listOf(fromId, toId))))
+            .orElse(chatRepository.insert(Chat(participants = listOf(fromId, toId))))
 
-        existingChat.messages += chatMessageRepository.save(chatMessage)
+        existingChat.messages += chatMessageRepository.insert(chatMessage)
 
         val savedChat = chatRepository.save(existingChat)
         addChatToParticipants(savedChat)
