@@ -76,9 +76,16 @@ class ChatRepositoryTests {
         val userTwoId: String = userTwo.id!!
 
         val firstMessage =
-            chatMessageRepository.save(ChatMessage("hello from user one", userOneId, userTwoId, Date.from(Instant.now())))
+            chatMessageRepository.save(
+                ChatMessage(
+                    "hello from user one",
+                    userOneId,
+                    userTwoId,
+                    Date.from(Instant.now())
+                )
+            )
 
-        val chat = chatRepository.save(Chat(listOf(firstMessage)))
+        val chat = chatRepository.save(Chat(listOf(firstMessage), listOf(userOneId, userTwoId)))
 
         userOne.chats = listOf(chat)
         userTwo.chats = listOf(chat)
