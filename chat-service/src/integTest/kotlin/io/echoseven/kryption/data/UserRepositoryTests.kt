@@ -3,7 +3,9 @@ package io.echoseven.kryption.data
 import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.domain.User
 import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
+import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.isIn
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -37,7 +39,7 @@ class UserRepositoryTests {
 
     @Test
     fun `create a new user`() {
-        val user = userRepository.save(User("email@foo.com"))
+        val user = userRepository.insert(User("email@foo.com"))
 
         assertNotNull(user.id, "The user id should be assigned")
 
@@ -52,7 +54,7 @@ class UserRepositoryTests {
 
     @Test
     fun `users should be stored in the users collection`() {
-        val user = userRepository.save(User("email@foo.com"))
+        val user = userRepository.insert(User("email@foo.com"))
         assertTrue(mongoTemplate.collectionExists("users"), "The users collection should exist")
 
         val users = mongoOperations.query(User::class).inCollection("users").all()
@@ -61,7 +63,7 @@ class UserRepositoryTests {
 
     @Test
     fun `update an existing user`() {
-        val originalUser = userRepository.save(User("email@foo.com"))
+        val originalUser = userRepository.insert(User("email@foo.com"))
         val newImageUrl = "https://image.com"
         val newUserName = "Test User"
         originalUser.profileImageUrl = newImageUrl
@@ -79,7 +81,7 @@ class UserRepositoryTests {
 
     @Test
     fun `delete an existing user`() {
-        val user = userRepository.save(User("user@deleteme.com"))
+        val user = userRepository.insert(User("user@deleteme.com"))
 
         assertThat("The user should exist in the db", userRepository.findAll(), hasItem(user))
 
@@ -89,8 +91,8 @@ class UserRepositoryTests {
 
     @Test
     fun `Add a user contact`() {
-        val user = userRepository.save(User("email@foo.com"))
-        val contact = userRepository.save(User("contact@foo.com"))
+        val user = userRepository.insert(User("email@foo.com"))
+        val contact = userRepository.insert(User("contact@foo.com"))
 
         user.contacts = setOf(contact)
 
