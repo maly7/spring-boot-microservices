@@ -18,13 +18,7 @@ class ChatService(
     val chatMessageRepository: ChatMessageRepository
 ) {
     fun sendMessage(chatMessage: ChatMessage): Chat {
-        if (chatMessage.toId == null) {
-            throw BadRequestException("Chats must specify a to id")
-        }
-
-        if (userService.getCurrentUser().contacts.none { it.id == chatMessage.toId }) {
-            throw BadRequestException("A User may not send contact to a user no in their contact list")
-        }
+        guardAgainstBadMessages(chatMessage)
 
         chatMessage.fromId = userService.getCurrentUserId()
         chatMessage.timestamp = Date.from(Instant.now())
@@ -39,6 +33,16 @@ class ChatService(
         val savedChat = chatRepository.save(existingChat)
         addChatToParticipants(savedChat)
         return savedChat
+    }
+
+    private fun guardAgainstBadMessages(chatMessage: ChatMessage) {
+        if (chatMessage.toId == null) {
+            throw BadRequestException("Chats must specify a to id")
+        }
+
+        if (userService.getCurrentUser().contacts.none { it.id == chatMessage.toId }) {
+            throw BadRequestException("A User may not send contact to a user no in their contact list")
+        }
     }
 
     private fun addChatToParticipants(chat: Chat) {
