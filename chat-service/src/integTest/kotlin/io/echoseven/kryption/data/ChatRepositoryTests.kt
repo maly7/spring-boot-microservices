@@ -40,7 +40,7 @@ class ChatRepositoryTests {
 
     @Test
     fun `create a new chat`() {
-        val chat = chatRepository.save(Chat())
+        val chat = chatRepository.insert(Chat())
 
         assertNotNull(chat.id, "The chat should be saved with an assigned id")
 
@@ -53,11 +53,11 @@ class ChatRepositoryTests {
 
     @Test
     fun `add messages to a chat`() {
-        val chat = chatRepository.save(Chat())
+        val chat = chatRepository.insert(Chat())
 
         val messages = listOf(
-            chatMessageRepository.save(ChatMessage("test message", "foo", "bar", Date.from(Instant.now()))),
-            chatMessageRepository.save(ChatMessage("second message", "bar", "foo", Date.from(Instant.now())))
+            chatMessageRepository.insert(ChatMessage("test message", "foo", "bar", Date.from(Instant.now()))),
+            chatMessageRepository.insert(ChatMessage("second message", "bar", "foo", Date.from(Instant.now())))
         )
         chat.messages = messages
 
@@ -69,14 +69,14 @@ class ChatRepositoryTests {
 
     @Test
     fun `add chats to users`() {
-        val userOne = userRepository.save(User("email@foo.com"))
-        val userTwo = userRepository.save(User("foo@bar.com"))
+        val userOne = userRepository.insert(User("email@foo.com"))
+        val userTwo = userRepository.insert(User("foo@bar.com"))
 
         val userOneId: String = userOne.id!!
         val userTwoId: String = userTwo.id!!
 
         val firstMessage =
-            chatMessageRepository.save(
+            chatMessageRepository.insert(
                 ChatMessage(
                     "hello from user one",
                     userOneId,
@@ -85,7 +85,7 @@ class ChatRepositoryTests {
                 )
             )
 
-        val chat = chatRepository.save(Chat(listOf(firstMessage), listOf(userOneId, userTwoId)))
+        val chat = chatRepository.insert(Chat(listOf(firstMessage), listOf(userOneId, userTwoId)))
 
         userOne.chats = listOf(chat)
         userTwo.chats = listOf(chat)
