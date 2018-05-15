@@ -22,6 +22,10 @@ class ChatService(
             throw BadRequestException("Chats must specify a to id")
         }
 
+        if (userService.getCurrentUser().contacts.none { it.id == chatMessage.toId }) {
+            throw BadRequestException("A User may not send contact to a user no in their contact list")
+        }
+
         chatMessage.fromId = userService.getCurrentUserId()
         chatMessage.timestamp = Date.from(Instant.now())
         val toId: String = chatMessage.toId!!
@@ -45,7 +49,7 @@ class ChatService(
 
     private fun addChatToUser(id: String, chat: Chat) {
         val user = userService.get(id)
-        if (!user.chats.any { it.id == chat.id }) {
+        if (user.chats.none { it.id == chat.id }) {
             user.chats += chat
             userService.save(user)
         }

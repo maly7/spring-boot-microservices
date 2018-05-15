@@ -13,4 +13,8 @@ class ChatController(val chatService: ChatService) {
 
     @PostMapping
     fun sendMessage(@Valid chatMessage: ChatMessage) = chatService.sendMessage(chatMessage)
+
+    // GET /chat/id - protect with method level security
+
+    // DELETE /chat/id - protect with method level security
 }
