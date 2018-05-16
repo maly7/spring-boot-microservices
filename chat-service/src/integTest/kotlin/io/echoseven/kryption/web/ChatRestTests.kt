@@ -185,4 +185,21 @@ class ChatRestTests {
 
         assertEquals(HttpStatus.FORBIDDEN, response.statusCode, "The response should be 403 Forbidden")
     }
+
+    @Test
+    fun `Participants should be able to delete messages`() {
+        restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!
+        val chat = restTemplate.sendChatMessage(userToken, contact.id!!, "Another message").body!!
+        val messageId = chat.messages.first().id!!
+        val otherMessageId = chat.messages.last().id!!
+
+        val response = restTemplate.deleteEntity("/chat/message/$messageId", authHeaders(userToken))
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The sender should be able to delete")
+        assertFalse(chatMessageRepository.findById(messageId).isPresent, "The message should be deleted")
+
+        val otherDeleteResponse = restTemplate.deleteEntity("/chat/message/$otherMessageId", authHeaders(contactToken))
+        assertEquals(HttpStatus.NO_CONTENT, otherDeleteResponse.statusCode, "The receiver should be able to delete")
+        assertFalse(chatMessageRepository.findById(otherMessageId).isPresent, "The other message should be deleted")
+        assertFalse(chatRepository.findById(chat.id!!).isPresent, "With no more messages the chat should be deleted")
+    }
 }
