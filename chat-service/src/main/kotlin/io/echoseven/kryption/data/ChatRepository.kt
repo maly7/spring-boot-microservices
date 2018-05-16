@@ -7,5 +7,5 @@ import java.util.Optional
 
 @Repository
 interface ChatRepository : MongoRepository<Chat, String> {
-    fun findByParticipantsContaining(participant: String): Optional<Chat>
+    fun findByParticipantsContaining(toId: String, fromId: String): Optional<Chat>
 }

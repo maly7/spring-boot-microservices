@@ -1,6 +1,5 @@
 package io.echoseven.kryption.web
 
-import io.echoseven.kryption.domain.Chat
 import io.echoseven.kryption.domain.ChatMessage
 import io.echoseven.kryption.service.ChatService
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,7 +13,7 @@ import javax.validation.Valid
 class ChatController(val chatService: ChatService) {
 
     @PostMapping
-    fun sendMessage(@Valid @RequestBody chatMessage: ChatMessage): Chat = chatService.sendMessage(chatMessage)
+    fun sendMessage(@Valid @RequestBody chatMessage: ChatMessage) = chatService.sendMessage(chatMessage)
 
     // GET /chat/id - protect with method level security
 

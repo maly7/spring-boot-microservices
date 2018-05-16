@@ -11,7 +11,9 @@ import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.sendMessage
 import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
+import org.hamcrest.Matchers.hasSize
 import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,6 +23,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
@@ -65,14 +68,35 @@ class ChatRestTests {
     }
 
     @Test
-    fun `Users should be able to send messages to contacts`() {
+    fun `Users should be able to send messages`() {
         val messageText = "Initial Message"
         val response = restTemplate.sendMessage(userToken, contact.id!!, messageText)
+        val chat = response.body!!
 
         assertEquals(HttpStatus.OK, response.statusCode, "The status code should be 200 successful")
+        assertThat("There should be only one message", chat.messages, hasSize(1))
+        val firstMessage = chat.messages.first()
+
+        assertEquals(messageText, firstMessage.message, "The message text is $messageText")
+        assertEquals(currentUser.id, firstMessage.fromId, "The from id should be from the sending user")
+        assertEquals(contact.id, firstMessage.toId, "The to id should be the contact")
+        assertNotNull(firstMessage.timestamp, "There should be a timestamp")
+
+        val reply = "Reply message"
+        val replyResponse = restTemplate.sendMessage(contactToken, currentUser.id!!, reply)
+        val replyChat = replyResponse.body!!
+
+        assertEquals(HttpStatus.OK, replyResponse.statusCode, "A user should be able to reply")
+        assertThat("There should now be two messages in the chat", replyChat.messages, hasSize(2))
+
+        val replyMessage = replyChat.messages.last()
+        assertEquals(reply, replyMessage.message, "The message text is $reply")
+        assertEquals(currentUser.id, replyMessage.toId, "The to id should be the first user")
+        assertEquals(contact.id, replyMessage.fromId, "The from id should be the contact")
+        assertNotNull(replyMessage.timestamp, "There should be a timestamp")
     }
 
     @Test
-    fun `Users should not be able to send messages to non-contacts`() {
+    fun `Users should not be able to initiate chats to non-contacts`() {
     }
 }
