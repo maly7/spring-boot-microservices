@@ -5,12 +5,15 @@ import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.data.ChatMessageRepository
 import io.echoseven.kryption.data.ChatRepository
 import io.echoseven.kryption.data.UserRepository
+import io.echoseven.kryption.domain.Chat
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.extensions.addContact
 import io.echoseven.kryption.extensions.createUser
-import io.echoseven.kryption.extensions.sendMessage
+import io.echoseven.kryption.extensions.getForEntity
+import io.echoseven.kryption.extensions.sendChatMessage
 import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
+import io.echoseven.kryption.support.authHeaders
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -71,7 +74,7 @@ class ChatRestTests {
     @Test
     fun `Users should be able to send messages`() {
         val messageText = "Initial Message"
-        val response = restTemplate.sendMessage(userToken, contact.id!!, messageText)
+        val response = restTemplate.sendChatMessage(userToken, contact.id!!, messageText)
         val chat = response.body!!
 
         assertEquals(HttpStatus.OK, response.statusCode, "The status code should be 200 successful")
@@ -84,7 +87,7 @@ class ChatRestTests {
         assertNotNull(firstMessage.timestamp, "There should be a timestamp")
 
         val reply = "Reply message"
-        val replyResponse = restTemplate.sendMessage(contactToken, currentUser.id!!, reply)
+        val replyResponse = restTemplate.sendChatMessage(contactToken, currentUser.id!!, reply)
         val replyChat = replyResponse.body!!
 
         assertEquals(HttpStatus.OK, replyResponse.statusCode, "A user should be able to reply")
@@ -99,8 +102,25 @@ class ChatRestTests {
 
     @Test
     fun `Users should not be able to initiate chats to non-contacts`() {
-        val failedResponse = restTemplate.sendMessage(userToken, "${UUID.randomUUID()}", "Doesn't matter")
-
+        val failedResponse = restTemplate.sendChatMessage(userToken, "${UUID.randomUUID()}", "Doesn't matter")
         assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "The status code should be 400 Bad Request")
+    }
+
+    @Test
+    fun `Participants should be able to retrieve chats`() {
+        val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id
+
+        val response = restTemplate.getForEntity("/chat/$chatId", authHeaders(userToken), Chat::class.java)
+
+        assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
+        assertThat("There should be a message", response.body!!.messages, hasSize(1))
+
+        val otherUserResponse = restTemplate.getForEntity("/chat/$chatId", authHeaders(contactToken), Chat::class.java)
+        assertEquals(HttpStatus.OK, otherUserResponse.statusCode, "The response should be 200 OK for the other user")
+        assertEquals(response.body!!, otherUserResponse.body!!, "The two chats should be the same")
+    }
+
+    @Test
+    fun `Non-participants should not be able to retrieve chats`() {
     }
 }
