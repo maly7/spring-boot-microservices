@@ -64,7 +64,11 @@ class ChatService(
         chatRepository.findById(chatId).orElseThrow { NotFoundException("No Chat Found with id $chatId") }
 
     @PreAuthorize("@chatAccessControlService.userInChat(#chatId)")
-    fun delete(chatId: String) = chatRepository.deleteById(chatId)
+    fun delete(chatId: String) {
+        val chat = chatRepository.findById(chatId).orElseThrow { NotFoundException("No chat found with id $chatId") }
+        chatMessageRepository.deleteAll(chat.messages)
+        chatRepository.deleteById(chatId)
+    }
 
     private fun addChatToParticipants(chat: Chat) {
         chat.participants.forEach { id ->
