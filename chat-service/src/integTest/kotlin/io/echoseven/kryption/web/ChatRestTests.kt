@@ -9,11 +9,13 @@ import io.echoseven.kryption.domain.Chat
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.extensions.addContact
 import io.echoseven.kryption.extensions.createUser
+import io.echoseven.kryption.extensions.deleteEntity
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.extensions.sendChatMessage
 import io.echoseven.kryption.extensions.stubAuthUser
 import io.echoseven.kryption.support.AUTH_SERVICE_PORT
 import io.echoseven.kryption.support.authHeaders
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -27,6 +29,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.UUID
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 
 @RunWith(SpringRunner::class)
@@ -130,5 +133,26 @@ class ChatRestTests {
         val failedResponse = restTemplate.getForEntity("/chat/$chatId", authHeaders(otherUserToken), String::class.java)
 
         assertEquals(HttpStatus.FORBIDDEN, failedResponse.statusCode, "The response should be 403 Forbidden")
+    }
+
+    @Test
+    fun `Participants should be able to delete chats`() {
+        val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id!!
+        val response = restTemplate.deleteEntity("/chat/$chatId", authHeaders(userToken))
+
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The response should be 204 No Content")
+        assertFalse(chatRepository.findById(chatId).isPresent, "The chat should be deleted")
+
+        assertThat(
+            "There should be no messages from the current user",
+            chatMessageRepository.findAllByFromId(currentUser.id!!),
+            `is`(emptyList())
+        )
+
+        assertThat(
+            "There should be no messages to the contact", chatMessageRepository.findAllByToId(contact.id!!), `is`(
+                emptyList()
+            )
+        )
     }
 }

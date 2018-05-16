@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ChatMessageRepository : MongoRepository<ChatMessage, String> {
+    fun findAllByFromId(fromId: String): List<ChatMessage>
 
-
+    fun findAllByToId(toId: String): List<ChatMessage>
 }

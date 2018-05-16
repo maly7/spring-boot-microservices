@@ -12,9 +12,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 
-fun <T> TestRestTemplate.getForEntity(url: String, headers: HttpHeaders, responseType: Class<T>): ResponseEntity<T> {
+fun <T> TestRestTemplate.getForEntity(uri: String, headers: HttpHeaders, responseType: Class<T>): ResponseEntity<T> {
     val entity = HttpEntity("", headers)
-    return this.exchange(url, HttpMethod.GET, entity, responseType)
+    return this.exchange(uri, HttpMethod.GET, entity, responseType)
+}
+
+fun TestRestTemplate.deleteEntity(uri: String, headers: HttpHeaders): ResponseEntity<Void> {
+    val entity = HttpEntity("", headers)
+    return this.exchange(uri, org.springframework.http.HttpMethod.DELETE, entity, Void::class.java)
 }
 
 fun TestRestTemplate.createUser(user: User) = this.postForEntity("/user", user, User::class.java).body!!
