@@ -37,8 +37,10 @@ import kotlin.test.assertNotNull
 class ChatRestTests {
     val userToken = "user-token"
     val contactToken = "contact-token"
+    val otherUserToken = "other-user"
     lateinit var currentUser: User
     lateinit var contact: User
+    lateinit var otherUser: User
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
@@ -65,6 +67,9 @@ class ChatRestTests {
         wireMock.stubAuthUser(contactToken, contact)
 
         restTemplate.addContact(userToken, contact)
+
+        otherUser = restTemplate.createUser(User("other@email.com"))
+        wireMock.stubAuthUser(otherUserToken, otherUser)
     }
 
     @After
@@ -126,10 +131,6 @@ class ChatRestTests {
     @Test
     fun `Non-participants should not be able to retrieve chats`() {
         val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id
-        val otherUserToken = UUID.randomUUID().toString()
-        val otherUser = restTemplate.createUser(User("other@email.com"))
-        wireMock.stubAuthUser(otherUserToken, otherUser)
-
         val failedResponse = restTemplate.getForEntity("/chat/$chatId", authHeaders(otherUserToken), String::class.java)
 
         assertEquals(HttpStatus.FORBIDDEN, failedResponse.statusCode, "The response should be 403 Forbidden")
@@ -175,5 +176,13 @@ class ChatRestTests {
                 emptyList()
             )
         )
+    }
+
+    @Test
+    fun `Non-Participants should not be able to delete other chats`() {
+        val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id
+        val response = restTemplate.deleteEntity("/chat/$chatId", authHeaders(otherUserToken))
+
+        assertEquals(HttpStatus.FORBIDDEN, response.statusCode, "The response should be 403 Forbidden")
     }
 }
