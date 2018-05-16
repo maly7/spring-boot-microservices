@@ -18,42 +18,39 @@ class ChatService(
     val chatMessageRepository: ChatMessageRepository
 ) {
     fun sendMessage(chatMessage: ChatMessage): Chat {
-        guardAgainstBadMessages(chatMessage)
+        if (chatMessage.toId == null) {
+            throw BadRequestException("Chats must specify a to id")
+        }
 
         chatMessage.fromId = userService.getCurrentUserId()
         chatMessage.timestamp = Date.from(Instant.now())
         val toId: String = chatMessage.toId!!
         val fromId = chatMessage.fromId!!
 
-        val existingChat = chatRepository.findByParticipantsContaining(toId)
-            .orElse(chatRepository.insert(Chat(participants = listOf(fromId, toId))))
+        val existingChatOpt = chatRepository.findByParticipantsContaining(toId, fromId)
+        val existingChat = if (existingChatOpt.isPresent) {
+            existingChatOpt.get()
+        } else {
+            create(fromId, toId)
+        }
 
         existingChat.messages += chatMessageRepository.insert(chatMessage)
-
-        val savedChat = chatRepository.save(existingChat)
-        addChatToParticipants(savedChat)
-        return savedChat
+        return chatRepository.save(existingChat)
     }
 
-    private fun guardAgainstBadMessages(chatMessage: ChatMessage) {
-        if (chatMessage.toId == null) {
-            throw BadRequestException("Chats must specify a to id")
-        }
-
-        if (userService.getCurrentUser().contacts.none { it.id == chatMessage.toId }) {
+    fun create(fromId: String, toId: String): Chat {
+        if (userService.getCurrentUser().contacts.none { it.id == toId }) {
             throw BadRequestException("A User may not send contact to a user no in their contact list")
         }
+
+        val chat = chatRepository.insert(Chat(participants = listOf(fromId, toId)))
+        addChatToParticipants(chat)
+        return chat
     }
 
     private fun addChatToParticipants(chat: Chat) {
         chat.participants.forEach { id ->
-            addChatToUser(id, chat)
-        }
-    }
-
-    private fun addChatToUser(id: String, chat: Chat) {
-        val user = userService.get(id)
-        if (user.chats.none { it.id == chat.id }) {
+            val user = userService.get(id)
             user.chats += chat
             userService.save(user)
         }
