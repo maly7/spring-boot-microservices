@@ -8,5 +8,7 @@ import org.springframework.stereotype.Service
 class ChatMessageService(val chatMessageRepository: ChatMessageRepository) {
 
     @PreAuthorize("@chatAccessControlService.userInMessage(#messageId)")
-    fun delete(messageId: String) = chatMessageRepository.deleteById(messageId)
+    fun delete(messageId: String) {
+        chatMessageRepository.deleteById(messageId)
+    }
 }

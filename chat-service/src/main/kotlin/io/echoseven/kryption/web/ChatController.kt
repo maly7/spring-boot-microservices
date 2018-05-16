@@ -29,7 +29,7 @@ class ChatController(val chatService: ChatService, val chatMessageService: ChatM
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteChat(@PathVariable id: String) = chatService.delete(id)
 
-    // DELETE /chat/message/id
-    @DeleteMapping("/message/{id}")
+    @DeleteMapping("/message/{messageId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMessage(@PathVariable messageId: String) = chatMessageService.delete(messageId)
 }
