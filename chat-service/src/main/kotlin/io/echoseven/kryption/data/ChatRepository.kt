@@ -8,4 +8,6 @@ import java.util.Optional
 @Repository
 interface ChatRepository : MongoRepository<Chat, String> {
     fun findByParticipantsContaining(toId: String, fromId: String): Optional<Chat>
+
+    fun findByIdAndParticipantsContaining(id: String, userId: String): Optional<Chat>
 }

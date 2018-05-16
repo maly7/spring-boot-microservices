@@ -5,6 +5,8 @@ import io.echoseven.kryption.data.ChatRepository
 import io.echoseven.kryption.domain.Chat
 import io.echoseven.kryption.domain.ChatMessage
 import io.echoseven.kryption.exception.BadRequestException
+import io.echoseven.kryption.exception.NotFoundException
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -47,6 +49,10 @@ class ChatService(
         addChatToParticipants(chat)
         return chat
     }
+
+    @PreAuthorize("@chatAccessControlService.userInChat(#chatId)")
+    fun get(chatId: String): Chat =
+        chatRepository.findById(chatId).orElseThrow { NotFoundException("No Chat Found with id $chatId") }
 
     private fun addChatToParticipants(chat: Chat) {
         chat.participants.forEach { id ->
