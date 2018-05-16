@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
+import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -98,5 +99,8 @@ class ChatRestTests {
 
     @Test
     fun `Users should not be able to initiate chats to non-contacts`() {
+        val failedResponse = restTemplate.sendMessage(userToken, "${UUID.randomUUID()}", "Doesn't matter")
+
+        assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "The status code should be 400 Bad Request")
     }
 }
