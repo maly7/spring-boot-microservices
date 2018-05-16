@@ -46,5 +46,5 @@ fun TestRestTemplate.deleteContact(authToken: String, email: String) {
 fun TestRestTemplate.sendMessage(authToken: String, toId: String, message: String): ResponseEntity<Chat> {
     val chatMessage = ChatMessage(message = message, toId = toId)
     val requestEntity = HttpEntity(chatMessage, authHeaders(authToken))
-    return this.postForEntity("/chat", requestEntity, Chat::class.java)
+    return this.postForEntity("/chat/message", requestEntity, Chat::class.java)
 }
