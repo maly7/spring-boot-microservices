@@ -18,4 +18,6 @@ data class ChatMessage(
 ) : Serializable {
     @Id
     var id: String? = null
+
+    fun isParticipant(userId: String) = userId == fromId || userId == toId
 }

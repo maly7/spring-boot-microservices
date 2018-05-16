@@ -2,6 +2,7 @@ package io.echoseven.kryption.web
 
 import io.echoseven.kryption.domain.Chat
 import io.echoseven.kryption.domain.ChatMessage
+import io.echoseven.kryption.service.ChatMessageService
 import io.echoseven.kryption.service.ChatService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,7 +17,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/chat")
-class ChatController(val chatService: ChatService) {
+class ChatController(val chatService: ChatService, val chatMessageService: ChatMessageService) {
 
     @PostMapping("/message")
     fun sendMessage(@Valid @RequestBody chatMessage: ChatMessage) = chatService.sendMessage(chatMessage)
@@ -29,4 +30,6 @@ class ChatController(val chatService: ChatService) {
     fun deleteChat(@PathVariable id: String) = chatService.delete(id)
 
     // DELETE /chat/message/id
+    @DeleteMapping("/message/{id}")
+    fun deleteMessage(@PathVariable messageId: String) = chatMessageService.delete(messageId)
 }
