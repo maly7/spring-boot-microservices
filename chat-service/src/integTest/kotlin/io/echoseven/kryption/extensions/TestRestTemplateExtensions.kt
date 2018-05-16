@@ -1,5 +1,7 @@
 package io.echoseven.kryption.extensions
 
+import io.echoseven.kryption.domain.Chat
+import io.echoseven.kryption.domain.ChatMessage
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.authHeaders
 import io.echoseven.kryption.support.generateContactRequest
@@ -22,7 +24,10 @@ fun TestRestTemplate.addContact(authToken: String, contact: User): ResponseEntit
     return this.postForEntity("/contacts", requestEntity, String::class.java)
 }
 
-fun TestRestTemplate.createUserAsContact(authToken: String, contact: ContactRequest = generateContactRequest()): String {
+fun TestRestTemplate.createUserAsContact(
+    authToken: String,
+    contact: ContactRequest = generateContactRequest()
+): String {
     this.createUser(User(contact.email!!))
 
     val requestEntity = HttpEntity(contact, authHeaders(authToken))
@@ -30,9 +35,16 @@ fun TestRestTemplate.createUserAsContact(authToken: String, contact: ContactRequ
     return contact.email!!
 }
 
-fun TestRestTemplate.getContacts(authToken: String) = this.getForEntity("/contacts", authHeaders(authToken), List::class.java)
+fun TestRestTemplate.getContacts(authToken: String) =
+    this.getForEntity("/contacts", authHeaders(authToken), List::class.java)
 
 fun TestRestTemplate.deleteContact(authToken: String, email: String) {
     val requestEntity = HttpEntity(ContactRequest(email), authHeaders(authToken))
     this.exchange("/contacts", HttpMethod.DELETE, requestEntity, Any::class.java)
+}
+
+fun TestRestTemplate.sendMessage(authToken: String, toId: String, message: String): ResponseEntity<Chat> {
+    val chatMessage = ChatMessage(message = message, toId = toId)
+    val requestEntity = HttpEntity(chatMessage, authHeaders(authToken))
+    return this.postForEntity("/chat", requestEntity, Chat::class.java)
 }
