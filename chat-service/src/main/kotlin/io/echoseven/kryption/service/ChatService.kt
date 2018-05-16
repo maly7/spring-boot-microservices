@@ -68,6 +68,8 @@ class ChatService(
         val chat = chatRepository.findById(chatId).orElseThrow { NotFoundException("No chat found with id $chatId") }
         chatMessageRepository.deleteAll(chat.messages)
         chatRepository.deleteById(chatId)
+
+        log.debug("User [{}] deleted chat [{}]", userService.getCurrentUserId(), chatId)
     }
 
     @PreAuthorize("@chatAccessControlService.userInMessage(#messageId)")
@@ -78,8 +80,10 @@ class ChatService(
             .orElseThrow { IllegalStateException("No chat found for existing message") }
 
         chatMessageRepository.deleteById(messageId)
+        log.debug("User [{}] deleted message [{}]", userService.getCurrentUserId(), messageId)
 
         if (chat.messages.size <= 1) {
+            log.debug("Chat [{}] should now be empty, deleting it", chat.id)
             chatRepository.delete(chat)
         }
     }
