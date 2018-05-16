@@ -15,7 +15,7 @@ import javax.validation.Valid
 @RequestMapping("/chat")
 class ChatController(val chatService: ChatService) {
 
-    @PostMapping
+    @PostMapping("/message")
     fun sendMessage(@Valid @RequestBody chatMessage: ChatMessage) = chatService.sendMessage(chatMessage)
 
     // GET /chat/id - protect with method level security
