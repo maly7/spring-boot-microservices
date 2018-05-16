@@ -136,9 +136,30 @@ class ChatRestTests {
     }
 
     @Test
-    fun `Participants should be able to delete chats`() {
+    fun `The creator should be able to delete chats`() {
         val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id!!
         val response = restTemplate.deleteEntity("/chat/$chatId", authHeaders(userToken))
+
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The response should be 204 No Content")
+        assertFalse(chatRepository.findById(chatId).isPresent, "The chat should be deleted")
+
+        assertThat(
+            "There should be no messages from the current user",
+            chatMessageRepository.findAllByFromId(currentUser.id!!),
+            `is`(emptyList())
+        )
+
+        assertThat(
+            "There should be no messages to the contact", chatMessageRepository.findAllByToId(contact.id!!), `is`(
+                emptyList()
+            )
+        )
+    }
+
+    @Test
+    fun `The other participant should be able to delete chats`() {
+        val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id!!
+        val response = restTemplate.deleteEntity("/chat/$chatId", authHeaders(contactToken))
 
         assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The response should be 204 No Content")
         assertFalse(chatRepository.findById(chatId).isPresent, "The chat should be deleted")
