@@ -202,4 +202,13 @@ class ChatRestTests {
         assertFalse(chatMessageRepository.findById(otherMessageId).isPresent, "The other message should be deleted")
         assertFalse(chatRepository.findById(chat.id!!).isPresent, "With no more messages the chat should be deleted")
     }
+
+    @Test
+    fun `Non-Participants should not be able to delete other messages`() {
+        val messageId =
+            restTemplate.sendChatMessage(userToken, contact.id!!, "New message").body!!.messages.first().id!!
+
+        val failedResponse = restTemplate.deleteEntity("/chat/message/$messageId", authHeaders(otherUserToken))
+        assertEquals(HttpStatus.FORBIDDEN, failedResponse.statusCode, "The delete should fail with 403 forbidden")
+    }
 }
