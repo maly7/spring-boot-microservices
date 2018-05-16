@@ -122,5 +122,13 @@ class ChatRestTests {
 
     @Test
     fun `Non-participants should not be able to retrieve chats`() {
+        val chatId = restTemplate.sendChatMessage(userToken, contact.id!!, "Some text").body!!.id
+        val otherUserToken = UUID.randomUUID().toString()
+        val otherUser = restTemplate.createUser(User("other@email.com"))
+        wireMock.stubAuthUser(otherUserToken, otherUser)
+
+        val failedResponse = restTemplate.getForEntity("/chat/$chatId", authHeaders(otherUserToken), String::class.java)
+
+        assertEquals(HttpStatus.FORBIDDEN, failedResponse.statusCode, "The response should be 403 Forbidden")
     }
 }
