@@ -1,7 +1,7 @@
 package io.echoseven.kryption.extensions
 
-import io.echoseven.kryption.domain.Chat
-import io.echoseven.kryption.domain.ChatMessage
+import io.echoseven.kryption.domain.Conversation
+import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.support.authHeaders
 import io.echoseven.kryption.support.generateContactRequest
@@ -48,8 +48,8 @@ fun TestRestTemplate.deleteContact(authToken: String, email: String) {
     this.exchange("/contacts", HttpMethod.DELETE, requestEntity, Any::class.java)
 }
 
-fun TestRestTemplate.sendChatMessage(authToken: String, toId: String, message: String): ResponseEntity<Chat> {
-    val chatMessage = ChatMessage(message = message, toId = toId)
+fun TestRestTemplate.sendConversationMessage(authToken: String, toId: String, message: String): ResponseEntity<Conversation> {
+    val chatMessage = ConversationMessage(message = message, toId = toId)
     val requestEntity = HttpEntity(chatMessage, authHeaders(authToken))
-    return this.postForEntity("/conversation/message", requestEntity, Chat::class.java)
+    return this.postForEntity("/conversation/message", requestEntity, Conversation::class.java)
 }
