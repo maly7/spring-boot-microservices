@@ -14,7 +14,7 @@ data class User(
     var onlineStatus: Boolean = false,
     var profileImageUrl: String = "noPhoto",
     @DBRef var contacts: Set<User> = emptySet(),
-    @DBRef var chats: List<Chat> = emptyList()
+    @DBRef var conversations: List<Conversation> = emptyList()
 ) {
     @Id
     var id: String? = null

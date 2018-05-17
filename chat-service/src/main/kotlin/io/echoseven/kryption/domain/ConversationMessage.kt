@@ -6,8 +6,8 @@ import java.io.Serializable
 import java.util.Date
 import javax.validation.constraints.NotBlank
 
-@Document(collection = "chats")
-data class ChatMessage(
+@Document(collection = "conversations")
+data class ConversationMessage(
     @NotBlank var message: String? = null,
     var fromId: String? = null,
     @NotBlank var toId: String? = null,

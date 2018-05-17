@@ -1,8 +1,8 @@
 package io.echoseven.kryption.data
 
 import io.echoseven.kryption.ChatIntegrationTest
-import io.echoseven.kryption.domain.Chat
-import io.echoseven.kryption.domain.ChatMessage
+import io.echoseven.kryption.domain.Conversation
+import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.domain.User
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
@@ -20,31 +20,31 @@ import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
-class ChatRepositoryTests {
+class ConversationRepositoryTests {
 
     @Autowired
-    lateinit var chatRepository: ChatRepository
+    lateinit var conversationRepository: ConversationRepository
 
     @Autowired
-    lateinit var chatMessageRepository: ChatMessageRepository
+    lateinit var conversationMessageRepository: ConversationMessageRepository
 
     @Autowired
     lateinit var userRepository: UserRepository
 
     @After
     fun cleanup() {
-        chatMessageRepository.deleteAll()
-        chatRepository.deleteAll()
+        conversationMessageRepository.deleteAll()
+        conversationRepository.deleteAll()
         userRepository.deleteAll()
     }
 
     @Test
     fun `create a new chat`() {
-        val chat = chatRepository.insert(Chat())
+        val chat = conversationRepository.insert(Conversation())
 
         assertNotNull(chat.id, "The chat should be saved with an assigned id")
 
-        val foundOptional = chatRepository.findById(chat.id!!)
+        val foundOptional = conversationRepository.findById(chat.id!!)
         assertTrue(foundOptional.isPresent, "We should be able to fetch the chat")
 
         val foundChat = foundOptional.get()
@@ -53,15 +53,15 @@ class ChatRepositoryTests {
 
     @Test
     fun `add messages to a chat`() {
-        val chat = chatRepository.insert(Chat())
+        val chat = conversationRepository.insert(Conversation())
 
         val messages = listOf(
-            chatMessageRepository.insert(ChatMessage("test message", "foo", "bar", Date.from(Instant.now()))),
-            chatMessageRepository.insert(ChatMessage("second message", "bar", "foo", Date.from(Instant.now())))
+            conversationMessageRepository.insert(ConversationMessage("test message", "foo", "bar", Date.from(Instant.now()))),
+            conversationMessageRepository.insert(ConversationMessage("second message", "bar", "foo", Date.from(Instant.now())))
         )
         chat.messages = messages
 
-        val updatedChat = chatRepository.save(chat)
+        val updatedChat = conversationRepository.save(chat)
 
         assertThat("There should be two messages", updatedChat.messages, hasSize(2))
         messages.forEach { assertThat("The message should be in the chat", chat.messages, hasItem(it)) }
@@ -76,8 +76,8 @@ class ChatRepositoryTests {
         val userTwoId: String = userTwo.id!!
 
         val firstMessage =
-            chatMessageRepository.insert(
-                ChatMessage(
+            conversationMessageRepository.insert(
+                ConversationMessage(
                     "hello from user one",
                     userOneId,
                     userTwoId,
@@ -85,19 +85,19 @@ class ChatRepositoryTests {
                 )
             )
 
-        val chat = chatRepository.insert(Chat(listOf(firstMessage), listOf(userOneId, userTwoId)))
+        val chat = conversationRepository.insert(Conversation(listOf(firstMessage), listOf(userOneId, userTwoId)))
 
-        userOne.chats = listOf(chat)
-        userTwo.chats = listOf(chat)
+        userOne.conversations = listOf(chat)
+        userTwo.conversations = listOf(chat)
 
         userRepository.saveAll(listOf(userOne, userTwo))
 
         val fetchUserOne = userRepository.findById(userOneId).orElseThrow { IllegalStateException() }
         val fetchUserTwo = userRepository.findById(userTwoId).orElseThrow { IllegalStateException() }
 
-        assertThat("The first user should have the chat", fetchUserOne.chats, hasItem(chat))
-        assertThat("The second user should have the chat", fetchUserTwo.chats, hasItem(chat))
+        assertThat("The first user should have the chat", fetchUserOne.conversations, hasItem(chat))
+        assertThat("The second user should have the chat", fetchUserTwo.conversations, hasItem(chat))
 
-        assertEquals(fetchUserOne.chats, fetchUserTwo.chats, "The user's chats should be the same")
+        assertEquals(fetchUserOne.conversations, fetchUserTwo.conversations, "The user's conversations should be the same")
     }
 }

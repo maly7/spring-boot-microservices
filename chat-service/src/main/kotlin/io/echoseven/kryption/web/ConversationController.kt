@@ -1,8 +1,8 @@
 package io.echoseven.kryption.web
 
-import io.echoseven.kryption.domain.Chat
-import io.echoseven.kryption.domain.ChatMessage
-import io.echoseven.kryption.service.ChatService
+import io.echoseven.kryption.domain.Conversation
+import io.echoseven.kryption.domain.ConversationMessage
+import io.echoseven.kryption.service.ConversationService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,19 +16,19 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/conversation")
-class ChatController(val chatService: ChatService) {
+class ConversationController(val conversationService: ConversationService) {
 
     @PostMapping("/message")
-    fun sendMessage(@Valid @RequestBody chatMessage: ChatMessage) = chatService.sendMessage(chatMessage)
+    fun sendMessage(@Valid @RequestBody conversationMessage: ConversationMessage) = conversationService.sendMessage(conversationMessage)
 
     @GetMapping("/{id}")
-    fun getChat(@PathVariable id: String): Chat = chatService.get(id)
+    fun getConversation(@PathVariable id: String): Conversation = conversationService.get(id)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteChat(@PathVariable id: String) = chatService.deleteChat(id)
+    fun deleteConversation(@PathVariable id: String) = conversationService.deleteConversation(id)
 
     @DeleteMapping("/message/{messageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteMessage(@PathVariable messageId: String) = chatService.deleteMesage(messageId)
+    fun deleteMessage(@PathVariable messageId: String) = conversationService.deleteMesage(messageId)
 }
