@@ -39,7 +39,7 @@ class ConversationService(
             log.debug("Found conversation between [{}] and [{}] with id [{}]", fromId, toId, existingConversationOpt.get().id)
             existingConversationOpt.get()
         } else {
-            log.debug("Not existing conversation found between [{}] and [{}], attempting to create one", fromId, toId)
+            log.debug("No existing conversation found between [{}] and [{}], attempting to create one", fromId, toId)
             create(fromId, toId)
         }
 
