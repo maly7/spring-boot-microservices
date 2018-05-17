@@ -4,6 +4,7 @@ import io.echoseven.kryption.domain.Conversation
 import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.service.ConversationService
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,10 +19,15 @@ import javax.validation.Valid
 @RequestMapping("/conversation")
 class ConversationController(val conversationService: ConversationService) {
 
-    @PostMapping("/message")
-    fun sendMessage(@Valid @RequestBody conversationMessage: ConversationMessage) = conversationService.sendMessage(conversationMessage)
+    @PostMapping(
+        path = ["/message"],
+        produces = [MediaType.APPLICATION_JSON_UTF8_VALUE],
+        consumes = [(MediaType.APPLICATION_JSON_UTF8_VALUE)]
+    )
+    fun sendMessage(@Valid @RequestBody conversationMessage: ConversationMessage) =
+        conversationService.sendMessage(conversationMessage)
 
-    @GetMapping("/{id}")
+    @GetMapping(path = ["/{id}"], produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
     fun getConversation(@PathVariable id: String): Conversation = conversationService.get(id)
 
     @DeleteMapping("/{id}")
