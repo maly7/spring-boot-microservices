@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/conversation")
 class ChatController(val chatService: ChatService) {
 
     @PostMapping("/message")
