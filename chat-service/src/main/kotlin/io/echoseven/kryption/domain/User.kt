@@ -13,10 +13,11 @@ data class User(
     var name: String = "Tap to update your name",
     var onlineStatus: Boolean = false,
     var profileImageUrl: String = "noPhoto",
-    @DBRef var contacts: Set<User> = emptySet()
+    @DBRef var contacts: Set<User> = emptySet(),
+    @DBRef var conversations: List<Conversation> = emptyList()
 ) {
     @Id
     var id: String? = null
 
-    fun asContact() = Contact(email, onlineStatus, profileImageUrl)
+    fun asContact() = Contact(id, email, onlineStatus, profileImageUrl)
 }

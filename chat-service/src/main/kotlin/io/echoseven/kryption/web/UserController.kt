@@ -27,7 +27,7 @@ class UserController(private val userRepository: UserRepository) {
     @PostMapping(consumes = [APPLICATION_JSON_UTF8_VALUE], produces = [APPLICATION_JSON_UTF8_VALUE])
     fun createUser(@Valid @RequestBody user: User): User {
         log.debug("Creating User [{}]", user)
-        return userRepository.save(user)
+        return userRepository.insert(user)
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

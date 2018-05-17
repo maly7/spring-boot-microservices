@@ -1,4 +1,5 @@
 ## Getting Started
+1. If running windows, make sure you install and use 64-bit java
 1. Install docker and docker-compose for your platform
 1. Copy `setup/template.gradle.properties` into the root project directory
 1. Generate RSA key to be used by JWT 

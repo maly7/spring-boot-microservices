@@ -27,7 +27,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeRequests()
             .anyRequest().authenticated()
-            .and().addFilter(JwtAuthorizationFilter(authenticationManager(), authenticationClient)).anonymous().disable()
+            .and().addFilter(JwtAuthorizationFilter(authenticationManager(), authenticationClient)).anonymous()
+            .disable()
     }
 
     override fun configure(web: WebSecurity) {
