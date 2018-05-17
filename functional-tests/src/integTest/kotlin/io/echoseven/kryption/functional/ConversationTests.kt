@@ -2,13 +2,12 @@ package io.echoseven.kryption.functional
 
 import io.echoseven.kryption.functional.support.When
 import io.echoseven.kryption.functional.support.createContactForUser
+import io.echoseven.kryption.functional.support.givenAuthHeader
 import io.echoseven.kryption.functional.support.loginNewUser
 import io.echoseven.kryption.functional.support.sendMessage
-import io.restassured.RestAssured.given
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
 import org.junit.Test
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 
 class ConversationTests {
@@ -35,15 +34,13 @@ class ConversationTests {
         val chatId = sendMessage(userToken, contactId, "Another message")
             .then().extract().path<String>("id")
 
-        given()
-            .header(HttpHeaders.AUTHORIZATION, userToken)
+        givenAuthHeader(userToken)
         .When()
             .delete("/chat/conversation/$chatId")
         .then()
             .statusCode(HttpStatus.NO_CONTENT.value())
 
-        given()
-            .header(HttpHeaders.AUTHORIZATION, userToken)
+        givenAuthHeader(userToken)
         .When()
             .get("/chat/conversation/$chatId")
         .then()
@@ -52,5 +49,13 @@ class ConversationTests {
 
     @Test
     fun `A User should be able to delete a message`() {
+        val messageId = sendMessage(userToken, contactId, "Delete Me Pls")
+            .then().extract().path<String>("messages[0].id")
+
+        givenAuthHeader(userToken)
+        .When()
+            .delete("/chat/conversation/message/$messageId")
+        .then()
+            .statusCode(HttpStatus.NO_CONTENT.value())
     }
 }
