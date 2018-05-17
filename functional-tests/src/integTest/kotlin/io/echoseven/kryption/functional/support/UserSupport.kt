@@ -1,12 +1,9 @@
 package io.echoseven.kryption.functional.support
 
-import com.beust.klaxon.Klaxon
 import io.restassured.RestAssured.given
 import io.restassured.http.Header
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-
-fun toJson(map: Map<String, String>): String = Klaxon().toJsonString(map)
 
 fun userAuthJson(email: String, password: String): String {
     val user = mapOf("email" to email, "password" to password)
@@ -33,3 +30,25 @@ fun login(email: String, password: String) =
         .post("/login")
     .then()
         .extract().path<String>("token")
+
+fun loginNewUser(email: String = email(), password: String = password()): String {
+    createUser(email, password)
+    return login(email, password)
+}
+
+fun createContactForUser(
+    authToken: String,
+    contactEmail: String = email(),
+    contactPassword: String = password()
+): String {
+    createUser(contactEmail, contactPassword)
+
+    return given()
+        .body(contactJson(contactEmail))
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+        .header(HttpHeaders.AUTHORIZATION, authToken)
+    .When()
+        .post("/chat/contacts")
+    .then()
+        .extract().path<String>("[0].id")
+}
