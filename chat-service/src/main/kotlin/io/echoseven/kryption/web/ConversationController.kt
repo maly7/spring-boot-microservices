@@ -36,5 +36,5 @@ class ConversationController(val conversationService: ConversationService) {
 
     @DeleteMapping("/message/{messageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteMessage(@PathVariable messageId: String) = conversationService.deleteMesage(messageId)
+    fun deleteMessage(@PathVariable messageId: String) = conversationService.deleteMessage(messageId)
 }

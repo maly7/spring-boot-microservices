@@ -73,7 +73,7 @@ class ConversationService(
     }
 
     @PreAuthorize("@accessControlService.userInMessage(#messageId)")
-    fun deleteMesage(messageId: String) {
+    fun deleteMessage(messageId: String) {
         val message = conversationMessageRepository.findById(messageId)
             .orElseThrow { NotFoundException("No message found for id $messageId") }
         val conversation = conversationRepository.findByMessagesContaining(message)
