@@ -15,6 +15,10 @@ fun contactJson(email: String): String {
     return toJson(contact)
 }
 
+fun givenAuthHeader(token: String) =
+    given()
+        .header(HttpHeaders.AUTHORIZATION, token)
+
 fun createUser(email: String, password: String) =
     given()
         .body(userAuthJson(email, password))
