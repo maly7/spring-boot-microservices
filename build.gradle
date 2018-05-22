@@ -5,6 +5,7 @@ buildscript {
         kotlinVersion = '1.2.41'
         springBootVersion = '2.0.1.RELEASE'
         springCloudVersion = 'Finchley.RC1'
+        gatewayVersion = '2.0.0.RC1'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -93,11 +94,11 @@ subprojects {
 
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-gateway:${gatewayVersion}"
         }
     }
 
     dependencies {
-        compile 'org.springframework.boot:spring-boot-starter-web'
         compile 'org.springframework.boot:spring-boot-starter-actuator'
 
         compile 'org.springframework.boot:spring-boot-configuration-processor'
@@ -139,6 +140,12 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 
     writeDockerfile.dependsOn assemble
+}
+
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry')]) {
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-web'
+    }
 }
 
 task run(type: Exec) {

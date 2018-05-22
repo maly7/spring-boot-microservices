@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
 
 management:
   endpoint:
@@ -30,17 +35,17 @@ eureka:
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
 
-zuul:
-  routes:
-    auth:
-      path: /auth/**
-      service-id: authentication-service
-      sensitive-headers:
-    chat:
-      path: /chat/**
-      service-id: chat-service
-      sensitive-headers:
-  ignored-services:
-    - service-registry
-    - authentication-service
-    - chat-service
+#zuul:
+#  routes:
+#    auth:
+#      path: /auth/**
+#      service-id: authentication-service
+#      sensitive-headers:
+#    chat:
+#      path: /chat/**
+#      service-id: chat-service
+#      sensitive-headers:
+#  ignored-services:
+#    - service-registry
+#    - authentication-service
+#    - chat-service
