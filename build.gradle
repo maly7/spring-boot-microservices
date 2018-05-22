@@ -142,7 +142,7 @@ configure([project(':authentication-service'), project(':chat-service'), project
     writeDockerfile.dependsOn assemble
 }
 
-configure([project(':authentication-service'), project(':chat-service'), project(':service-registry')]) {
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
     dependencies {
         compile 'org.springframework.boot:spring-boot-starter-web'
     }
