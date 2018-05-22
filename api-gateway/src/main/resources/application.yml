@@ -6,9 +6,13 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
+      routes:
+      - id: chat_route
+        uri: lb://CHAT-SERVICE
+        predicates:
+        - Path=/chat/**
+        filters:
+        - RewritePath=/chat/(?<remaining>.*), /$\{remaining}
 
 management:
   endpoint:
