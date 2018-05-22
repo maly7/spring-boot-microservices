@@ -97,7 +97,6 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.springframework.boot:spring-boot-starter-web'
         compile 'org.springframework.boot:spring-boot-starter-actuator'
 
         compile 'org.springframework.boot:spring-boot-configuration-processor'
@@ -139,6 +138,12 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 
     writeDockerfile.dependsOn assemble
+}
+
+configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-web'
+    }
 }
 
 task run(type: Exec) {
