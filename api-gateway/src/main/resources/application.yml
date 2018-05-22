@@ -13,6 +13,12 @@ spring:
         - Path=/chat/**
         filters:
         - RewritePath=/chat/(?<remaining>.*), /$\{remaining}
+      - id: auth_route
+        uri: lb://AUTHENTICATION-SERVICE
+        predicates:
+        - Path=/auth/**
+        filters:
+        - RewritePath=/auth/(?<remaining>.*), /$\{remaining}
 
 management:
   endpoint:
@@ -38,18 +44,3 @@ eureka:
     appname: api-gateway
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
-
-#zuul:
-#  routes:
-#    auth:
-#      path: /auth/**
-#      service-id: authentication-service
-#      sensitive-headers:
-#    chat:
-#      path: /chat/**
-#      service-id: chat-service
-#      sensitive-headers:
-#  ignored-services:
-#    - service-registry
-#    - authentication-service
-#    - chat-service
