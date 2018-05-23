@@ -36,8 +36,18 @@ buildscript {
 allprojects {
     group 'io.echoseven.kryption'
     version '1.0-SNAPSHOT'
-}
 
+    ext {
+        envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
+                     'MONGODB_PASSWORD', 'RABBITMQ_USER', 'RABBITMQ_PASS', 'RABBITMQ_ERLANG_COOKIE']
+
+        loadEnv = { env ->
+            envToLoad.each {
+                env.put("${it}".toString(), "${System.properties[it]}".toString())
+            }
+        }
+    }
+}
 
 subprojects {
     repositories {
@@ -146,14 +156,10 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 }
 
-def propertyPrefix = 'kryption.'
-
 task run(type: Exec) {
     dependsOn getTasksByName('writeDockerfile', true)
 
-    project.properties.findAll { it.key.startsWith(propertyPrefix) }.each {
-        environment it.key.split(propertyPrefix).last(), it.value
-    }
+    loadEnv(environment)
 
     commandLine 'docker-compose', 'up', '-d', '--build'
 }
