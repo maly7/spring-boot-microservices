@@ -32,6 +32,23 @@ services:
       - main
     volumes:
       - "mongodb-data:/data/db"
+  rabbit:
+    container_name: rabbit
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "${RABBITMQ_ERLANG_COOKIE}"
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    expose:
+      - "15672"
+      - "5672"
+    networks:
+      - main
   service-registry:
     build: ./service-registry/
     container_name: service-registry
@@ -69,6 +86,7 @@ services:
       - "8280:8280"
     depends_on:
       - mongodb
+      - rabbit
       - service-registry
     environment:
       MONGODB_USER: "${MONGODB_USER}"
