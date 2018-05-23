@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  rabbit-test:
+    container_name: rabbit-test
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    expose:
+      - "15672"
+      - "5672"
+    networks:
+      - main
+networks:
+  main:
