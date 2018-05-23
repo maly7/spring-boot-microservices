@@ -46,8 +46,8 @@ test:
       - chat-service/build/reports
       - authentication-service/build/reports
 
-chat-test:
-  stage: chat-test
+test-chat:
+  stage: test-chat
   services:
   - rabbitmq:3-management
   script:
