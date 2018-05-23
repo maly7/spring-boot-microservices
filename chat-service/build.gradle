@@ -11,8 +11,7 @@ dependencies {
 }
 
 task runMongo(type: Exec) {
-    environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
-    environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
+    loadEnv(environment)
 
     commandLine 'docker-compose', 'up', '-d', '--build'
 }
