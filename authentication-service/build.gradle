@@ -24,9 +24,7 @@ dependencies {
 }
 
 task runMysql(type: Exec) {
-    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
-    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
-    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
+    loadEnv(environment)
 
     commandLine 'docker-compose', 'up', '-d'
 

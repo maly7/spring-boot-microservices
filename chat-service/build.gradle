@@ -1,6 +1,7 @@
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
     compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-amqp'
 
     compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -10,16 +11,38 @@ dependencies {
     testRuntime 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 }
 
-task runMongo(type: Exec) {
-    environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
-    environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
+task dockerUp(type: Exec) {
+    loadEnv(environment)
 
     commandLine 'docker-compose', 'up', '-d', '--build'
 }
 
-task stopMongo(type: Exec) {
+task dockerDown(type: Exec) {
     commandLine 'docker-compose', 'down'
 }
 
+task runRabbit(type: Exec) {
+    commandLine 'docker-compose', '-f', 'rabbit-compose.yml', 'up', '-d', '--build'
+}
+
+task stopRabbit(type: Exec) {
+    commandLine 'docker-compose', '-f', 'rabbit-compose.yml', 'down'
+}
+
+task integTestNoDocker(type: Test) {
+    description = 'Run integration tests (located in src/integTest)'
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+}
+
+integTestNoDocker.configure {
+    systemProperties System.properties
+}
+
+dockerUp.mustRunAfter dockerDown
+
 writeDockerfile.exposePort 8280
-bootRun.dependsOn runMongo
+bootRun.dependsOn dockerUp
+
+integTest.dependsOn runRabbit
+integTest.finalizedBy stopRabbit
