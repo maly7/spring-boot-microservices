@@ -146,14 +146,14 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 }
 
+def propertyPrefix = 'kryption.'
+
 task run(type: Exec) {
     dependsOn getTasksByName('writeDockerfile', true)
 
-    environment 'MYSQL_USER', "${System.properties['MYSQL_USER']}"
-    environment 'MYSQL_PASSWORD', "${System.properties['MYSQL_PASSWORD']}"
-    environment 'MYSQL_ROOT_PASSWORD', "${System.properties['MYSQL_ROOT_PASSWORD']}"
-    environment 'MONGODB_USER', "${System.properties['MONGODB_USER']}"
-    environment 'MONGODB_PASSWORD', "${System.properties['MONGODB_PASSWORD']}"
+    project.properties.findAll { it.key.startsWith(propertyPrefix) }.each {
+        environment it.key.split(propertyPrefix).last(), it.value
+    }
 
     commandLine 'docker-compose', 'up', '-d', '--build'
 }
