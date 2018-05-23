@@ -7,6 +7,9 @@ spring:
   mongodb:
     embedded:
       version: 3.2.2
+  rabbitmq:
+      username: guest
+      password: guest
 logging:
   level:
     org.springframework.web: debug

@@ -15,7 +15,9 @@ spring:
       host: ${MONGODB_HOST:localhost}
       port: 27017
       uri: ${MONGODB_URL:mongodb://localhost/kryption}
-
+  rabbitmq:
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASS}
 management:
   endpoint:
     health:
