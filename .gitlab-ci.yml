@@ -52,7 +52,7 @@ test-chat:
   - name: rabbitmq:3-management
     alias: rabbit
   script:
-    - ./gradlew :chat-service:integTestNoDocker -Pspring.rabbitmq.host=rabbit
+    - ./gradlew :chat-service:integTestNoDocker -Dspring.rabbitmq.host=rabbit
   artifacts:
       when: always
       paths:
