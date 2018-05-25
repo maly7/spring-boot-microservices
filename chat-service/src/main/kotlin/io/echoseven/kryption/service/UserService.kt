@@ -5,11 +5,20 @@ import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.exception.BadRequestException
 import io.echoseven.kryption.exception.NotFoundException
 import io.echoseven.kryption.security.AuthenticationToken
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(val userRepository: UserRepository) {
+class UserService(val userRepository: UserRepository, val queueService: QueueService) {
+    private val log = LoggerFactory.getLogger(UserService::class.java)
+
+    fun create(user: User): User {
+        log.debug("Creating User [{}]", user)
+        val createdUser = userRepository.insert(user)
+        queueService.createUserQueue(createdUser.id!!)
+        return createdUser
+    }
 
     fun get(id: String): User =
         userRepository.findById(id).orElseThrow { NotFoundException("No User Found with id $id") }
@@ -21,8 +30,19 @@ class UserService(val userRepository: UserRepository) {
             BadRequestException("No user found with email $email")
         }
 
+    fun delete(id: String) {
+        log.info("Deleting User with id [{}]", id)
+        userRepository.deleteById(id)
+    }
+
+    fun deleteAll() = userRepository.deleteAll()
+
     fun getCurrentUser(): User {
-        return userRepository.findById(getCurrentUserId()).get()
+        val authId = getCurrentUserId()
+        log.debug("Fetching user data for [{}]", authId)
+        return userRepository.findById(authId).orElseThrow {
+            NotFoundException("A User could not be found for the current user, this should never happen")
+        }
     }
 
     fun getCurrentUserId() = currentAuth().id
