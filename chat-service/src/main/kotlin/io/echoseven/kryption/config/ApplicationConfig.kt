@@ -2,7 +2,7 @@ package io.echoseven.kryption.config
 
 import io.echoseven.kryption.properties.MessagingProperties
 import org.springframework.amqp.core.AmqpAdmin
-import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.core.DirectExchange
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
@@ -19,7 +19,6 @@ class ApplicationConfig {
     @Bean
     fun exchangeCreator(amqpAdmin: AmqpAdmin, messagingProperties: MessagingProperties): InitializingBean =
         InitializingBean {
-            amqpAdmin.declareExchange(FanoutExchange("user.updates"))
-            amqpAdmin.declareQueue()
+            amqpAdmin.declareExchange(DirectExchange(messagingProperties.userExchange))
         }
 }
