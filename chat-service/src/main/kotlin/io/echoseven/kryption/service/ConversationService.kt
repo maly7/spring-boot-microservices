@@ -17,6 +17,7 @@ import java.util.Date
 @Transactional
 class ConversationService(
     val userService: UserService,
+    val notificationService: NotificationService,
     val conversationRepository: ConversationRepository,
     val conversationMessageRepository: ConversationMessageRepository
 ) {
@@ -36,7 +37,12 @@ class ConversationService(
 
         val existingConversationOpt = conversationRepository.findByParticipantsContaining(toId, fromId)
         val existingConversation = if (existingConversationOpt.isPresent) {
-            log.debug("Found conversation between [{}] and [{}] with id [{}]", fromId, toId, existingConversationOpt.get().id)
+            log.debug(
+                "Found conversation between [{}] and [{}] with id [{}]",
+                fromId,
+                toId,
+                existingConversationOpt.get().id
+            )
             existingConversationOpt.get()
         } else {
             log.debug("No existing conversation found between [{}] and [{}], attempting to create one", fromId, toId)
@@ -44,12 +50,18 @@ class ConversationService(
         }
 
         existingConversation.messages += conversationMessageRepository.insert(conversationMessage)
-        return conversationRepository.save(existingConversation)
+        val conversation = conversationRepository.save(existingConversation)
+        notificationService.notifyUser(userService.get(conversation.participants.first()))
+        return conversation
     }
 
     fun create(fromId: String, toId: String): Conversation {
         if (userService.getCurrentUser().contacts.none { it.id == toId }) {
-            log.warn("User [{}] attempted to start conversation with [{}], but they are not in their contacts", fromId, toId)
+            log.warn(
+                "User [{}] attempted to start conversation with [{}], but they are not in their contacts",
+                fromId,
+                toId
+            )
             throw BadRequestException("A User may not send contact to a user no in their contact list")
         }
 
@@ -65,7 +77,8 @@ class ConversationService(
 
     @PreAuthorize("@accessControlService.userInConversation(#conversationId)")
     fun deleteConversation(conversationId: String) {
-        val conversation = conversationRepository.findById(conversationId).orElseThrow { NotFoundException("No conversation found with id $conversationId") }
+        val conversation = conversationRepository.findById(conversationId)
+            .orElseThrow { NotFoundException("No conversation found with id $conversationId") }
         conversationMessageRepository.deleteAll(conversation.messages)
         conversationRepository.deleteById(conversationId)
 
