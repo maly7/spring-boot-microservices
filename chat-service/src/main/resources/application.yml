@@ -18,6 +18,7 @@ spring:
   rabbitmq:
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASS}
+    host: ${RABBITMQ_HOST:localhost}
 management:
   endpoint:
     health:
