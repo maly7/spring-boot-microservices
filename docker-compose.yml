@@ -93,6 +93,9 @@ services:
       MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
       MONGODB_HOST: mongodb
       MONGODB_URL: mongodb://mongodb/kryption
+      RABBITMQ_USER: "${RABBITMQ_USER}"
+      RABBITMQ_PASS: "${RABBITMQ_PASS}"
+      RABBITMQ_HOST: rabbit
       EUREKA_URL: http://service-registry:8761/eureka/
     networks:
       - main
