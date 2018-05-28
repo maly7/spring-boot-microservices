@@ -19,6 +19,9 @@ spring:
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASS}
     host: ${RABBITMQ_HOST:localhost}
+    template:
+      retry:
+        enabled: true
 management:
   endpoint:
     health:
