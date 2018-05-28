@@ -17,34 +17,35 @@ class NotificationService(
 ) {
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
 
-    fun notifyNewMessage(user: User, conversationId: String, message: ConversationMessage) {
-        log.debug("Notifying user [{}] of new message in conversation [{}]", user.id, conversationId)
-        notifyUser(user, Notification(NotificationStatus.NEW_MESSAGE, conversationId, message.id, message))
+    fun notifyNewMessage(userId: String, conversationId: String, message: ConversationMessage) {
+        log.debug("Notifying user [{}] of new message in conversation [{}]", userId
+            , conversationId)
+        notifyUser(userId, Notification(NotificationStatus.NEW_MESSAGE, conversationId, message.id, message))
     }
 
-    fun notifyMessageDelete(users: List<User>, conversationId: String, messageId: String) {
+    fun notifyMessageDelete(users: List<String>, conversationId: String, messageId: String) {
         val notification = Notification(NotificationStatus.DELETE_MESSAGE, conversationId, messageId, "")
-        users.forEach { user ->
+        users.forEach { id ->
             log.debug(
                 "Notifying user [{}] of message [{}] deletion in conversation [{}]",
-                user.id,
+                id,
                 conversationId,
                 messageId
             )
-            notifyUser(user, notification)
+            notifyUser(id, notification)
         }
     }
 
-    fun notifyConversationDelete(users: List<User>, conversationId: String) {
+    fun notifyConversationDelete(users: List<String>, conversationId: String) {
         val notification = Notification(NotificationStatus.DELETE_CONVERSATION, conversationId, "", "")
-        users.forEach { user ->
-            log.debug("Notifying user [{}] of conversation [{}] deletion", user.id, conversationId)
-            notifyUser(user, notification)
+        users.forEach { id ->
+            log.debug("Notifying user [{}] of conversation [{}] deletion", id, conversationId)
+            notifyUser(id, notification)
         }
     }
 
-    private fun notifyUser(user: User, notification: Notification) {
-        rabbitTemplate.convertAndSend(userExchange.name, queueService.userQueueId(user), notification)
+    private fun notifyUser(userId: String, notification: Notification) {
+        rabbitTemplate.convertAndSend(userExchange.name, queueService.userQueueId(userId), notification)
     }
 
     fun notifyUser(user: User) {
