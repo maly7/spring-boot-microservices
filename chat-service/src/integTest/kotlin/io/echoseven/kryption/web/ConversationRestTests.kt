@@ -1,30 +1,17 @@
 package io.echoseven.kryption.web
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule
 import io.echoseven.kryption.ChatIntegrationTest
-import io.echoseven.kryption.data.ConversationMessageRepository
-import io.echoseven.kryption.data.ConversationRepository
-import io.echoseven.kryption.data.UserRepository
 import io.echoseven.kryption.domain.Conversation
-import io.echoseven.kryption.domain.User
-import io.echoseven.kryption.extensions.addContact
-import io.echoseven.kryption.extensions.createUser
 import io.echoseven.kryption.extensions.deleteEntity
 import io.echoseven.kryption.extensions.getForEntity
 import io.echoseven.kryption.extensions.sendConversationMessage
-import io.echoseven.kryption.extensions.stubAuthUser
-import io.echoseven.kryption.support.AUTH_SERVICE_PORT
+import io.echoseven.kryption.support.ConversationSupport
 import io.echoseven.kryption.support.authHeaders
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
-import org.junit.After
 import org.junit.Assert.assertThat
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.UUID
@@ -34,50 +21,7 @@ import kotlin.test.assertNotNull
 
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
-class ConversationRestTests {
-    val userToken = "user-token"
-    val contactToken = "contact-token"
-    val otherUserToken = "other-user"
-    lateinit var currentUser: User
-    lateinit var contact: User
-    lateinit var otherUser: User
-
-    @Autowired
-    lateinit var restTemplate: TestRestTemplate
-
-    @Autowired
-    lateinit var userRepository: UserRepository
-
-    @Autowired
-    lateinit var conversationRepository: ConversationRepository
-
-    @Autowired
-    lateinit var conversationMessageRepository: ConversationMessageRepository
-
-    @Rule
-    @JvmField
-    final val wireMock: WireMockRule = WireMockRule(AUTH_SERVICE_PORT)
-
-    @Before
-    fun setup() {
-        currentUser = restTemplate.createUser(User("user@email.com"))
-        wireMock.stubAuthUser(userToken, currentUser)
-
-        contact = restTemplate.createUser(User("contact@email.com"))
-        wireMock.stubAuthUser(contactToken, contact)
-
-        restTemplate.addContact(userToken, contact)
-
-        otherUser = restTemplate.createUser(User("other@email.com"))
-        wireMock.stubAuthUser(otherUserToken, otherUser)
-    }
-
-    @After
-    fun cleanup() {
-        conversationMessageRepository.deleteAll()
-        conversationRepository.deleteAll()
-        userRepository.deleteAll()
-    }
+class ConversationRestTests : ConversationSupport() {
 
     @Test
     fun `Users should be able to send messages`() {
@@ -118,12 +62,17 @@ class ConversationRestTests {
     fun `Participants should be able to retrieve conversations`() {
         val conversationId = restTemplate.sendConversationMessage(userToken, contact.id!!, "Some text").body!!.id
 
-        val response = restTemplate.getForEntity("/conversation/$conversationId", authHeaders(userToken), Conversation::class.java)
+        val response =
+            restTemplate.getForEntity("/conversation/$conversationId", authHeaders(userToken), Conversation::class.java)
 
         assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
         assertThat("There should be a message", response.body!!.messages, hasSize(1))
 
-        val otherUserResponse = restTemplate.getForEntity("/conversation/$conversationId", authHeaders(contactToken), Conversation::class.java)
+        val otherUserResponse = restTemplate.getForEntity(
+            "/conversation/$conversationId",
+            authHeaders(contactToken),
+            Conversation::class.java
+        )
         assertEquals(HttpStatus.OK, otherUserResponse.statusCode, "The response should be 200 OK for the other user")
         assertEquals(response.body!!, otherUserResponse.body!!, "The two conversations should be the same")
     }
@@ -131,7 +80,8 @@ class ConversationRestTests {
     @Test
     fun `Non-participants should not be able to retrieve conversations`() {
         val conversationId = restTemplate.sendConversationMessage(userToken, contact.id!!, "Some text").body!!.id
-        val failedResponse = restTemplate.getForEntity("/conversation/$conversationId", authHeaders(otherUserToken), String::class.java)
+        val failedResponse =
+            restTemplate.getForEntity("/conversation/$conversationId", authHeaders(otherUserToken), String::class.java)
 
         assertEquals(HttpStatus.FORBIDDEN, failedResponse.statusCode, "The response should be 403 Forbidden")
     }
@@ -151,7 +101,9 @@ class ConversationRestTests {
         )
 
         assertThat(
-            "There should be no messages to the contact", conversationMessageRepository.findAllByToId(contact.id!!), `is`(
+            "There should be no messages to the contact",
+            conversationMessageRepository.findAllByToId(contact.id!!),
+            `is`(
                 emptyList()
             )
         )
@@ -172,7 +124,9 @@ class ConversationRestTests {
         )
 
         assertThat(
-            "There should be no messages to the contact", conversationMessageRepository.findAllByToId(contact.id!!), `is`(
+            "There should be no messages to the contact",
+            conversationMessageRepository.findAllByToId(contact.id!!),
+            `is`(
                 emptyList()
             )
         )
@@ -197,10 +151,17 @@ class ConversationRestTests {
         assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The sender should be able to delete")
         assertFalse(conversationMessageRepository.findById(messageId).isPresent, "The message should be deleted")
 
-        val otherDeleteResponse = restTemplate.deleteEntity("/conversation/message/$otherMessageId", authHeaders(contactToken))
+        val otherDeleteResponse =
+            restTemplate.deleteEntity("/conversation/message/$otherMessageId", authHeaders(contactToken))
         assertEquals(HttpStatus.NO_CONTENT, otherDeleteResponse.statusCode, "The receiver should be able to delete")
-        assertFalse(conversationMessageRepository.findById(otherMessageId).isPresent, "The other message should be deleted")
-        assertFalse(conversationRepository.findById(conversation.id!!).isPresent, "With no more messages the conversation should be deleted")
+        assertFalse(
+            conversationMessageRepository.findById(otherMessageId).isPresent,
+            "The other message should be deleted"
+        )
+        assertFalse(
+            conversationRepository.findById(conversation.id!!).isPresent,
+            "With no more messages the conversation should be deleted"
+        )
     }
 
     @Test
