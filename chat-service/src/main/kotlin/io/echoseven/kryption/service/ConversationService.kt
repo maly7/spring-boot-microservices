@@ -36,22 +36,30 @@ class ConversationService(
         log.debug("Attempting to send message from [{}] to [{}]", fromId, toId)
 
         val existingConversationOpt = conversationRepository.findByParticipantsContaining(toId, fromId)
-        val existingConversation = if (existingConversationOpt.isPresent) {
-            log.debug(
-                "Found conversation between [{}] and [{}] with id [{}]",
-                fromId,
-                toId,
-                existingConversationOpt.get().id
-            )
-            existingConversationOpt.get()
-        } else {
-            log.debug("No existing conversation found between [{}] and [{}], attempting to create one", fromId, toId)
-            create(fromId, toId)
-        }
+        val existingConversation =
+            if (existingConversationOpt.isPresent) {
+                log.debug(
+                    "Found conversation between [{}] and [{}] with id [{}]",
+                    fromId,
+                    toId,
+                    existingConversationOpt.get().id
+                )
+                existingConversationOpt.get()
+            } else {
+                log.debug(
+                    "No existing conversation found between [{}] and [{}], attempting to create one",
+                    fromId,
+                    toId
+                )
+                create(fromId, toId)
+            }
 
-        existingConversation.messages += conversationMessageRepository.insert(conversationMessage)
+        val insertedMessage = conversationMessageRepository.insert(conversationMessage)
+        existingConversation.messages += insertedMessage
+
         val conversation = conversationRepository.save(existingConversation)
-        notificationService.notifyUser(userService.get(conversation.participants.first()))
+        notificationService.notifyNewMessage(toId, conversation.id!!, insertedMessage)
+
         return conversation
     }
 
@@ -79,8 +87,10 @@ class ConversationService(
     fun deleteConversation(conversationId: String) {
         val conversation = conversationRepository.findById(conversationId)
             .orElseThrow { NotFoundException("No conversation found with id $conversationId") }
+
         conversationMessageRepository.deleteAll(conversation.messages)
         conversationRepository.deleteById(conversationId)
+        notificationService.notifyConversationDelete(conversation.participants, conversationId)
 
         log.debug("User [{}] deleted conversation [{}]", userService.getCurrentUserId(), conversationId)
     }
@@ -97,7 +107,11 @@ class ConversationService(
 
         if (conversation.messages.size <= 1) {
             log.debug("Conversation [{}] should now be empty, deleting it", conversation.id)
+
             conversationRepository.delete(conversation)
+            notificationService.notifyConversationDelete(conversation.participants, conversation.id!!)
+        } else {
+            notificationService.notifyMessageDelete(conversation.participants, conversation.id!!, messageId)
         }
     }
 
