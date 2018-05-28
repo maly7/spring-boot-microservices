@@ -1,7 +1,6 @@
 package io.echoseven.kryption.service
 
 import io.echoseven.kryption.domain.ConversationMessage
-import io.echoseven.kryption.domain.User
 import io.echoseven.kryption.notify.Notification
 import io.echoseven.kryption.notify.NotificationStatus
 import org.slf4j.LoggerFactory
@@ -46,9 +45,5 @@ class NotificationService(
 
     private fun notifyUser(userId: String, notification: Notification) {
         rabbitTemplate.convertAndSend(userExchange.name, queueService.userQueueId(userId), notification)
-    }
-
-    fun notifyUser(user: User) {
-        rabbitTemplate.convertAndSend(userExchange.name, queueService.userQueueId(user), "Test Message")
     }
 }
