@@ -3,6 +3,7 @@ package io.echoseven.kryption.service
 import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.notify.Notification
 import io.echoseven.kryption.notify.NotificationStatus
+import io.echoseven.kryption.util.userQueueId
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Exchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -50,6 +51,6 @@ class NotificationService(
     }
 
     private fun notifyUser(userId: String, notification: Notification) {
-        rabbitTemplate.convertAndSend(userExchange.name, queueService.userQueueId(userId), notification)
+        rabbitTemplate.convertAndSend(userExchange.name, userQueueId(userId), notification)
     }
 }
