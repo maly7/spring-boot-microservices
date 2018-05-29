@@ -1,5 +1,6 @@
 package io.echoseven.kryption.service
 
+import io.echoseven.kryption.domain.Conversation
 import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.notify.Notification
 import io.echoseven.kryption.notify.NotificationStatus
@@ -25,8 +26,9 @@ class NotificationService(
         notifyUser(userId, Notification(NotificationStatus.NEW_MESSAGE, conversationId, message.id, message))
     }
 
-    fun notifyNewConversation() {
-        //TODO: implement me
+    fun notifyNewConversation(userId: String, conversation: Conversation) {
+        log.debug("Notifying user [{}] of new conversation [{}]", userId, conversation.id)
+        notifyUser(userId, Notification(NotificationStatus.NEW_CONVERSATION, conversation.id, "", conversation))
     }
 
     fun notifyMessageDelete(users: List<String>, conversationId: String, messageId: String) {
@@ -51,6 +53,10 @@ class NotificationService(
     }
 
     private fun notifyUser(userId: String, notification: Notification) {
+        if (userId.isEmpty() || notification.conversationId.isNullOrEmpty()) {
+            log.error("Attempted to notify a blank user id or conversation id, this should never happen. Aborting Notification sending.")
+            return
+        }
         rabbitTemplate.convertAndSend(userExchange.name, userQueueId(userId), notification)
     }
 }
