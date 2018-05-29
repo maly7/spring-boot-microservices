@@ -8,7 +8,6 @@ variables:
 stages:
   - build
   - test
-  - test-chat
   - publish
 
 before_script:
@@ -38,25 +37,16 @@ build:
 
 test:
   stage: test
+  services:
+    - name: rabbitmq:3-management
+      alias: rabbit
   script:
-    - ./gradlew check -x :functional-tests:check -x chat-service:integTest
+    - ./gradlew check -x :functional-tests:check -Dspring.rabbitmq.host=rabbit
   artifacts:
     when: always
     paths:
       - chat-service/build/reports
       - authentication-service/build/reports
-
-test-chat:
-  stage: test-chat
-  services:
-  - name: rabbitmq:3-management
-    alias: rabbit
-  script:
-    - ./gradlew :chat-service:integTestNoDocker -Dspring.rabbitmq.host=rabbit
-  artifacts:
-      when: always
-      paths:
-        - chat-service/build/reports
 
 publish:
   stage: publish

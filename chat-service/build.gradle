@@ -29,20 +29,13 @@ task stopRabbit(type: Exec) {
     commandLine 'docker-compose', '-f', 'rabbit-compose.yml', 'down'
 }
 
-task integTestNoDocker(type: Test) {
-    description = 'Run integration tests (located in src/integTest)'
-    testClassesDirs = sourceSets.integTest.output.classesDirs
-    classpath = sourceSets.integTest.runtimeClasspath
-}
-
-integTestNoDocker.configure {
-    systemProperties System.properties
-}
-
 dockerUp.mustRunAfter dockerDown
 
 writeDockerfile.exposePort 8280
 bootRun.dependsOn dockerUp
 
-integTest.dependsOn runRabbit
-integTest.finalizedBy stopRabbit
+if (Boolean.valueOf(System.properties['start.rabbit'].toString())) {
+    integTest.dependsOn runRabbit
+    integTest.finalizedBy stopRabbit
+}
+
