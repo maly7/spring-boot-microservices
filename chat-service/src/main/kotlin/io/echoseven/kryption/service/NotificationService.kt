@@ -17,9 +17,15 @@ class NotificationService(
     private val log = LoggerFactory.getLogger(NotificationService::class.java)
 
     fun notifyNewMessage(userId: String, conversationId: String, message: ConversationMessage) {
-        log.debug("Notifying user [{}] of new message in conversation [{}]", userId
-            , conversationId)
+        log.debug(
+            "Notifying user [{}] of new message in conversation [{}]", userId
+            , conversationId
+        )
         notifyUser(userId, Notification(NotificationStatus.NEW_MESSAGE, conversationId, message.id, message))
+    }
+
+    fun notifyNewConversation() {
+        //TODO: implement me
     }
 
     fun notifyMessageDelete(users: List<String>, conversationId: String, messageId: String) {
