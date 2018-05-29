@@ -27,11 +27,16 @@ class ConversationNotificationTests : ConversationSupport() {
         val firstMessage = conversation.messages.first()
 
         val conversationNotification = rabbitTemplate.receive(userQueueId(contact), queueTimeout)
-
         assertNewConversationNotification(conversationNotification, conversation, currentUser.id!!, contact.id!!)
 
         val messageNotification = rabbitTemplate.receive(userQueueId(contact), queueTimeout)
         assertNewMessageNotification(messageNotification, conversation, firstMessage)
+
+        val updatedConversation = restTemplate.sendConversationMessage(contactToken, currentUser.id!!, "Reply").body!!
+        val replyMessage = updatedConversation.messages.last()
+
+        val replyNotification = rabbitTemplate.receive(userQueueId(currentUser), queueTimeout)
+        assertNewMessageNotification(replyNotification, updatedConversation, replyMessage)
     }
 
     @Test
