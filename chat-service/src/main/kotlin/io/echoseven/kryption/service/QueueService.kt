@@ -1,6 +1,6 @@
 package io.echoseven.kryption.service
 
-import io.echoseven.kryption.domain.User
+import io.echoseven.kryption.util.userQueueId
 import org.springframework.amqp.core.AmqpAdmin
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.Exchange
@@ -24,11 +24,4 @@ class QueueService(val amqpAdmin: AmqpAdmin, val userExchange: Exchange) {
             )
         )
     }
-
-    fun userQueueId(user: User): String {
-        val id = user.id ?: throw IllegalArgumentException("A User cannot have a null id")
-        return userQueueId(id)
-    }
-
-    fun userQueueId(id: String) = "user.$id"
 }
