@@ -67,6 +67,7 @@ class ConversationService(
             .orElseThrow { IllegalStateException("No conversation found for existing message") }
 
         conversationMessageRepository.deleteById(messageId)
+        notificationService.notifyMessageDelete(conversation.participants, conversation.id!!, messageId)
         log.debug("User [{}] deleted message [{}]", userService.getCurrentUserId(), messageId)
 
         if (conversation.messages.size <= 1) {
@@ -74,8 +75,6 @@ class ConversationService(
 
             conversationRepository.delete(conversation)
             notificationService.notifyConversationDelete(conversation.participants, conversation.id!!)
-        } else {
-            notificationService.notifyMessageDelete(conversation.participants, conversation.id!!, messageId)
         }
     }
 

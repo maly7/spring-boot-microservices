@@ -60,3 +60,6 @@ fun TestRestTemplate.sendConversationMessage(
 
 fun TestRestTemplate.deleteConversation(authToken: String, conversation: Conversation) =
     this.deleteEntity("/conversation/${conversation.id}", authHeaders(authToken))
+
+fun TestRestTemplate.deleteMessage(authToken: String, message: ConversationMessage) =
+    this.deleteEntity("/conversation/message/${message.id}", authHeaders(authToken))
