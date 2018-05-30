@@ -48,8 +48,18 @@ fun TestRestTemplate.deleteContact(authToken: String, email: String) {
     this.exchange("/contacts", HttpMethod.DELETE, requestEntity, Any::class.java)
 }
 
-fun TestRestTemplate.sendConversationMessage(authToken: String, toId: String, message: String): ResponseEntity<Conversation> {
+fun TestRestTemplate.sendConversationMessage(
+    authToken: String,
+    toId: String,
+    message: String
+): ResponseEntity<Conversation> {
     val chatMessage = ConversationMessage(message = message, toId = toId)
     val requestEntity = HttpEntity(chatMessage, authHeaders(authToken))
     return this.postForEntity("/conversation/message", requestEntity, Conversation::class.java)
 }
+
+fun TestRestTemplate.deleteConversation(authToken: String, conversation: Conversation) =
+    this.deleteEntity("/conversation/${conversation.id}", authHeaders(authToken))
+
+fun TestRestTemplate.deleteMessage(authToken: String, message: ConversationMessage) =
+    this.deleteEntity("/conversation/message/${message.id}", authHeaders(authToken))

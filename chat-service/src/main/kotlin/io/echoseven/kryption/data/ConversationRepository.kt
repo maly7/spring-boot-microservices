@@ -1,7 +1,7 @@
 package io.echoseven.kryption.data
 
-import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.domain.Conversation
+import io.echoseven.kryption.domain.ConversationMessage
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import java.util.Optional

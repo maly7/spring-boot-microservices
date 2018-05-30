@@ -18,6 +18,10 @@ spring:
   rabbitmq:
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASS}
+    host: ${RABBITMQ_HOST:localhost}
+    template:
+      retry:
+        enabled: true
 management:
   endpoint:
     health:
@@ -30,3 +34,7 @@ management:
 logging:
   level:
     io.echoseven.kryption: debug
+
+chat:
+  messaging:
+    user-exchange: user.updates
