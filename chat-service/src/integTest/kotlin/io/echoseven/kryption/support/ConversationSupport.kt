@@ -40,7 +40,7 @@ open class ConversationSupport {
     val wireMock: WireMockRule = WireMockRule(AUTH_SERVICE_PORT)
 
     @Before
-    fun setup() {
+    open fun setup() {
         currentUser = restTemplate.createUser(User("user@email.com"))
         wireMock.stubAuthUser(userToken, currentUser)
 
