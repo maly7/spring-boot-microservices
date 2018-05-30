@@ -3,8 +3,8 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 buildscript {
     ext {
         kotlinVersion = '1.2.41'
-        springBootVersion = '2.0.1.RELEASE'
-        springCloudVersion = 'Finchley.RC1'
+        springBootVersion = '2.0.2.RELEASE'
+        springCloudVersion = 'Finchley.RC2'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
