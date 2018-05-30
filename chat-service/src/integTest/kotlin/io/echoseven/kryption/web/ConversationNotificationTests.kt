@@ -73,6 +73,21 @@ class ConversationNotificationTests : ConversationSupport() {
 
     @Test
     fun `Both participants should receive a conversation deletion notification upon deleting the last message of a conversation`() {
+        val conversation = participateInConversation()
+        val message = conversation.messages.last()
+        restTemplate.deleteMessage(contactToken, message)
+
+        val senderNotification = rabbitTemplate.receive(userQueueId(currentUser), queueTimeout)
+        assertDeleteMessageNotification(senderNotification, conversation, message)
+
+        val recipientNotification = rabbitTemplate.receive(userQueueId(contact), queueTimeout)
+        assertDeleteMessageNotification(recipientNotification, conversation, message)
+
+        val senderConversationNotification = rabbitTemplate.receive(userQueueId(currentUser), queueTimeout)
+        assertDeleteConversationNotification(senderConversationNotification, conversation)
+
+        val recipientConversationNotification = rabbitTemplate.receive(userQueueId(contact), queueTimeout)
+        assertDeleteConversationNotification(recipientConversationNotification, conversation)
     }
 
     @Test
