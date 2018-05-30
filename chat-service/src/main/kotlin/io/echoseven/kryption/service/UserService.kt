@@ -10,14 +10,12 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(val userRepository: UserRepository, val queueService: QueueService) {
+class UserService(val userRepository: UserRepository) {
     private val log = LoggerFactory.getLogger(UserService::class.java)
 
     fun create(user: User): User {
         log.debug("Creating User [{}]", user)
-        val createdUser = userRepository.insert(user)
-        queueService.createUserQueue(createdUser.id!!)
-        return createdUser
+        return userRepository.insert(user)
     }
 
     fun get(id: String): User =
