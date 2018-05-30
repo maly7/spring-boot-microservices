@@ -94,3 +94,32 @@ fun assertDeleteConversationNotification(message: Message, conversation: Convers
     assertTrue(notification.messageId.isNullOrEmpty(), "There should be no associated message id")
     assertTrue(content.isEmpty(), "There should be no content")
 }
+
+fun assertDeleteMessageNotification(
+    message: Message,
+    conversation: Conversation,
+    conversationMessage: ConversationMessage
+) {
+    assertNotNull(message, "A delete message notification should be sent")
+
+    val messageBody = String(message.body)
+    val notification = klaxon.parse<Notification>(messageBody)!!
+    val content = klaxon.parseJsonObject(StringReader(messageBody))["content"] as String
+
+    assertEquals(
+        NotificationStatus.DELETE_MESSAGE,
+        notification.status,
+        "The notification should be for a deleted message"
+    )
+    assertEquals(
+        conversation.id,
+        notification.conversationId,
+        "The notification should be for conversation ${conversation.id}"
+    )
+    assertEquals(
+        conversationMessage.id,
+        notification.messageId,
+        "The notification should be for the message $conversationMessage"
+    )
+    assertTrue(content.isEmpty(), "There should be no content")
+}
