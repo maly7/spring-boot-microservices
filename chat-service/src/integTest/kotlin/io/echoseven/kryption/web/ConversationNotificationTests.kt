@@ -1,8 +1,11 @@
 package io.echoseven.kryption.web
 
 import io.echoseven.kryption.ChatIntegrationTest
+import io.echoseven.kryption.extensions.deleteConversation
+import io.echoseven.kryption.extensions.receive
 import io.echoseven.kryption.extensions.sendConversationMessage
 import io.echoseven.kryption.support.ConversationSupport
+import io.echoseven.kryption.support.assertDeleteConversationNotification
 import io.echoseven.kryption.support.assertNewConversationNotification
 import io.echoseven.kryption.support.assertNewMessageNotification
 import io.echoseven.kryption.util.userQueueId
@@ -41,6 +44,18 @@ class ConversationNotificationTests : ConversationSupport() {
 
     @Test
     fun `Both participants should receive a notification on conversation deletion`() {
+        val conversation = restTemplate.sendConversationMessage(userToken, contact.id!!, "test").body!!
+
+        rabbitTemplate.receive(userQueueId(contact), queueTimeout, 2)
+        rabbitTemplate.receive(userQueueId(currentUser), queueTimeout, 1)
+
+        restTemplate.deleteConversation(userToken, conversation)
+
+        val senderNotification = rabbitTemplate.receive(userQueueId(currentUser), queueTimeout)
+        assertDeleteConversationNotification(senderNotification, conversation)
+
+        val recipientNotification = rabbitTemplate.receive(userQueueId(contact), queueTimeout)
+        assertDeleteConversationNotification(recipientNotification, conversation)
     }
 
     @Test
