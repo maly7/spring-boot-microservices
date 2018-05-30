@@ -7,3 +7,10 @@ fun RabbitTemplate.receive(queue: String, timeout: Long, count: Int) {
         this.receive(queue, timeout)
     }
 }
+
+fun RabbitTemplate.emptyQueue(queue: String) {
+    var message = this.receive(queue)
+    while (message != null) {
+        message = this.receive(queue)
+    }
+}

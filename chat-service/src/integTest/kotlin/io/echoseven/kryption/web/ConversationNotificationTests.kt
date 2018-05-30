@@ -4,6 +4,7 @@ import io.echoseven.kryption.ChatIntegrationTest
 import io.echoseven.kryption.domain.Conversation
 import io.echoseven.kryption.extensions.deleteConversation
 import io.echoseven.kryption.extensions.deleteMessage
+import io.echoseven.kryption.extensions.emptyQueue
 import io.echoseven.kryption.extensions.receive
 import io.echoseven.kryption.extensions.sendConversationMessage
 import io.echoseven.kryption.support.ConversationSupport
@@ -12,11 +13,13 @@ import io.echoseven.kryption.support.assertDeleteMessageNotification
 import io.echoseven.kryption.support.assertNewConversationNotification
 import io.echoseven.kryption.support.assertNewMessageNotification
 import io.echoseven.kryption.util.userQueueId
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit4.SpringRunner
+import kotlin.test.assertNull
 
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
@@ -25,6 +28,15 @@ class ConversationNotificationTests : ConversationSupport() {
 
     @Autowired
     lateinit var rabbitTemplate: RabbitTemplate
+
+    @Before
+    override fun setup() {
+        super.setup()
+
+        userRepository.findAll().forEach {
+            rabbitTemplate.emptyQueue(userQueueId(it))
+        }
+    }
 
     @Test
     fun `The recipient should receive a notification on new messages`() {
@@ -92,6 +104,10 @@ class ConversationNotificationTests : ConversationSupport() {
 
     @Test
     fun `Non-participants should not receive notifications`() {
+        participateInConversation()
+
+        val message = rabbitTemplate.receive(userQueueId(otherUser), queueTimeout)
+        assertNull(message, "Non-participants should not receive notifications")
     }
 
     private fun participateInConversation(): Conversation {
