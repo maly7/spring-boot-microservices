@@ -11,10 +11,7 @@ data class ConversationMessage(
     @NotBlank var message: String? = null,
     var fromId: String? = null,
     @NotBlank var toId: String? = null,
-    var timestamp: Date? = null,
-    var imageHeight: Int? = null,
-    var imageWidth: Int? = null,
-    var imageUrl: String? = null
+    var timestamp: Date? = null
 ) : Serializable {
     @Id
     var id: String? = null
