@@ -9,9 +9,11 @@ services:
       RABBITMQ_DEFAULT_VHOST: "/"
     ports:
       - "15672:15672"
+      - "15674:15674"
       - "5672:5672"
     expose:
       - "15672"
+      - "15674"
       - "5672"
     networks:
       - main
