@@ -3,7 +3,7 @@ version: '3'
 services:
   rabbit-test:
     container_name: rabbit-test
-    image: "rabbitmq:3-management"
+    build: ../rabbitmq/
     hostname: "rabbit1"
     environment:
       RABBITMQ_DEFAULT_VHOST: "/"
