@@ -17,7 +17,7 @@ services:
       - "mongodb-data:/data/db"
   rabbit-boot:
     container_name: rabbit-boot
-    image: "rabbitmq:3-management"
+    build: ../rabbitmq/
     hostname: "rabbit1"
     environment:
       RABBITMQ_ERLANG_COOKIE: "${RABBITMQ_ERLANG_COOKIE}"
@@ -26,9 +26,11 @@ services:
       RABBITMQ_DEFAULT_VHOST: "/"
     ports:
       - "15672:15672"
+      - "15674:15674"
       - "5672:5672"
     expose:
       - "15672"
+      - "15674"
       - "5672"
     networks:
       - main

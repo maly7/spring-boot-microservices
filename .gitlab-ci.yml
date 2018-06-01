@@ -59,9 +59,11 @@ publish:
     - docker build -t $REGISTRY/authentication-service:latest authentication-service/
     - docker build -t $REGISTRY/service-registry:latest service-registry/
     - docker build -t $REGISTRY/api-gateway:latest api-gateway/
+    - docker build -t $REGISTRY/rabbitmq:3-web-stomp rabbitmq/
     - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
     - docker push $REGISTRY/service-registry
     - docker push $REGISTRY/api-gateway
+    - docker push $REGISTRY/rabbitmq
   only:
     - master
