@@ -1,11 +1,11 @@
 package io.echoseven.kryption.web
 
 import io.echoseven.kryption.AuthIntegrationTest
+import io.echoseven.kryption.assertAllowedAccess
+import io.echoseven.kryption.assertDeniedAccess
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.web.resource.TokenResource
 import io.echoseven.kryption.web.resource.UserAccountResource
-import io.echoseven.kryption.web.resource.amqp.ALLOW_ACCESS
-import io.echoseven.kryption.web.resource.amqp.DENY_ACCESS
 import io.echoseven.kryption.web.resource.amqp.TopicCheck
 import io.echoseven.kryption.web.resource.amqp.VirtualHostCheck
 import org.junit.Before
@@ -13,10 +13,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import java.util.UUID
-import kotlin.test.assertEquals
 
 @AuthIntegrationTest
 @RunWith(SpringRunner::class)
@@ -42,8 +40,25 @@ class AmqpAuthenticationTests {
         check.username = email
         val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
 
-        assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
-        assertEquals(ALLOW_ACCESS, response.body, "The user should be allowed access")
+        response.assertAllowedAccess()
+    }
+
+    @Test
+    fun `Vhost requests should deny when the username is empty`() {
+        val check = VirtualHostCheck()
+        check.vhost = "/"
+        val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
+
+        response.assertDeniedAccess()
+    }
+
+    @Test
+    fun `Vhost requests should deny when the vhost is empty`() {
+        val check = VirtualHostCheck()
+        check.username = email
+        val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
+
+        response.assertDeniedAccess()
     }
 
     @Test
@@ -51,9 +66,8 @@ class AmqpAuthenticationTests {
         val check = TopicCheck("user.*")
         check.vhost = "/"
         check.username = "${UUID.randomUUID()}"
-
         val response = restTemplate.postForEntity("/amqp/topic", check, String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
-        assertEquals(DENY_ACCESS, response.body, "The user should be denies access")
+
+        response.assertDeniedAccess()
     }
 }
