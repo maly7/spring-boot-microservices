@@ -1,10 +1,9 @@
 package io.echoseven.kryption.web
 
 import io.echoseven.kryption.AuthIntegrationTest
-import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.support.UserAccountCleanup
 import io.echoseven.kryption.web.resource.UserAccountResource
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,21 +18,13 @@ import kotlin.test.assertTrue
 
 @AuthIntegrationTest
 @RunWith(SpringRunner::class)
-class UserAccountRestTests {
+class UserAccountRestTests : UserAccountCleanup() {
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    lateinit var userAccountRepository: UserAccountRepository
-
-    @Autowired
     lateinit var passwordEncoder: PasswordEncoder
-
-    @After
-    fun cleanup() {
-        userAccountRepository.deleteAll()
-    }
 
     @Test
     fun `A POST to the user endpoint should create a new User Account`() {

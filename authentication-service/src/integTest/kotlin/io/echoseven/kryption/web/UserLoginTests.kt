@@ -2,12 +2,11 @@ package io.echoseven.kryption.web
 
 import com.beust.klaxon.Klaxon
 import io.echoseven.kryption.AuthIntegrationTest
-import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.support.UserAccountCleanup
 import io.echoseven.kryption.tokens.TokenIssuer
 import io.echoseven.kryption.web.resource.TokenResource
 import io.echoseven.kryption.web.resource.UserAccountResource
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,10 +23,7 @@ import kotlin.test.assertTrue
 
 @AuthIntegrationTest
 @RunWith(SpringRunner::class)
-class UserLoginTests {
-
-    @Autowired
-    lateinit var userAccountRepository: UserAccountRepository
+class UserLoginTests : UserAccountCleanup() {
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
@@ -41,11 +37,6 @@ class UserLoginTests {
     @Before
     fun setup() {
         restTemplate.postForEntity("/user", UserAccount(userEmail, userPassword), String::class.java)
-    }
-
-    @After
-    fun cleanup() {
-        userAccountRepository.deleteAll()
     }
 
     @Test
