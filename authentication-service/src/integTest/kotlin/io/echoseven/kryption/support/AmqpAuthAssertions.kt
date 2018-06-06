@@ -1,4 +1,4 @@
-package io.echoseven.kryption
+package io.echoseven.kryption.support
 
 import io.echoseven.kryption.web.resource.amqp.ALLOW_ACCESS
 import io.echoseven.kryption.web.resource.amqp.DENY_ACCESS
