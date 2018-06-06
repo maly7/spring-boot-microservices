@@ -10,6 +10,7 @@ import io.echoseven.kryption.web.resource.amqp.TopicCheck
 import io.echoseven.kryption.web.resource.amqp.VirtualHostCheck
 import io.jsonwebtoken.MalformedJwtException
 import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod.GET
 import org.springframework.web.bind.annotation.RequestMethod.POST
@@ -49,13 +50,18 @@ class AmqpAuthenticationController(
     }
 
     @RequestMapping(path = ["/vhost"], method = [GET, POST])
-    fun vhost(check: VirtualHostCheck): String {
+    fun vhost(@RequestBody check: VirtualHostCheck): String {
+        if (check.username.isEmpty() || check.vhost.isEmpty()) {
+            log.warn("Denying access to vhost [{}] for empty username or vhost field", check)
+            return DENY_ACCESS
+        }
+
         log.debug("Allowing access to vhost [{}] request", check)
         return ALLOW_ACCESS
     }
 
     @RequestMapping(path = ["/resource"], method = [GET, POST])
-    fun resource(check: ResourceCheck): String {
+    fun resource(@RequestBody check: ResourceCheck): String {
         log.debug("Checking access to resource [{}]", check)
 
         if (!supportedResources.contains(check.resource)) {
@@ -79,7 +85,7 @@ class AmqpAuthenticationController(
     }
 
     @RequestMapping(path = ["/topic"], method = [GET, POST])
-    fun topic(check: TopicCheck): String {
+    fun topic(@RequestBody check: TopicCheck): String {
         log.warn("Denying topic access for [{}], this is unsupported", check)
         return DENY_ACCESS
     }
