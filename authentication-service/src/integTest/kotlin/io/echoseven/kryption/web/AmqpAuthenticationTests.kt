@@ -6,6 +6,7 @@ import io.echoseven.kryption.support.UserAccountCleanup
 import io.echoseven.kryption.support.assertAllowedAccess
 import io.echoseven.kryption.support.assertDeniedAccess
 import io.echoseven.kryption.web.resource.TokenResource
+import io.echoseven.kryption.web.resource.amqp.ResourceCheck
 import io.echoseven.kryption.web.resource.amqp.TopicCheck
 import io.echoseven.kryption.web.resource.amqp.VirtualHostCheck
 import org.junit.Before
@@ -71,6 +72,39 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
         check.username = email
         val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
 
+        response.assertDeniedAccess()
+    }
+
+    @Test
+    fun `Resource requests should allow valid requests`() {
+        val userId = userAccountRepository.findByEmail(email).get().id
+        val check = ResourceCheck("queue", "user.$userId", "read")
+        check.username = email
+        check.vhost = "/"
+
+        val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
+        response.assertAllowedAccess()
+    }
+
+    @Test
+    fun `Resource requests should deny unsupported resource types`() {
+        val userId = userAccountRepository.findByEmail(email).get().id
+        val check = ResourceCheck("exchange", "user.$userId", "read")
+        check.username = email
+        check.vhost = "/"
+
+        val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
+        response.assertDeniedAccess()
+    }
+
+    @Test
+    fun `Resource requests should deny requests to other user queues`() {
+        val userId = userAccountRepository.save(UserAccount("other@email.com", "${UUID.randomUUID()}")).id
+        val check = ResourceCheck("queue", "user.$userId", "read")
+        check.username = email
+        check.vhost = "/"
+
+        val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
         response.assertDeniedAccess()
     }
 
