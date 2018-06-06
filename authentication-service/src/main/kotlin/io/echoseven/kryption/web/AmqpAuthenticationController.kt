@@ -3,6 +3,8 @@ package io.echoseven.kryption.web
 import io.echoseven.kryption.domain.UserAccount
 import io.echoseven.kryption.service.AuthenticationService
 import io.echoseven.kryption.service.UserAccountService
+import io.echoseven.kryption.web.resource.amqp.ALLOW_ACCESS
+import io.echoseven.kryption.web.resource.amqp.DENY_ACCESS
 import io.echoseven.kryption.web.resource.amqp.ResourceCheck
 import io.echoseven.kryption.web.resource.amqp.TopicCheck
 import io.echoseven.kryption.web.resource.amqp.VirtualHostCheck
@@ -23,8 +25,6 @@ class AmqpAuthenticationController(
 ) {
     private val log = LoggerFactory.getLogger(AmqpAuthenticationController::class.java)
 
-    private val allowAccess = "allow"
-    private val denyAccess = "deny"
     private val supportedResources = listOf("queue")
 
     @RequestMapping(path = ["/user"], method = [GET, POST])
@@ -36,22 +36,22 @@ class AmqpAuthenticationController(
         try {
             userOpt = authenticationService.authenticate(password)
         } catch (e: MalformedJwtException) {
-            return denyAccess
+            return DENY_ACCESS
         }
 
         if (userOpt.isPresent && userOpt.get().email == username) {
             log.debug("Successfully authenticated [{}], granting amqp access", username)
-            return allowAccess
+            return ALLOW_ACCESS
         }
 
         log.warn("No user found for [{}], denying access", username)
-        return denyAccess
+        return DENY_ACCESS
     }
 
     @RequestMapping(path = ["/vhost"], method = [GET, POST])
     fun vhost(check: VirtualHostCheck): String {
-        log.warn("Allowing access to vhost [{}] request", check)
-        return allowAccess
+        log.debug("Allowing access to vhost [{}] request", check)
+        return ALLOW_ACCESS
     }
 
     @RequestMapping(path = ["/resource"], method = [GET, POST])
@@ -64,23 +64,23 @@ class AmqpAuthenticationController(
                 check,
                 supportedResources
             )
-            return denyAccess
+            return DENY_ACCESS
         }
 
         val userOpt = userAccountService.getByEmail(check.username)
 
         if (userOpt.isPresent && check.name.contains(userOpt.get().id.toString(), true)) {
             log.debug("Granting access to resource [{}]", check)
-            return allowAccess
+            return ALLOW_ACCESS
         }
 
         log.warn("Denying resource access for [{}], either user could not be found or it wasn't their queue", check)
-        return denyAccess
+        return DENY_ACCESS
     }
 
     @RequestMapping(path = ["/topic"], method = [GET, POST])
     fun topic(check: TopicCheck): String {
         log.warn("Denying topic access for [{}], this is unsupported", check)
-        return denyAccess
+        return DENY_ACCESS
     }
 }
