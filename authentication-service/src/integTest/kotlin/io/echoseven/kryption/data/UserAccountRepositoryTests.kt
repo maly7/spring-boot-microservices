@@ -2,9 +2,9 @@ package io.echoseven.kryption.data
 
 import io.echoseven.kryption.AuthIntegrationTest
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.support.UserAccountCleanup
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit4.SpringRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -13,10 +13,7 @@ import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
 @AuthIntegrationTest
-class UserAccountRepositoryTests {
-
-    @Autowired
-    lateinit var userAccountRepository: UserAccountRepository
+class UserAccountRepositoryTests : UserAccountCleanup() {
 
     @Test
     fun `new user account creation`() {
@@ -51,6 +48,9 @@ class UserAccountRepositoryTests {
 
         userAccountRepository.deleteById(originalAccount.id!!)
 
-        assertFalse(userAccountRepository.findById(originalAccount.id!!).isPresent, "The user account should be deleted")
+        assertFalse(
+            userAccountRepository.findById(originalAccount.id!!).isPresent,
+            "The user account should be deleted"
+        )
     }
 }

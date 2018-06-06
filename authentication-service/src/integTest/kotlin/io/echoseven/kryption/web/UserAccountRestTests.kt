@@ -1,10 +1,9 @@
 package io.echoseven.kryption.web
 
 import io.echoseven.kryption.AuthIntegrationTest
-import io.echoseven.kryption.data.UserAccountRepository
 import io.echoseven.kryption.domain.UserAccount
+import io.echoseven.kryption.support.UserAccountCleanup
 import io.echoseven.kryption.web.resource.UserAccountResource
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,23 +16,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-@RunWith(SpringRunner::class)
 @AuthIntegrationTest
-class UserAccountRestTests {
+@RunWith(SpringRunner::class)
+class UserAccountRestTests : UserAccountCleanup() {
 
     @Autowired
     lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    lateinit var userAccountRepository: UserAccountRepository
-
-    @Autowired
     lateinit var passwordEncoder: PasswordEncoder
-
-    @After
-    fun cleanup() {
-        userAccountRepository.deleteAll()
-    }
 
     @Test
     fun `A POST to the user endpoint should create a new User Account`() {
@@ -58,7 +49,11 @@ class UserAccountRestTests {
 
         val sameEmailUser = UserAccount("email@foo.com", "different password")
         val failedResponse = restTemplate.postForEntity("/user", sameEmailUser, String::class.java)
-        assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "We should not be able to create the same user twice")
+        assertEquals(
+            HttpStatus.BAD_REQUEST,
+            failedResponse.statusCode,
+            "We should not be able to create the same user twice"
+        )
     }
 
     @Test
@@ -71,7 +66,14 @@ class UserAccountRestTests {
         val body = Optional.ofNullable(response.body)
         val repositoryUser = userAccountRepository.findById(body.get().id).get()
 
-        assertNotEquals(userToCreate.password, repositoryUser.password, "The stored password should not match the input password")
-        assertTrue(passwordEncoder.matches(userToCreate.password, repositoryUser.password), "The password should match the encoded version")
+        assertNotEquals(
+            userToCreate.password,
+            repositoryUser.password,
+            "The stored password should not match the input password"
+        )
+        assertTrue(
+            passwordEncoder.matches(userToCreate.password, repositoryUser.password),
+            "The password should match the encoded version"
+        )
     }
 }
