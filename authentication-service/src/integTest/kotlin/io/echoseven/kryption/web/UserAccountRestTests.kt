@@ -17,8 +17,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-@RunWith(SpringRunner::class)
 @AuthIntegrationTest
+@RunWith(SpringRunner::class)
 class UserAccountRestTests {
 
     @Autowired
@@ -58,7 +58,11 @@ class UserAccountRestTests {
 
         val sameEmailUser = UserAccount("email@foo.com", "different password")
         val failedResponse = restTemplate.postForEntity("/user", sameEmailUser, String::class.java)
-        assertEquals(HttpStatus.BAD_REQUEST, failedResponse.statusCode, "We should not be able to create the same user twice")
+        assertEquals(
+            HttpStatus.BAD_REQUEST,
+            failedResponse.statusCode,
+            "We should not be able to create the same user twice"
+        )
     }
 
     @Test
@@ -71,7 +75,14 @@ class UserAccountRestTests {
         val body = Optional.ofNullable(response.body)
         val repositoryUser = userAccountRepository.findById(body.get().id).get()
 
-        assertNotEquals(userToCreate.password, repositoryUser.password, "The stored password should not match the input password")
-        assertTrue(passwordEncoder.matches(userToCreate.password, repositoryUser.password), "The password should match the encoded version")
+        assertNotEquals(
+            userToCreate.password,
+            repositoryUser.password,
+            "The stored password should not match the input password"
+        )
+        assertTrue(
+            passwordEncoder.matches(userToCreate.password, repositoryUser.password),
+            "The password should match the encoded version"
+        )
     }
 }
