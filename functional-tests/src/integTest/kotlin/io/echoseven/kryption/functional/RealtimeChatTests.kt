@@ -1,8 +1,11 @@
 package io.echoseven.kryption.functional
 
 import org.junit.Test
+import org.springframework.web.socket.messaging.WebSocketStompClient
 
 class RealtimeChatTests {
+    // check out: http://rafaelhz.github.io/testing-websockets/
+    lateinit var websocketClient: WebSocketStompClient
 
     @Test
     fun `A User should be able to subscribe to their queue`() {
