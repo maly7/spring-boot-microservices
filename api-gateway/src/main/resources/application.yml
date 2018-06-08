@@ -19,6 +19,10 @@ spring:
         - Path=/auth/**
         filters:
         - RewritePath=/auth/(?<remaining>.*), /$\{remaining}
+      - id: realtime_route
+        uri: ws://rabbit:15674/ws
+        predicates:
+        - Path=/realtime/chat/**
 
 management:
   endpoint:
