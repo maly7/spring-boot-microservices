@@ -49,9 +49,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
 
     @Test
     fun `Vhost requests should allow non-blank usernames and vhosts`() {
-        val check = VirtualHostCheck()
-        check.vhost = "/"
-        check.username = email
+        val check = VirtualHostCheck(email, "/")
         val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
 
         response.assertAllowedAccess()
@@ -59,8 +57,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
 
     @Test
     fun `Vhost requests should deny when the username is empty`() {
-        val check = VirtualHostCheck()
-        check.vhost = "/"
+        val check = VirtualHostCheck("", "/")
         val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
 
         response.assertDeniedAccess()
@@ -68,8 +65,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
 
     @Test
     fun `Vhost requests should deny when the vhost is empty`() {
-        val check = VirtualHostCheck()
-        check.username = email
+        val check = VirtualHostCheck(email, "")
         val response = restTemplate.postForEntity("/amqp/vhost", check, String::class.java)
 
         response.assertDeniedAccess()
@@ -78,9 +74,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
     @Test
     fun `Resource requests should allow valid requests`() {
         val userId = userAccountRepository.findByEmail(email).get().id
-        val check = ResourceCheck("queue", "user.$userId", "read")
-        check.username = email
-        check.vhost = "/"
+        val check = ResourceCheck("queue", "user.$userId", "read", email, "/")
 
         val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
         response.assertAllowedAccess()
@@ -89,9 +83,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
     @Test
     fun `Resource requests should deny unsupported resource types`() {
         val userId = userAccountRepository.findByEmail(email).get().id
-        val check = ResourceCheck("exchange", "user.$userId", "read")
-        check.username = email
-        check.vhost = "/"
+        val check = ResourceCheck("exchange", "user.$userId", "read", email, "/")
 
         val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
         response.assertDeniedAccess()
@@ -100,9 +92,7 @@ class AmqpAuthenticationTests : UserAccountCleanup() {
     @Test
     fun `Resource requests should deny requests to other user queues`() {
         val userId = userAccountRepository.save(UserAccount("other@email.com", "${UUID.randomUUID()}")).id
-        val check = ResourceCheck("queue", "user.$userId", "read")
-        check.username = email
-        check.vhost = "/"
+        val check = ResourceCheck("queue", "user.$userId", "read", email, "/")
 
         val response = restTemplate.postForEntity("/amqp/resource", check, String::class.java)
         response.assertDeniedAccess()

@@ -23,7 +23,7 @@ class AmqpAuthenticationController(val amqpAuthenticationService: AmqpAuthentica
         amqpAuthenticationService.user(username, password)
 
     @PostMapping(path = ["/vhost"], consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun vhost(@RequestParam check: VirtualHostCheck) =
+    fun vhost(@RequestBody check: VirtualHostCheck) =
         amqpAuthenticationService.vhost(check)
 
     @PostMapping(path = ["/vhost"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
