@@ -1,6 +1,7 @@
 package io.echoseven.kryption.web.resource.amqp
 
-class ResourceCheck(var resource: String, var name: String, var permission: String) : Check() {
+class ResourceCheck(var resource: String, var name: String, var permission: String, username: String, vhost: String) :
+    Check(username, vhost) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

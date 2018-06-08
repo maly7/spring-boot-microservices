@@ -10,10 +10,10 @@ import io.echoseven.kryption.web.resource.amqp.TopicCheck
 import io.echoseven.kryption.web.resource.amqp.VirtualHostCheck
 import io.jsonwebtoken.MalformedJwtException
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod.GET
-import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.Optional
@@ -28,7 +28,7 @@ class AmqpAuthenticationController(
 
     private val supportedResources = listOf("queue")
 
-    @RequestMapping(path = ["/user"], method = [GET, POST])
+    @PostMapping(path = ["/user"], consumes = [MediaType.ALL_VALUE])
     fun user(@RequestParam username: String, @RequestParam password: String): String {
         log.debug("Attempting to authenticate user [{}] to amqp", username)
 
@@ -49,19 +49,27 @@ class AmqpAuthenticationController(
         return DENY_ACCESS
     }
 
-    @RequestMapping(path = ["/vhost"], method = [GET, POST])
-    fun vhost(@RequestBody check: VirtualHostCheck): String {
-        if (check.username.isEmpty() || check.vhost.isEmpty()) {
-            log.warn("Denying access to vhost [{}] for empty username or vhost field", check)
-            return DENY_ACCESS
-        }
+    @PostMapping(path = ["/vhost"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun vhost(@RequestParam check: VirtualHostCheck) = authVhost(check)
 
-        log.debug("Allowing access to vhost [{}] request", check)
-        return ALLOW_ACCESS
+    @PostMapping(path = ["/vhost"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
+    fun vhost(@RequestParam username: String, @RequestParam vhost: String) =
+        authVhost(VirtualHostCheck(username, vhost))
+
+    @PostMapping(path = ["/resource"], consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun resource(@RequestBody check: ResourceCheck) = authResource(check)
+
+    @PostMapping(path = ["/resource"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
+    fun resource(@RequestParam resource: String, @RequestParam name: String, @RequestParam permission: String, @RequestParam username: String, @RequestParam vhost: String) =
+        authResource(ResourceCheck(resource, name, permission, username, vhost))
+
+    @PostMapping(path = ["/topic"], consumes = [MediaType.ALL_VALUE])
+    fun topic(@RequestBody check: TopicCheck): String {
+        log.warn("Denying topic access for [{}], this is unsupported", check)
+        return DENY_ACCESS
     }
 
-    @RequestMapping(path = ["/resource"], method = [GET, POST])
-    fun resource(@RequestBody check: ResourceCheck): String {
+    private fun authResource(check: ResourceCheck): String {
         log.debug("Checking access to resource [{}]", check)
 
         if (!supportedResources.contains(check.resource)) {
@@ -84,9 +92,13 @@ class AmqpAuthenticationController(
         return DENY_ACCESS
     }
 
-    @RequestMapping(path = ["/topic"], method = [GET, POST])
-    fun topic(@RequestBody check: TopicCheck): String {
-        log.warn("Denying topic access for [{}], this is unsupported", check)
-        return DENY_ACCESS
+    private fun authVhost(check: VirtualHostCheck): String {
+        if (check.username.isEmpty() || check.vhost.isEmpty()) {
+            log.warn("Denying access to vhost [{}] for empty username or vhost field", check)
+            return DENY_ACCESS
+        }
+
+        log.debug("Allowing access to vhost [{}] request", check)
+        return ALLOW_ACCESS
     }
 }
