@@ -1,3 +1,4 @@
 dependencies {
     integTestCompile 'io.rest-assured:rest-assured:3.0.7'
+    integTestCompile 'org.springframework.boot:spring-boot-starter-websocket'
 }
