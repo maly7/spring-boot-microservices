@@ -36,6 +36,7 @@ management:
 logging:
   level:
     io.echoseven.kryption: debug
+    org.apache.coyote.http11.Http11InputBuffer: debug
   file: /data/logs/gateway.log
 
 eureka:
