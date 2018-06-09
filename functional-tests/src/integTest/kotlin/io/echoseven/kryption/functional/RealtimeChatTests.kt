@@ -49,15 +49,7 @@ class RealtimeChatTests {
 
         assertTrue(session.isConnected, "The user session should be connected")
 
-        for (i in 1..5) {
-            sendMessage(userToken, contactId, "Test Message $i")
-        }
-
-        for (i in 1..5) {
-            sendMessage(contactToken, userId, "Reply Message $i")
-        }
-
-        Thread.sleep(5000)
+        sendAndReplyMessages()
 
         assertTrue(adapter.messages.isNotEmpty())
     }
@@ -69,7 +61,16 @@ class RealtimeChatTests {
         val session = stompClient.connect(stompHeaders, adapter)
 
         session.subscribe(stompHeaders, adapter)
+        sendAndReplyMessages()
 
+        assertTrue(adapter.messages.isEmpty())
+    }
+
+    @Test
+    fun `A User should receive updates to conversations via their queue`() {
+    }
+
+    private fun sendAndReplyMessages() {
         for (i in 1..5) {
             sendMessage(userToken, contactId, "Test Message $i")
         }
@@ -79,11 +80,5 @@ class RealtimeChatTests {
         }
 
         Thread.sleep(5000)
-
-        assertTrue(adapter.messages.isEmpty())
-    }
-
-    @Test
-    fun `A User should receive updates to conversations via their queue`() {
     }
 }
