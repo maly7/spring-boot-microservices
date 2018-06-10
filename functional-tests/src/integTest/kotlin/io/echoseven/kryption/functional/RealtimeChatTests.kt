@@ -88,6 +88,7 @@ class RealtimeChatTests {
         val contactSession = stompClient.connect(contactHeaders, contactAdapter)
         contactSession.subscribe(contactHeaders, contactAdapter)
 
+
         sendAndReplyMessages(userToken, contactToken, userId, contactId)
 
         var userMessages = userAdapter.messages as List<LinkedHashMap<*, *>>
