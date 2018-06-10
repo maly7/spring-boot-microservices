@@ -4,17 +4,26 @@ import io.echoseven.kryption.functional.support.TestingStompSessionHandlerAdapte
 import io.echoseven.kryption.functional.support.buildStompHeaders
 import io.echoseven.kryption.functional.support.connect
 import io.echoseven.kryption.functional.support.createContactForUser
+import io.echoseven.kryption.functional.support.deleteConversationThenWait
+import io.echoseven.kryption.functional.support.deleteMessageThenWait
 import io.echoseven.kryption.functional.support.email
+import io.echoseven.kryption.functional.support.extensions.containsDeleteConversation
+import io.echoseven.kryption.functional.support.extensions.containsDeleteMessage
+import io.echoseven.kryption.functional.support.extensions.containsNewConversation
+import io.echoseven.kryption.functional.support.extensions.containsNewMessage
+import io.echoseven.kryption.functional.support.extensions.findNewConversation
+import io.echoseven.kryption.functional.support.extensions.findNewMessage
 import io.echoseven.kryption.functional.support.getUserId
 import io.echoseven.kryption.functional.support.login
 import io.echoseven.kryption.functional.support.loginNewUser
 import io.echoseven.kryption.functional.support.password
-import io.echoseven.kryption.functional.support.sendMessage
+import io.echoseven.kryption.functional.support.sendAndReplyMessages
 import org.junit.Before
 import org.junit.Test
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.messaging.WebSocketStompClient
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class RealtimeChatTests {
@@ -49,9 +58,9 @@ class RealtimeChatTests {
 
         assertTrue(session.isConnected, "The user session should be connected")
 
-        sendAndReplyMessages()
+        sendAndReplyMessages(userToken, contactToken, userId, contactId)
 
-        assertTrue(adapter.messages.isNotEmpty())
+        assertTrue(adapter.messages.isNotEmpty(), "The user has received messages")
     }
 
     @Test
@@ -61,24 +70,63 @@ class RealtimeChatTests {
         val session = stompClient.connect(stompHeaders, adapter)
 
         session.subscribe(stompHeaders, adapter)
-        sendAndReplyMessages()
+        sendAndReplyMessages(userToken, contactToken, userId, contactId)
 
-        assertTrue(adapter.messages.isEmpty())
+        assertTrue(adapter.messages.isEmpty(), "The user is unable to receive messages")
     }
 
     @Test
-    fun `A User should receive updates to conversations via their queue`() {
-    }
+    @Suppress("UNCHECKED_CAST")
+    fun `Users should receive updates to conversations via their queue`() {
+        val userHeaders = buildStompHeaders(username, userToken, userId)
+        val userAdapter = TestingStompSessionHandlerAdapter()
+        val userSession = stompClient.connect(userHeaders, userAdapter)
+        userSession.subscribe(userHeaders, userAdapter)
 
-    private fun sendAndReplyMessages() {
-        for (i in 1..5) {
-            sendMessage(userToken, contactId, "Test Message $i")
-        }
+        val contactHeaders = buildStompHeaders(contact, contactToken, contactId)
+        val contactAdapter = TestingStompSessionHandlerAdapter()
+        val contactSession = stompClient.connect(contactHeaders, contactAdapter)
+        contactSession.subscribe(contactHeaders, contactAdapter)
 
-        for (i in 1..5) {
-            sendMessage(contactToken, userId, "Reply Message $i")
-        }
+        sendAndReplyMessages(userToken, contactToken, userId, contactId)
 
-        Thread.sleep(5000)
+        var userMessages = userAdapter.messages as List<LinkedHashMap<*, *>>
+        var contactMessages = contactAdapter.messages as List<LinkedHashMap<*, *>>
+
+        assertTrue(userMessages.isNotEmpty(), "The user should receive messages")
+        assertTrue(contactMessages.isNotEmpty(), "The contact should receive messages")
+
+        assertTrue(userMessages.containsNewMessage(), "The user should receive new message notifications")
+        assertTrue(contactMessages.containsNewMessage(), "The contact should receive new messages notifications")
+
+        assertFalse(
+            userMessages.containsNewConversation(),
+            "The user initiating the conversation should not have a new conversation message"
+        )
+        assertTrue(
+            contactMessages.containsNewConversation(),
+            "The contact receiving the new conversation should have a new conversation notification"
+        )
+
+        val messageId = userMessages.findNewMessage()!!["messageId"].toString()
+        val conversationId = contactMessages.findNewConversation()!!["conversationId"].toString()
+
+        deleteMessageThenWait(userToken, messageId)
+        deleteConversationThenWait(contactToken, conversationId)
+
+        userMessages = userAdapter.messages as List<LinkedHashMap<*, *>>
+        contactMessages = contactAdapter.messages as List<LinkedHashMap<*, *>>
+
+        assertTrue(userMessages.containsDeleteMessage(), "Both users should receive a delete message notification")
+        assertTrue(contactMessages.containsDeleteMessage(), "Both users should receive a delete message notification")
+
+        assertTrue(
+            userMessages.containsDeleteConversation(),
+            "Both users should receive a delete conversation notification"
+        )
+        assertTrue(
+            contactMessages.containsDeleteConversation(),
+            "Both users should receive a delete conversation notification"
+        )
     }
 }

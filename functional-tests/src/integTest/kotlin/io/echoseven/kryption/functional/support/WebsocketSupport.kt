@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketHttpHeaders
 import org.springframework.web.socket.messaging.WebSocketStompClient
 
 const val WEBSOCKET_URI = "ws://localhost:8080/realtime/chat"
+const val WAIT_TIME_MILLIS = 5000L
 
 val defaultAdapter = object : StompSessionHandlerAdapter() {}
 
@@ -19,6 +20,7 @@ fun buildStompHeaders(username: String, authToken: String, userId: String): Stom
     stompHeaders[StompHeaders.LOGIN] = username
     stompHeaders[StompHeaders.PASSCODE] = authToken
     stompHeaders[StompHeaders.DESTINATION] = queueName(userId)
+
     return stompHeaders
 }
 
@@ -30,4 +32,26 @@ fun WebSocketStompClient.connect(
     webSocketHttpHeaders[HttpHeaders.UPGRADE] = "websocket"
 
     return this.connect(WEBSOCKET_URI, webSocketHttpHeaders, stompHeaders, adapter).get()
+}
+
+fun sendAndReplyMessages(userToken: String, contactToken: String, userId: String, contactId: String) {
+    for (i in 1..5) {
+        sendMessage(userToken, contactId, "Test Message $i")
+    }
+
+    for (i in 1..5) {
+        sendMessage(contactToken, userId, "Reply Message $i")
+    }
+
+    Thread.sleep(WAIT_TIME_MILLIS)
+}
+
+fun deleteConversationThenWait(userToken: String, conversationId: String) {
+    deleteConversation(userToken, conversationId)
+    Thread.sleep(WAIT_TIME_MILLIS)
+}
+
+fun deleteMessageThenWait(userToken: String, messageId: String) {
+    deleteMessage(userToken, messageId)
+    Thread.sleep(WAIT_TIME_MILLIS)
 }

@@ -16,3 +16,13 @@ fun sendMessage(userToken: String, toId: String, message: String) =
         .header(HttpHeaders.AUTHORIZATION, userToken)
     .When()
         .post("/chat/conversation/message")
+
+fun deleteConversation(userToken: String, conversationId: String) =
+    givenAuthHeader(userToken)
+    .When()
+        .delete("/chat/conversation/$conversationId")
+
+fun deleteMessage(userToken: String, messageId: String) =
+    givenAuthHeader(userToken)
+    .When()
+        .delete("/chat/conversation/message/$messageId")
