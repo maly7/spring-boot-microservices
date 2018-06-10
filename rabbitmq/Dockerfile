@@ -7,4 +7,5 @@ RUN rabbitmq-plugins enable --offline rabbitmq_web_stomp  rabbitmq_auth_backend_
     echo "auth_http.user_path = http://api-gateway:8080/auth/amqp/user" >> /etc/rabbitmq/rabbitmq.conf && \
     echo "auth_http.vhost_path = http://api-gateway:8080/auth/amqp/vhost" >> /etc/rabbitmq/rabbitmq.conf && \
     echo "auth_http.resource_path = http://api-gateway:8080/auth/amqp/resource" >> /etc/rabbitmq/rabbitmq.conf && \
-    echo "auth_http.topic_path = http://api-gateway:8080/auth/amqp/topic" >> /etc/rabbitmq/rabbitmq.conf
+    echo "auth_http.topic_path = http://api-gateway:8080/auth/amqp/topic" >> /etc/rabbitmq/rabbitmq.conf && \
+    echo "loopback_users = none" >> /etc/rabbitmq/rabbitmq.conf

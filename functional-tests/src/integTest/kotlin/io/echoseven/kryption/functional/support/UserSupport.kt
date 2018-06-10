@@ -56,3 +56,11 @@ fun createContactForUser(
     .then()
         .extract().path<String>("[0].id")
 }
+
+fun getUser(authToken: String) =
+    givenAuthHeader(authToken)
+    .When()
+        .get("/chat/user")
+
+fun getUserId(authToken: String) =
+    getUser(authToken).then().extract().path<String>("id")
