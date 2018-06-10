@@ -55,11 +55,9 @@ class RealtimeChatTests {
         val session = stompClient.connect(stompHeaders, adapter)
 
         session.subscribe(stompHeaders, adapter)
-
         assertTrue(session.isConnected, "The user session should be connected")
 
         sendAndReplyMessages(userToken, contactToken, userId, contactId)
-
         assertTrue(adapter.messages.isNotEmpty(), "The user has received messages")
     }
 
@@ -87,7 +85,6 @@ class RealtimeChatTests {
         val contactAdapter = TestingStompSessionHandlerAdapter()
         val contactSession = stompClient.connect(contactHeaders, contactAdapter)
         contactSession.subscribe(contactHeaders, contactAdapter)
-
 
         sendAndReplyMessages(userToken, contactToken, userId, contactId)
 
