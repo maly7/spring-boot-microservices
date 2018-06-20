@@ -38,7 +38,7 @@ class ConversationTests {
         .When()
             .delete("/chat/conversation/$chatId")
         .then()
-            .statusCode(HttpStatus.NO_CONTENT.value())
+            .statusCode(HttpStatus.OK.value())
 
         givenAuthHeader(userToken)
         .When()
@@ -56,6 +56,6 @@ class ConversationTests {
         .When()
             .delete("/chat/conversation/message/$messageId")
         .then()
-            .statusCode(HttpStatus.NO_CONTENT.value())
+            .statusCode(HttpStatus.OK.value())
     }
 }
