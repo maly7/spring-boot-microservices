@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: api-gateway
+  name: api-gateway
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - env:
+        - name: EUREKA_URL
+          value: http://service-registry:8761/eureka/
+        image: api-gateway
+        name: api-gateway
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: api-gateway
