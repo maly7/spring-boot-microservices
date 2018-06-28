@@ -1,11 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
-    kompose.version: 1.13.0 (84fa826)
   labels:
-    io.kompose.service: api-gateway
+    deployment: api-gateway
   name: api-gateway
 spec:
   replicas: 1

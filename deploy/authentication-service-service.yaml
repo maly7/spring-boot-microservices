@@ -1,12 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
-    kompose.version: 1.13.0 (84fa826)
-  creationTimestamp: null
   labels:
-    io.kompose.service: authentication-service
+    service: authentication-service
   name: authentication-service
 spec:
   ports:
@@ -14,6 +10,4 @@ spec:
     port: 8180
     targetPort: 8180
   selector:
-    io.kompose.service: authentication-service
-status:
-  loadBalancer: {}
+    service: authentication-service

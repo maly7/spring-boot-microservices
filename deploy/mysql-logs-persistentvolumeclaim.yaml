@@ -1,9 +1,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  creationTimestamp: null
   labels:
-    io.kompose.service: mysql-logs
+    volume: mysql-logs
   name: mysql-logs
 spec:
   accessModes:
@@ -11,4 +10,3 @@ spec:
   resources:
     requests:
       storage: 100Mi
-status: {}
