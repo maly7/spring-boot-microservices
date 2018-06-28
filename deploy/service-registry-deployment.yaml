@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: service-registry
+  name: service-registry
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: service-registry
+    spec:
+      containers:
+      - image: service-registry
+        name: service-registry
+        ports:
+        - containerPort: 8761
+        resources: {}
+      restartPolicy: Always
+status: {}

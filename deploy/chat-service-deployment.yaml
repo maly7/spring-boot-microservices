@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chat-service
+  name: chat-service
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: chat-service
+    spec:
+      containers:
+      - env:
+        - name: EUREKA_URL
+          value: http://service-registry:8761/eureka/
+        - name: MONGODB_HOST
+          value: mongodb
+        - name: MONGODB_PASSWORD
+        - name: MONGODB_URL
+          value: mongodb://mongodb/kryption
+        - name: MONGODB_USER
+        - name: RABBITMQ_HOST
+          value: rabbit
+        - name: RABBITMQ_PASS
+        - name: RABBITMQ_USER
+        image: chat-service
+        name: chat-service
+        ports:
+        - containerPort: 8280
+        resources: {}
+      restartPolicy: Always
+status: {}

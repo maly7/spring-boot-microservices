@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: service-registry
+  name: service-registry
+spec:
+  ports:
+  - name: "8761"
+    port: 8761
+    targetPort: 8761
+  selector:
+    io.kompose.service: service-registry
+status:
+  loadBalancer: {}

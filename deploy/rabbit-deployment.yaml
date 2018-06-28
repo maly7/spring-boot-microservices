@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbit
+  name: rabbit
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rabbit
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_DEFAULT_PASS
+        - name: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: /
+        - name: RABBITMQ_ERLANG_COOKIE
+        image: rabbit
+        name: rabbit
+        ports:
+        - containerPort: 15672
+        - containerPort: 15674
+        - containerPort: 5672
+        resources: {}
+      hostname: rabbit1
+      restartPolicy: Always
+status: {}
