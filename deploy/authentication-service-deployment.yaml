@@ -1,21 +1,16 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
-    kompose.version: 1.13.0 (84fa826)
-  creationTimestamp: null
   labels:
-    io.kompose.service: authentication-service
+    deployment: authentication-service
   name: authentication-service
 spec:
   replicas: 1
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        io.kompose.service: authentication-service
+        app: authentication-service
     spec:
       containers:
       - env:
@@ -31,4 +26,6 @@ spec:
         - containerPort: 8180
         resources: {}
       restartPolicy: Always
-status: {}
+  selector:
+    matchLabels:
+      app: authentication-service

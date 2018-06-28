@@ -1,21 +1,16 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
-    kompose.version: 1.13.0 (84fa826)
-  creationTimestamp: null
   labels:
-    io.kompose.service: chat-service
+    deployment: chat-service
   name: chat-service
 spec:
   replicas: 1
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        io.kompose.service: chat-service
+        app: chat-service
     spec:
       containers:
       - env:
@@ -37,4 +32,6 @@ spec:
         - containerPort: 8280
         resources: {}
       restartPolicy: Always
-status: {}
+  selector:
+    matchLabels:
+      app: chat-service
