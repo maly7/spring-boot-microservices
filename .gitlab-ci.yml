@@ -55,15 +55,31 @@ publish:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-    - docker build -t $REGISTRY/chat-service:latest chat-service/
-    - docker build -t $REGISTRY/authentication-service:latest authentication-service/
-    - docker build -t $REGISTRY/service-registry:latest service-registry/
-    - docker build -t $REGISTRY/api-gateway:latest api-gateway/
-    - docker build -t $REGISTRY/rabbitmq:3-web-stomp rabbitmq/
+    - docker login -u $ACR_USER -p $ACR_PASS $ACR_REGISTRY
+    - docker build chat-service:latest chat-service/
+    - docker build authentication-service:latest authentication-service/
+    - docker build service-registry:latest service-registry/
+    - docker build api-gateway:latest api-gateway/
+    - docker build rabbitmq:3-web-stomp rabbitmq/
+    - docker tag chat-service:latest $REGISTRY/chat-service:latest
+    - docker tag chat-service:latest $ACR_REGISTRY/chat-service:latest
+    - docker tag authentication-service:latest $REGISTRY/authentication-service:latest
+    - docker tag authentication-service:latest $ACR_REGISTRY/authentication-service:latest
+    - docker tag service-registry:latest $REGISTRY/service-registry:latest
+    - docker tag service-registry:latest $ACR_REGISTRY/service-registry:latest
+    - docker tag api-gateway:latest $REGISTRY/api-gateway:latest
+    - docker tag api-gateway:latest $ACR_REGISTRY/api-gateway:latest
+    - docker tag rabbitmq:3-web-stomp $REGISTRY/rabbitmq:3-web-stomp
+    - docker tag rabbitmq:3-web-stomp $ACR_REGISTRY/rabbitmq:3-web-stomp
     - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
     - docker push $REGISTRY/service-registry
     - docker push $REGISTRY/api-gateway
     - docker push $REGISTRY/rabbitmq
+    - docker push $ACR_REGISTRY/chat-service
+    - docker push $ACR_REGISTRY/authentication-service
+    - docker push $ACR_REGISTRY/service-registry
+    - docker push $ACR_REGISTRY/api-gateway
+    - docker push $ACR_REGISTRY/rabbitmq
   only:
     - master
