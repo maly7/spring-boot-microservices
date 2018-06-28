@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\kompose\kompose.exe convert
+    kompose.version: 1.13.0 (84fa826)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: authentication-service
+  name: authentication-service
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: authentication-service
+    spec:
+      containers:
+      - env:
+        - name: EUREKA_URL
+          value: http://service-registry:8761/eureka/
+        - name: MYSQL_PASSWORD
+        - name: MYSQL_USER
+        - name: RELATIONAL_JDBC_URL
+          value: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
+        image: authentication-service
+        name: authentication-service
+        ports:
+        - containerPort: 8180
+        resources: {}
+      restartPolicy: Always
+status: {}
