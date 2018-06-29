@@ -20,7 +20,7 @@ spec:
         - name: MYSQL_USER
         - name: RELATIONAL_JDBC_URL
           value: jdbc:mysql://mysql:3306/kryption?autoReconnect=true
-        image: authentication-service
+        image: kryptioneastus.azurecr.io/authentication-service:latest
         name: authentication-service
         ports:
         - containerPort: 8180

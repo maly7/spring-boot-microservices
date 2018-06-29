@@ -19,7 +19,7 @@ spec:
         - name: RABBITMQ_DEFAULT_VHOST
           value: /
         - name: RABBITMQ_ERLANG_COOKIE
-        image: rabbit
+        image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
         name: rabbit
         ports:
         - containerPort: 15672
