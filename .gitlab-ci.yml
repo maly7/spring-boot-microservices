@@ -59,7 +59,7 @@ publish:
     - docker build chat-service -f chat-service/Dockerfile -t $REGISTRY/chat-service:latest -t $ACR_REGISTRY/chat-service:latest
     - docker build authentication-service -f authentication-service/Dockerfile -t $REGISTRY/authentication-service:latest -t $ACR_REGISTRY/authentication-service:latest
     - docker build service-registry -f service-registry/Dockerfile -t $REGISTRY/service-registry:latest -t $ACR_REGISTRY/service-registry:latest
-    - docker build api-gateway -f api-gateway/Dockerfile -t $REGISTRY/api-gateway:latest $ACR_REGISTRY/api-gateway:latest
+    - docker build api-gateway -f api-gateway/Dockerfile -t $REGISTRY/api-gateway:latest -t $ACR_REGISTRY/api-gateway:latest
     - docker build rabbitmq -f rabbitmq/Dockerfile -t $REGISTRY/rabbitmq:3-web-stomp -t $ACR_REGISTRY/rabbitmq:3-web-stomp
     - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
