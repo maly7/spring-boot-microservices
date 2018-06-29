@@ -13,8 +13,8 @@ spec:
         app: service-registry
     spec:
       containers:
-      - image: service-registry
-        name: service-registry
+      - name: service-registry
+        image: kryptioneastus.azurecr.io/service-registry:latest
         ports:
         - containerPort: 8761
         resources: {}
