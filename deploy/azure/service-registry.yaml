@@ -37,7 +37,8 @@ spec:
     port: 8761
     targetPort: 8761
   selector:
-    service: service-registry
+    app: service-registry
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
