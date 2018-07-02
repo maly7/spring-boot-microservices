@@ -1,32 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    deployment: service-registry
-  name: service-registry
-  namespace: kryption
-spec:
-  replicas: 2
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: service-registry
-    spec:
-      containers:
-      - env:
-        - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local/eureka
-        name: service-registry
-        image: kryptioneastus.azurecr.io/service-registry:latest
-        ports:
-        - containerPort: 8761
-        resources: {}
-      restartPolicy: Always
-  selector:
-    matchLabels:
-      app: service-registry
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -56,3 +27,32 @@ spec:
       name: eureka
   selector:
     app: service-registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: service-registry
+  name: service-registry
+  namespace: kryption
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: service-registry
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: http://service-registry.kryption.svc.cluster.local/eureka
+        name: service-registry
+        image: kryptioneastus.azurecr.io/service-registry:latest
+        ports:
+        - containerPort: 8761
+        resources: {}
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: service-registry
