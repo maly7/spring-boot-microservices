@@ -20,6 +20,7 @@ spec:
         - name: MYSQL_PASSWORD
         - name: MYSQL_ROOT_PASSWORD
         - name: MYSQL_USER
+          value: kryption
         image: mysql:5.7
         name: mysql
         ports:

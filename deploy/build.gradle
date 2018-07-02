@@ -6,3 +6,30 @@ buildscript {
         classpath 'org.yaml:snakeyaml:1.21'
     }
 }
+
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+
+def dumperOptions = new DumperOptions()
+dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+def yaml = new Yaml(dumperOptions)
+
+task writeMysqlSecrets() {
+    doLast {
+        def secrets = [:]
+        secrets['apiVersion'] = 'v1'
+        secrets['kind'] = 'Secret'
+        secrets['metadata'] = ['name': 'mysql-secrets']
+        secrets['type'] = 'Opaque'
+        secrets['data'] = [
+                'password'    : "${UUID.randomUUID()}".bytes.encodeBase64().toString(),
+                'rootpassword': "${UUID.randomUUID()}".bytes.encodeBase64().toString()
+        ]
+
+        new File("${projectDir}/secrets/mysql-secrets.yaml").text = yaml.dump(secrets)
+    }
+}
+
+task writeSecrets() {
+    dependsOn writeMysqlSecrets
+}
