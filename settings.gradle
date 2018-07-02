@@ -4,4 +4,4 @@ include 'chat-service'
 include 'service-registry'
 include 'api-gateway'
 include 'functional-tests'
-
+include 'deploy'

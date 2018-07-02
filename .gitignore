@@ -103,3 +103,5 @@ hs_err_pid*
 *.der
 
 logs/**
+
+deploy/secrets/**
