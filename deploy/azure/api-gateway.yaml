@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - env:
-        - name: EUREKA_URL
+        - name: eureka.client.service-url.default-zone
           value: http://service-registry.kryption.svc.cluster.local:8761/eureka
         image: kryptioneastus.azurecr.io/api-gateway:latest
         name: api-gateway
