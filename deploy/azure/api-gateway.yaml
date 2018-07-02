@@ -16,7 +16,7 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local:8761/eureka
+          value: http://service-registry.kryption.svc.cluster.local/eureka
         image: kryptioneastus.azurecr.io/api-gateway:latest
         name: api-gateway
         ports:
@@ -35,9 +35,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 8080
-      name: tomcat
     - port: 80
-      name: http
+      targetPort: 8080
+      name: tomcat
   selector:
     app: api-gateway

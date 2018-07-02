@@ -16,7 +16,7 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local:8761/eureka
+          value: http://service-registry.kryption.svc.cluster.local/eureka
         name: service-registry
         image: kryptioneastus.azurecr.io/service-registry:latest
         ports:
@@ -36,7 +36,7 @@ metadata:
   namespace: kryption
 spec:
   ports:
-  - name: "8761"
+  - name: eureka
     port: 80
     targetPort: 8761
   selector:
@@ -52,6 +52,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
+      targetPort: 8761
       name: eureka
   selector:
     app: service-registry
