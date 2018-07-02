@@ -18,14 +18,24 @@ spec:
         - name: MYSQL_DATABASE
           value: kryption
         - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: password
         - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: rootpassword
         - name: MYSQL_USER
           value: kryption
         image: mysql:5.7
         name: mysql
+        args:
+          - "--ignore-db-dir=lost+found"
         ports:
         - containerPort: 3306
-        resources: {}
+          name: mysql
         volumeMounts:
         - mountPath: /var/lib/mysql
           name: mysql-data
