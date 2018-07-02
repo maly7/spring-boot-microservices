@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: service-registry
+  name: service-registry
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: service-registry
+    spec:
+      containers:
+      - name: service-registry
+        image: kryptioneastus.azurecr.io/service-registry:latest
+        ports:
+        - containerPort: 8761
+        resources: {}
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: service-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: service-registry
+  name: service-registry
+spec:
+  ports:
+  - name: "8761"
+    port: 8761
+    targetPort: 8761
+  selector:
+    service: service-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-registry-lb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: http
+    - port: 8761
+      name: eureka
+  selector:
+    app: service-registry

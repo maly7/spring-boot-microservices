@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: api-gateway
+  name: api-gateway
+spec:
+  replicas: 2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - env:
+        - name: EUREKA_URL
+          value: http://service-registry:8761
+        image: kryptioneastus.azurecr.io/api-gateway:latest
+        name: api-gateway
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: api-gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: api-gateway
+  name: api-gateway
+spec:
+  ports:
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    service: api-gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-lb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: api-gateway
