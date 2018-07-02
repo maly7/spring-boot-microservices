@@ -49,7 +49,11 @@ allprojects {
     }
 }
 
-subprojects {
+configure([project(':authentication-service'),
+           project(':chat-service'),
+           project(':service-registry'),
+           project(':functional-tests'),
+           project(':api-gateway')]) {
     repositories {
         maven {
             url 'https://repo.spring.io/milestone/'
@@ -135,7 +139,10 @@ subprojects {
     check.dependsOn integTest
 }
 
-configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':api-gateway')]) {
+configure([project(':authentication-service'),
+           project(':chat-service'),
+           project(':service-registry'),
+           project(':api-gateway')]) {
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
     task writeDockerfile(type: Dockerfile) {
