@@ -37,7 +37,6 @@ task writeMysqlSecrets() {
 task writeMongoSecrets() {
     doLast {
         def secrets = createSecrets('mongodb-secrets', [
-                'password'    : "${UUID.randomUUID()}".bytes.encodeBase64().toString(),
                 'rootpassword': "${UUID.randomUUID()}".bytes.encodeBase64().toString()
         ])
 
