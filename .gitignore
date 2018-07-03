@@ -103,3 +103,6 @@ hs_err_pid*
 *.der
 
 logs/**
+
+deploy/secrets/*.yaml
+deploy/secrets/*.yml

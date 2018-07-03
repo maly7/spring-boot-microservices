@@ -1,3 +1,4 @@
+# Busybox pod config, it's handy for debugging things like DNS
 apiVersion: v1
 kind: Pod
 metadata:
