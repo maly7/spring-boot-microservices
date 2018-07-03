@@ -26,10 +26,8 @@ class ConversationService(
             throw BadRequestException("Conversation messages must specify a to id")
         }
 
-        conversationMessage.fromId = userService.getCurrentUserId()
-
-        val toId: String = conversationMessage.toId!!
-        val fromId = conversationMessage.fromId!!
+        val toId = conversationMessage.toId!!
+        val fromId = userService.getCurrentUserId()
 
         log.debug("Attempting to send message from [{}] to [{}]", fromId, toId)
         val existingConversation = getOrCreateConversationForUsers(fromId, toId)
