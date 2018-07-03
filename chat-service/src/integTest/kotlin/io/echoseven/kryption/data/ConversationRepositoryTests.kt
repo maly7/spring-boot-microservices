@@ -1,6 +1,7 @@
 package io.echoseven.kryption.data
 
 import io.echoseven.kryption.ChatIntegrationTest
+import io.echoseven.kryption.WithAuthenticatedUser
 import io.echoseven.kryption.domain.Conversation
 import io.echoseven.kryption.domain.ConversationMessage
 import io.echoseven.kryption.domain.User
@@ -20,6 +21,7 @@ import kotlin.test.assertTrue
 
 @RunWith(SpringRunner::class)
 @ChatIntegrationTest
+@WithAuthenticatedUser
 class ConversationRepositoryTests {
 
     @Autowired
