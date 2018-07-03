@@ -44,6 +44,17 @@ task writeMongoSecrets() {
     }
 }
 
+task writeRabbitSecrets() {
+    doLast {
+        def secrets = createSecrets('rabbit-secrets', [
+                'cookie'  : "${UUID.randomUUID()}"[0..10].bytes.encodeBase64().toString(),
+                'password': "${UUID.randomUUID()}".bytes.encodeBase64().toString()
+        ])
+
+        new File("${projectDir}/secrets/rabbit-secrets.yaml").text = yaml.dump(secrets)
+    }
+}
+
 task writeSecrets() {
-    dependsOn writeMysqlSecrets, writeMongoSecrets
+    dependsOn writeMysqlSecrets, writeMongoSecrets, writeRabbitSecrets
 }
