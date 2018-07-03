@@ -12,20 +12,6 @@ spec:
   selector:
     app: authentication-service
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-service-lb
-  namespace: kryption
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 8180
-      name: auth
-  selector:
-    app: authentication-service
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
