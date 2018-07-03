@@ -9,6 +9,8 @@ dependencies {
     compile 'org.apache.commons:commons-lang3'
 
     testRuntime 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+
+    testCompile 'org.springframework.security:spring-security-test'
 }
 
 task dockerUp(type: Exec) {
