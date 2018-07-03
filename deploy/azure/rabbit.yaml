@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: rabbit
+  name: rabbit
+  namespace: kryption
+spec:
+  ports:
+  - name: management
+    port: 15672
+    targetPort: 15672
+  - name: rabbitmq
+    port: 15674
+    targetPort: 15674
+  - name: sockets
+    port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbit
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-admin
+  namespace: kryption
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 15672
+      name: management
+  selector:
+    app: rabbit
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    volume: rabbit-data
+  name: rabbit-data
+  namespace: kryption
+  annotations:
+    volume.beta.kubernetes.io/storage-class: managed-premium
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: rabbit
+  name: rabbit
+  namespace: kryption
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbit
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-secrets
+              key: password
+        - name: RABBITMQ_DEFAULT_USER
+          value: kryption
+        - name: RABBITMQ_DEFAULT_VHOST
+          value: /
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-secrets
+              key: cookie
+        image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
+        name: rabbit
+        ports:
+        - containerPort: 15672
+        - containerPort: 15674
+        - containerPort: 5672
+        volumeMounts:
+          - mountPath: /var/lib/rabbitmq
+            name: rabbit-data
+      hostname: rabbit1
+      restartPolicy: Always
+      volumes:
+        - name: rabbit-data
+          persistentVolumeClaim:
+            claimName: rabbit-data
+  selector:
+    matchLabels:
+      app: rabbit

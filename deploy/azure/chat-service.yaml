@@ -45,7 +45,12 @@ spec:
         - name: RABBITMQ_HOST
           value: rabbit
         - name: RABBITMQ_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-secrets
+              key: password
         - name: RABBITMQ_USER
+          value: kryption
         image: kryptioneastus.azurecr.io/chat-service:latest
         name: chat-service
         ports:
