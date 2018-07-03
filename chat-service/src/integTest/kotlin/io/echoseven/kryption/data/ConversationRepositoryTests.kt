@@ -56,8 +56,22 @@ class ConversationRepositoryTests {
         val chat = conversationRepository.insert(Conversation())
 
         val messages = listOf(
-            conversationMessageRepository.insert(ConversationMessage("test message", "foo", "bar", Date.from(Instant.now()))),
-            conversationMessageRepository.insert(ConversationMessage("second message", "bar", "foo", Date.from(Instant.now())))
+            conversationMessageRepository.insert(
+                ConversationMessage(
+                    "test message",
+                    "foo",
+                    "bar",
+                    Date.from(Instant.now())
+                )
+            ),
+            conversationMessageRepository.insert(
+                ConversationMessage(
+                    "second message",
+                    "bar",
+                    "foo",
+                    Date.from(Instant.now())
+                )
+            )
         )
         chat.messages = messages
 
@@ -98,6 +112,10 @@ class ConversationRepositoryTests {
         assertThat("The first user should have the chat", fetchUserOne.conversations, hasItem(chat))
         assertThat("The second user should have the chat", fetchUserTwo.conversations, hasItem(chat))
 
-        assertEquals(fetchUserOne.conversations, fetchUserTwo.conversations, "The user's conversations should be the same")
+        assertEquals(
+            fetchUserOne.conversations,
+            fetchUserTwo.conversations,
+            "The user's conversations should be the same"
+        )
     }
 }
