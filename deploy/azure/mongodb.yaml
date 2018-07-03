@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: mongodb
+  name: mongodb
+  namespace: kryption
+spec:
+  ports:
+  - name: "mongodb"
+    port: 27017
+    targetPort: 27017
+  selector:
+    db: mongodb
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    volume: mongodb-data
+  name: mongodb-data
+  namespace: kryption
+  annotations:
+    volume.beta.kubernetes.io/storage-class: managed-premium
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: mongodb
+  name: mongodb
+  namespace: kryption
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        db: mongodb
+    spec:
+      containers:
+      - env:
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secrets
+              key: rootpassword
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: kryption
+        image: mongo:3.6.3
+        name: mongodb
+        ports:
+        - containerPort: 27017
+          name: mongodb
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongodb-data
+      restartPolicy: Always
+      volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:
+          claimName: mongodb-data
+  selector:
+    matchLabels:
+      db: mongodb
