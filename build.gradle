@@ -2,7 +2,7 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 buildscript {
     ext {
-        kotlinVersion = '1.2.50'
+        kotlinVersion = '1.2.51'
         springBootVersion = '2.0.3.RELEASE'
         springCloudVersion = 'Finchley.RELEASE'
         dockerPluginVersion = '3.2.5'
