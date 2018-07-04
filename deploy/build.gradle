@@ -64,21 +64,25 @@ task writeRabbitSecrets() {
         def configData = """auth_backends.1 = rabbit_auth_backend_http
 auth_backends.2 = internal
 auth_http.http_method = post
-auth_http.user_path = http://authentication-service:8180/amqp/user
-auth_http.vhost_path = http://authentication-service:8180/amqp/vhost
-auth_http.resource_path = http://authentication-service:8180/amqp/resource
-auth_http.topic_path = http://authentication-service:8180/amqp/topic
+auth_http.user_path = http://authentication-service.kryption.svc.cluster.local:8180/amqp/user
+auth_http.vhost_path = http://authentication-service.kryption.svc.cluster.local:8180/amqp/vhost
+auth_http.resource_path = http://authentication-service.kryption.svc.cluster.local:8180/amqp/resource
+auth_http.topic_path = http://authentication-service.kryption.svc.cluster.local:8180/amqp/topic
 loopback_users = none
 loopback_users.guest = false
 listeners.tcp.default = 5672
-default_user = kryption
 default_pass = ${password}
+default_user = kryption
 default_vhost = /
 hipe_compile = false
 management.listener.port = 15672
 management.listener.ssl = false
 """.toString()
-        def configMap = createConfigMap('rabbit-config', ['rabbitmq.conf': configData])
+
+        def pluginsData = """[rabbitmq_auth_backend_http,rabbitmq_management,rabbitmq_web_stomp].
+""".toString()
+
+        def configMap = createConfigMap('rabbit-config', ['rabbitmq.conf': configData, 'enabled_plugins': pluginsData])
 
         new File("${projectDir}/secrets/rabbit-secrets.yaml").text = yaml.dump(secrets)
         new File("${projectDir}/configs/rabbit-config.yaml").text = yaml.dump(configMap)
