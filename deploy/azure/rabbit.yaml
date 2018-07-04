@@ -80,7 +80,9 @@ spec:
               name: rabbit-secrets
               key: cookie
         - name: AUTH_HOST
-          value: http://authentication-service.kryption.svc.cluster.local:8180
+          value: authentication-service.kryption.svc.cluster.local:8180
+        - name: AUTH_SCHEME
+          value: http
         image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
         name: rabbit
         ports:
