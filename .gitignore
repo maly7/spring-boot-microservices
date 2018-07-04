@@ -106,3 +106,4 @@ logs/**
 
 deploy/secrets/*.yaml
 deploy/secrets/*.yml
+rabbitmq/conf/rabbitmq.conf
