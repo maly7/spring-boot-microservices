@@ -1,5 +1,6 @@
 package io.echoseven.kryption.functional
 
+import io.echoseven.kryption.functional.support.FunctionalTest
 import io.echoseven.kryption.functional.support.When
 import io.echoseven.kryption.functional.support.contactJson
 import io.echoseven.kryption.functional.support.createUser
@@ -13,8 +14,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-class ContactTests {
-
+class ContactTests : FunctionalTest() {
     @Test
     fun `A User should be able to add another user as a contact`() {
         val contactEmail = email()
