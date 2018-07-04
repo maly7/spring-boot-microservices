@@ -41,6 +41,7 @@ services:
       RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
       RABBITMQ_DEFAULT_VHOST: "/"
+      AUTH_HOST: "http://api-gateway:8080"
     ports:
       - "15672:15672"
       - "15674:15674"
