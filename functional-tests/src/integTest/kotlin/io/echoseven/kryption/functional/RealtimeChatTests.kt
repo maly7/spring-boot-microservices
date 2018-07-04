@@ -1,5 +1,6 @@
 package io.echoseven.kryption.functional
 
+import io.echoseven.kryption.functional.support.FunctionalTest
 import io.echoseven.kryption.functional.support.TestingStompSessionHandlerAdapter
 import io.echoseven.kryption.functional.support.buildStompHeaders
 import io.echoseven.kryption.functional.support.connect
@@ -26,7 +27,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class RealtimeChatTests {
+class RealtimeChatTests : FunctionalTest() {
     private lateinit var stompClient: WebSocketStompClient
     private lateinit var userToken: String
     private lateinit var contactToken: String
@@ -36,7 +37,9 @@ class RealtimeChatTests {
     private val contact = email()
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
+
         userToken = loginNewUser(username, password())
         userId = getUserId(userToken)
 

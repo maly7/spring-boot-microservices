@@ -1,5 +1,6 @@
 package io.echoseven.kryption.functional
 
+import io.echoseven.kryption.functional.support.FunctionalTest
 import io.echoseven.kryption.functional.support.When
 import io.echoseven.kryption.functional.support.createContactForUser
 import io.echoseven.kryption.functional.support.givenAuthHeader
@@ -10,13 +11,14 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.http.HttpStatus
 
-class ConversationTests {
+class ConversationTests : FunctionalTest() {
 
     lateinit var userToken: String
     lateinit var contactId: String
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         userToken = loginNewUser()
         contactId = createContactForUser(userToken)
     }
