@@ -164,7 +164,7 @@ configure([project(':authentication-service'), project(':chat-service'), project
 }
 
 task run(type: Exec) {
-    dependsOn getTasksByName('writeDockerfile', true)
+    dependsOn getTasksByName('writeDockerfile', true), getTasksByName('writeConf', true)
 
     loadEnv(environment)
 

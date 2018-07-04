@@ -1,0 +1,16 @@
+import groovy.text.SimpleTemplateEngine
+
+task writeConf() {
+    doLast {
+        def templateFile = new File("${projectDir}/conf/rabbitmq.conf.template")
+        def binding = [
+                'RABBITMQ_DEFAULT_PASS': System.properties['RABBITMQ_PASS'],
+                'RABBITMQ_DEFAULT_USER': System.properties['RABBITMQ_USER']
+        ]
+
+        def engine = new SimpleTemplateEngine()
+        def template = engine.createTemplate(templateFile.text).make(binding)
+
+        new File("${projectDir}/conf/rabbitmq.conf").write(template.toString())
+    }
+}

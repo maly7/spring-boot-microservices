@@ -64,21 +64,6 @@ spec:
         app: rabbit
     spec:
       containers:
-      - env:
-        - name: RABBITMQ_DEFAULT_PASS
-          valueFrom:
-            secretKeyRef:
-              name: rabbit-secrets
-              key: password
-        - name: RABBITMQ_DEFAULT_USER
-          value: kryption
-        - name: RABBITMQ_DEFAULT_VHOST
-          value: /
-        - name: RABBITMQ_ERLANG_COOKIE
-          valueFrom:
-            secretKeyRef:
-              name: rabbit-secrets
-              key: cookie
         image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
         name: rabbit
         ports:
