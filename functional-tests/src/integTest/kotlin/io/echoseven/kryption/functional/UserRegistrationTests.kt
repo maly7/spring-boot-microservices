@@ -1,5 +1,6 @@
 package io.echoseven.kryption.functional
 
+import io.echoseven.kryption.functional.support.FunctionalTest
 import io.echoseven.kryption.functional.support.When
 import io.echoseven.kryption.functional.support.createUser
 import io.echoseven.kryption.functional.support.email
@@ -15,7 +16,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-class UserRegistrationTests {
+class UserRegistrationTests : FunctionalTest() {
 
     @Test
     fun `A new User should be able to register`() {
