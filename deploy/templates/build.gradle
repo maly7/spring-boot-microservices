@@ -1,0 +1,15 @@
+import groovy.text.SimpleTemplateEngine
+
+def engine = new SimpleTemplateEngine()
+def azureRepo = 'kryptioneastus.azurecr.io/'
+def src = new File("src/")
+
+task azure() {
+    def binding = ['repo': azureRepo, 'appReplicas': 2]
+
+    src.listFiles().each { template ->
+        def text = template.text
+        def boundText = engine.createTemplate(text).make(binding)
+        new File("${project.parent.projectDir}/azure/${template.name}").text = boundText
+    }
+}
