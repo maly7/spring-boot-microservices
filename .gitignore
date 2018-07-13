@@ -108,3 +108,6 @@ deploy/secrets/*.yaml
 deploy/secrets/*.yml
 deploy/configs/rabbit-config.yaml
 rabbitmq/conf/rabbitmq.conf
+
+deploy/azure/*.yaml
+deploy/local/*.yaml
