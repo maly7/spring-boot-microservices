@@ -23,3 +23,7 @@ task local() {
         new File("${project.parent.projectDir}/local/${template.name}").text = boundText
     }
 }
+
+task templates() {
+    dependsOn azure, local
+}
