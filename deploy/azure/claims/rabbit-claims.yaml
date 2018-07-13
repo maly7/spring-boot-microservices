@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    volume: rabbit-data
+  name: rabbit-data
+  namespace: kryption
+  annotations:
+    volume.beta.kubernetes.io/storage-class: managed-premium
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
