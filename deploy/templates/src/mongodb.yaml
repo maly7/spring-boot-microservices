@@ -13,22 +13,6 @@ spec:
   selector:
     db: mongodb
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    volume: mongodb-data
-  name: mongodb-data
-  namespace: kryption
-  annotations:
-    volume.beta.kubernetes.io/storage-class: managed-premium
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 25Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
