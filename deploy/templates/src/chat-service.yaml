@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: chat-service
+  name: chat-service
+  namespace: kryption
+spec:
+  ports:
+  - name: tomcat
+    port: 8280
+    targetPort: 8280
+  selector:
+    app: chat-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: chat-service
+  name: chat-service
+  namespace: kryption
+spec:
+  replicas: ${appReplicas}
+  template:
+    metadata:
+      labels:
+        app: chat-service
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: http://service-registry.kryption.svc.cluster.local/eureka
+        - name: eureka.instance.hostname
+          value: chat-service.kryption.svc.cluster.local
+        - name: spring.data.mongodb.host
+          value: mongodb.kryption.svc.cluster.local
+        - name: spring.data.mongodb.password
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secrets
+              key: rootpassword
+        - name: MONGODB_URL
+          value: mongodb://mongodb.kryption.svc.cluster.local/kryption
+        - name: MONGODB_USER
+          value: kryption
+        - name: RABBITMQ_HOST
+          value: rabbit
+        - name: RABBITMQ_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rabbit-secrets
+              key: password
+        - name: RABBITMQ_USER
+          value: kryption
+        image: ${repo}chat-service:latest
+        name: chat-service
+        ports:
+        - containerPort: 8280
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: chat-service
