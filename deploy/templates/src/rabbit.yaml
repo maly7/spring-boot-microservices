@@ -33,22 +33,6 @@ spec:
   selector:
     app: rabbit
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    volume: rabbit-data
-  name: rabbit-data
-  namespace: kryption
-  annotations:
-    volume.beta.kubernetes.io/storage-class: managed-premium
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,7 +57,7 @@ spec:
             - mountPath: /etc/rabbitmq
               name: config
       containers:
-      - image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
+      - image: rabbitmq:3-management
         name: rabbit
         ports:
         - containerPort: 15672
