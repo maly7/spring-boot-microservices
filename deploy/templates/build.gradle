@@ -13,3 +13,13 @@ task azure() {
         new File("${project.parent.projectDir}/azure/${template.name}").text = boundText
     }
 }
+
+task local() {
+    def binding = ['repo': '', 'appReplicas': 1]
+
+    src.listFiles().each { template ->
+        def text = template.text
+        def boundText = engine.createTemplate(text).make(binding)
+        new File("${project.parent.projectDir}/local/${template.name}").text = boundText
+    }
+}
