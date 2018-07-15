@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: mongodb-data
   name: mongodb-data
-  namespace: kryption
 spec:
   volumeMode: Filesystem
   accessModes:

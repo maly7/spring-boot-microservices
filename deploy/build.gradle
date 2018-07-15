@@ -1,0 +1,18 @@
+task deployLocal() {
+    dependsOn getTasksByName('local', true)
+    doLast {
+        exec {
+            workingDir 'commons'
+            commandLine 'kubectl', 'apply', '-f', 'namespace.yaml'
+        }
+    }
+}
+
+task localSecrets() {
+    doLast {
+        exec {
+            workingDir 'secrets'
+            commandLine 'kubectl', 'apply', '-f', 'secrets'
+        }
+    }
+}

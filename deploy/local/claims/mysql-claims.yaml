@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: mysql-data
   name: mysql-data
-  namespace: kryption
 spec:
   volumeMode: Filesystem
   capacity:
@@ -18,7 +17,6 @@ metadata:
   labels:
     volume: mysql-logs
   name: mysql-logs
-  namespace: kryption
 spec:
   volumeMode: Filesystem
   capacity:

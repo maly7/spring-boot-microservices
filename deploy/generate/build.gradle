@@ -18,7 +18,7 @@ static def createSecrets(name, data) {
     def secrets = [:]
     secrets['apiVersion'] = 'v1'
     secrets['kind'] = 'Secret'
-    secrets['metadata'] = ['name': name, 'namespace': 'kryption']
+    secrets['metadata'] = ['name': name]
     secrets['type'] = 'Opaque'
     secrets['data'] = data
     return secrets
