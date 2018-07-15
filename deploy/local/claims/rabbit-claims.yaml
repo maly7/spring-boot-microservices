@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: rabbit-data
   name: rabbit-data
-  namespace: kryption
 spec:
   volumeMode: Filesystem
   capacity:

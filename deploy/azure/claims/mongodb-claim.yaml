@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: mongodb-data
   name: mongodb-data
-  namespace: kryption
   annotations:
     volume.beta.kubernetes.io/storage-class: managed-premium
 spec:

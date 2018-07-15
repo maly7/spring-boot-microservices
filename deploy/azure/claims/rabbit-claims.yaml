@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: rabbit-data
   name: rabbit-data
-  namespace: kryption
   annotations:
     volume.beta.kubernetes.io/storage-class: managed-premium
 spec:

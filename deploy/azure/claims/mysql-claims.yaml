@@ -4,7 +4,6 @@ metadata:
   labels:
     volume: mysql-data
   name: mysql-data
-  namespace: kryption
   annotations:
     volume.beta.kubernetes.io/storage-class: managed-premium
 spec:
@@ -20,7 +19,6 @@ metadata:
   labels:
     volume: mysql-logs
   name: mysql-logs
-  namespace: kryption
   annotations:
     volume.beta.kubernetes.io/storage-class: managed-premium
 spec:
