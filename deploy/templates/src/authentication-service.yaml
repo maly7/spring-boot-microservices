@@ -4,7 +4,6 @@ metadata:
   labels:
     service: authentication-service
   name: authentication-service
-  namespace: kryption
 spec:
   ports:
   - name: tomcat

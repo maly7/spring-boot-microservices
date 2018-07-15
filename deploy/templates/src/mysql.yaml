@@ -4,7 +4,6 @@ metadata:
   labels:
     service: mysql
   name: mysql
-  namespace: kryption
 spec:
   ports:
   - name: "mysql"
@@ -19,7 +18,6 @@ metadata:
   labels:
     deployment: mysql
   name: mysql
-  namespace: kryption
 spec:
   replicas: 1
   strategy:
