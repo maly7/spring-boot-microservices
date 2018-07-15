@@ -4,7 +4,6 @@ metadata:
   labels:
     service: chat-service
   name: chat-service
-  namespace: kryption
 spec:
   ports:
   - name: tomcat
@@ -19,7 +18,6 @@ metadata:
   labels:
     deployment: chat-service
   name: chat-service
-  namespace: kryption
 spec:
   replicas: ${appReplicas}
   template:

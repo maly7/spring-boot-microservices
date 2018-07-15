@@ -4,7 +4,6 @@ metadata:
   labels:
     service: mongodb
   name: mongodb
-  namespace: kryption
 spec:
   ports:
   - name: "mongodb"
@@ -19,7 +18,6 @@ metadata:
   labels:
     deployment: mongodb
   name: mongodb
-  namespace: kryption
 spec:
   replicas: 1
   strategy:
