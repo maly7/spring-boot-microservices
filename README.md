@@ -6,7 +6,7 @@
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
 1. Run `./gradlew :d:g:genConfigs` once to generate secrets (NOTE: if you ever change these you'll need to delete them from your k8s cluster and re-add them)
-1. To run the full stack run `./gradlew run`, then to stop it `./gradlew stop`
+1. To deploy the whole stack to your minikube run `./gradlew :d:deployLocal`
 1. To run just the authentication service run `./gradlew :a-s:bootRun` this will start a mysql container and then bootRun the relational store. To stop the mysql container run `./gradlew stopMysql`
 1. To run just the chat service run `./gradlew :c-s:bootRun` this will start a mongo db container and then bootRun the document store. To stop the mongo db container run `./gradlew stopMongo`
 
