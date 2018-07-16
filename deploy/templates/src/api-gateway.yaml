@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: api-gateway-lb
 spec:
-  type: LoadBalancer
+  type: $lbtype
   ports:
     - port: 80
       targetPort: 8080

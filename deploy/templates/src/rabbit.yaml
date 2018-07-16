@@ -23,7 +23,7 @@ kind: Service
 metadata:
   name: rabbitmq-admin
 spec:
-  type: LoadBalancer
+  type: $lbtype
   ports:
     - port: 80
       targetPort: 15672

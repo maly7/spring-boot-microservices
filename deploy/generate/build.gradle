@@ -28,7 +28,7 @@ static def createConfigMap(name, data) {
     return [
             'apiVersion': 'v1',
             'kind'      : 'ConfigMap',
-            'metadata'  : ['name': name, 'namespace': 'kryption'],
+            'metadata'  : ['name': name],
             'data'      : data
     ]
 }
