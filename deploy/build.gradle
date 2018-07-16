@@ -2,6 +2,9 @@ task deployLocal() {
     dependsOn getTasksByName('local', true)
     doLast {
         exec {
+            commandLine 'kubectl', 'apply', '-f', 'configs'
+        }
+        exec {
             commandLine 'kubectl', 'apply', '-f', 'local/claims'
         }
         exec {
