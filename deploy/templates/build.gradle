@@ -4,23 +4,45 @@ def engine = new SimpleTemplateEngine()
 def azureRepo = 'kryptioneastus.azurecr.io/'
 def src = new File("src/")
 
-task azure() {
-    def binding = ['repo': azureRepo, 'appReplicas': 2]
+task cleanAzure(type: Delete) {
+    delete fileTree("${parent.projectDir}/azure") {
+        include '*.yaml'
+    }
+}
 
-    src.listFiles().each { template ->
-        def text = template.text
-        def boundText = engine.createTemplate(text).make(binding)
-        new File("${project.parent.projectDir}/azure/${template.name}").text = boundText
+task cleanLocal(type: Delete) {
+    delete fileTree("${parent.projectDir}/local") {
+        include '*.yaml'
+    }
+}
+
+task azure() {
+    dependsOn cleanAzure
+    mustRunAfter cleanAzure
+
+    doLast {
+        def binding = ['repo': azureRepo, 'appReplicas': 2]
+
+        src.listFiles().each { template ->
+            def text = template.text
+            def boundText = engine.createTemplate(text).make(binding)
+            new File("${project.parent.projectDir}/azure/${template.name}").text = boundText
+        }
     }
 }
 
 task local() {
-    def binding = ['repo': '', 'appReplicas': 1]
+    dependsOn cleanLocal
+    mustRunAfter cleanLocal
 
-    src.listFiles().each { template ->
-        def text = template.text
-        def boundText = engine.createTemplate(text).make(binding)
-        new File("${project.parent.projectDir}/local/${template.name}").text = boundText
+    doLast {
+        def binding = ['repo': '', 'appReplicas': 1]
+
+        src.listFiles().each { template ->
+            def text = template.text
+            def boundText = engine.createTemplate(text).make(binding)
+            new File("${project.parent.projectDir}/local/${template.name}").text = boundText
+        }
     }
 }
 
