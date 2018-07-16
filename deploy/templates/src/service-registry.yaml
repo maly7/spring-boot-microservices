@@ -18,7 +18,7 @@ kind: Service
 metadata:
   name: service-registry-lb
 spec:
-  type: LoadBalancer
+  type: $lbtype
   ports:
     - port: 80
       targetPort: 8761
