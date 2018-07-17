@@ -51,7 +51,7 @@ spec:
               key: password
         - name: RABBITMQ_USER
           value: kryption
-        image: ${repo}chat-service:latest
+        image: ${repo}chat-service:$version
         name: chat-service
         ports:
         - containerPort: 8280
