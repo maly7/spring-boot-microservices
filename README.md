@@ -2,6 +2,7 @@
 1. If running windows, make sure you install and use 64-bit java
 1. Install docker and docker-compose for your platform
 1. Install minikube for your platform (here's a good guide for [windows](https://medium.com/@JockDaRock/minikube-on-windows-10-with-hyper-v-6ef0f4dc158c)
+1. Configure minikube to use local docker-env (on windows run `minikube docker-env` and follow the directions on macOS/linux run `eval $(minikube docker-env)`)
 1. Copy `setup/template.gradle.properties` into the root project directory
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
