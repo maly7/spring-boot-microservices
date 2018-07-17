@@ -28,18 +28,18 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local/eureka
+          value: http://service-registry.default.svc.cluster.local/eureka
         - name: eureka.instance.hostname
-          value: chat-service.kryption.svc.cluster.local
+          value: chat-service.default.svc.cluster.local
         - name: spring.data.mongodb.host
-          value: mongodb.kryption.svc.cluster.local
+          value: mongodb.default.svc.cluster.local
         - name: spring.data.mongodb.password
           valueFrom:
             secretKeyRef:
               name: mongodb-secrets
               key: rootpassword
         - name: MONGODB_URL
-          value: mongodb://mongodb.kryption.svc.cluster.local/kryption
+          value: mongodb://mongodb.default.svc.cluster.local/kryption
         - name: MONGODB_USER
           value: kryption
         - name: RABBITMQ_HOST
