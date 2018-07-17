@@ -53,6 +53,7 @@ spec:
           value: kryption
         image: ${repo}chat-service:$version
         name: chat-service
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8280
       restartPolicy: Always

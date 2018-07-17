@@ -42,6 +42,7 @@ spec:
           value: authentication-service.default.svc.cluster.local
         image: ${repo}authentication-service:$version
         name: authentication-service
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8180
       restartPolicy: Always

@@ -33,6 +33,7 @@ spec:
           value: rabbit.default.svc.cluster.local
         image: ${repo}api-gateway:$version
         name: api-gateway
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         resources: {}
