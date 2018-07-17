@@ -50,7 +50,7 @@ test:
 
 publish:
   stage: publish
-  image: docker:latest
+  image: maly7/docker-java:8
   services:
     - docker:dind
   script:
