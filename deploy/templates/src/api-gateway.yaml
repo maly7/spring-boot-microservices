@@ -28,9 +28,9 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local/eureka
+          value: http://service-registry.default.svc.cluster.local/eureka
         - name: RABBIT_HOST
-          value: rabbit.kryption.svc.cluster.local
+          value: rabbit.default.svc.cluster.local
         image: ${repo}api-gateway:$version
         name: api-gateway
         ports:
