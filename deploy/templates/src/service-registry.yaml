@@ -44,7 +44,7 @@ spec:
         - name: eureka.client.service-url.default-zone
           value: http://service-registry.kryption.svc.cluster.local/eureka
         name: service-registry
-        image: ${repo}service-registry:latest
+        image: ${repo}service-registry:$version
         ports:
         - containerPort: 8761
       restartPolicy: Always

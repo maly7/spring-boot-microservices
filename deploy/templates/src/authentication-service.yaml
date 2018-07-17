@@ -40,7 +40,7 @@ spec:
           value: jdbc:mysql://mysql.kryption.svc.cluster.local:3306/kryption?autoReconnect=true&useSSL=true&verifyServerCertificate=false
         - name: eureka.instance.hostname
           value: authentication-service.kryption.svc.cluster.local
-        image: ${repo}authentication-service:latest
+        image: ${repo}authentication-service:$version
         name: authentication-service
         ports:
         - containerPort: 8180

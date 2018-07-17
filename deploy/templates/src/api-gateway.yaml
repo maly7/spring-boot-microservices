@@ -31,7 +31,7 @@ spec:
           value: http://service-registry.kryption.svc.cluster.local/eureka
         - name: RABBIT_HOST
           value: rabbit.kryption.svc.cluster.local
-        image: ${repo}api-gateway:latest
+        image: ${repo}api-gateway:$version
         name: api-gateway
         ports:
         - containerPort: 8080
