@@ -58,12 +58,13 @@ fun deleteMessageThenWait(userToken: String, messageId: String) {
 }
 
 fun getSocketUri(): String {
-    val uri = System.getProperty("funcTestUri", "")
+    val funcTestUri = System.getProperty("funcTestUri", "")
 
-    val host = if (uri.isEmpty()) {
+    val host = if (funcTestUri.isEmpty()) {
         "localhost:8080"
     } else {
-        URI(uri).host
+        val uri = URI(funcTestUri)
+        "${uri.host}:${uri.port}"
     }
 
     return "ws://$host/realtime/chat"
