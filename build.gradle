@@ -165,6 +165,17 @@ configure([project(':authentication-service'),
             }
         }
     }
+
+    task reload() {
+        doLast {
+            exec {
+                commandLine 'kubectl', 'delete', 'deploy', project.name
+            }
+            exec {
+                commandLine 'kubectl', 'apply', '-f', "${rootProject.projectDir}/deploy/local/${project.name}.yaml"
+            }
+        }
+    }
 }
 
 configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
