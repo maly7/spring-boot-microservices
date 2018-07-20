@@ -192,6 +192,10 @@ task stop(type: Exec) {
     commandLine 'minikube', 'stop'
 }
 
+task versionFile() {
+    new File("version.txt").text = "APP_VERSION=${project.version}"
+}
+
 getTasksByName('deployLocal', true).each {
     it.dependsOn << getTasksByName('dockerBuild', true)
 }
