@@ -2,13 +2,13 @@ task deployLocal() {
     dependsOn getTasksByName('local', true)
     doLast {
         exec {
-            commandLine 'kubectl', 'apply', '-f', 'configs'
+            commandLine 'kubectl', 'apply', '-f', "${projectDir}/configs"
         }
         exec {
-            commandLine 'kubectl', 'apply', '-f', 'local/claims'
+            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local/claims"
         }
         exec {
-            commandLine 'kubectl', 'apply', '-f', 'local'
+            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local"
         }
     }
 }
