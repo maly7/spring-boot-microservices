@@ -111,3 +111,5 @@ rabbitmq/conf/rabbitmq.conf
 
 deploy/azure/*.yaml
 deploy/local/*.yaml
+
+version.txt
