@@ -173,19 +173,13 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 }
 
-task run(type: Exec) {
-    dependsOn getTasksByName('writeDockerfile', true), getTasksByName('writeConf', true)
-
-    loadEnv(environment)
-
-    commandLine 'docker-compose', 'up', '-d', '--build'
+task start(type: Exec) {
+    commandLine 'minikube', 'start'
 }
 
 task stop(type: Exec) {
-    commandLine 'docker-compose', 'down'
+    commandLine 'minikube', 'stop'
 }
-
-run.mustRunAfter stop
 
 getTasksByName('deployLocal', true).each {
     it.dependsOn << getTasksByName('dockerBuild', true)
