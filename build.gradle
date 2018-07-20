@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '1.0-SNAPSHOT'
+    version '0.1'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
@@ -155,6 +155,27 @@ configure([project(':authentication-service'),
     }
 
     writeDockerfile.dependsOn assemble
+
+    task dockerBuild() {
+        dependsOn writeDockerfile
+        doLast {
+            exec {
+                workingDir project.projectDir.path
+                commandLine 'docker', 'build', '.', '-t', "${project.name}:${project.version}", '-t', "${project.name}:latest"
+            }
+        }
+    }
+
+    task reload() {
+        doLast {
+            exec {
+                commandLine 'kubectl', 'delete', 'deploy', project.name
+            }
+            exec {
+                commandLine 'kubectl', 'apply', '-f', "${rootProject.projectDir}/deploy/local/${project.name}.yaml"
+            }
+        }
+    }
 }
 
 configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
@@ -163,16 +184,18 @@ configure([project(':authentication-service'), project(':chat-service'), project
     }
 }
 
-task run(type: Exec) {
-    dependsOn getTasksByName('writeDockerfile', true), getTasksByName('writeConf', true)
-
-    loadEnv(environment)
-
-    commandLine 'docker-compose', 'up', '-d', '--build'
+task start(type: Exec) {
+    commandLine 'minikube', 'start'
 }
 
 task stop(type: Exec) {
-    commandLine 'docker-compose', 'down'
+    commandLine 'minikube', 'stop'
 }
 
-run.mustRunAfter stop
+task versionFile() {
+    new File("version.txt").text = "APP_VERSION=${project.version}"
+}
+
+getTasksByName('deployLocal', true).each {
+    it.dependsOn << getTasksByName('dockerBuild', true)
+}

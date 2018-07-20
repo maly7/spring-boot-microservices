@@ -1,0 +1,94 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.yaml:snakeyaml:1.21'
+    }
+}
+
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+
+def dumperOptions = new DumperOptions()
+dumperOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+def yaml = new Yaml(dumperOptions)
+
+static def createSecrets(name, data) {
+    def secrets = [:]
+    secrets['apiVersion'] = 'v1'
+    secrets['kind'] = 'Secret'
+    secrets['metadata'] = ['name': name]
+    secrets['type'] = 'Opaque'
+    secrets['data'] = data
+    return secrets
+}
+
+static def createConfigMap(name, data) {
+    return [
+            'apiVersion': 'v1',
+            'kind'      : 'ConfigMap',
+            'metadata'  : ['name': name],
+            'data'      : data
+    ]
+}
+
+task genMysqlConfig() {
+    doLast {
+        def secrets = createSecrets('mysql-secrets', [
+                'password'    : "${UUID.randomUUID()}".bytes.encodeBase64().toString(),
+                'rootpassword': "${UUID.randomUUID()}".bytes.encodeBase64().toString()
+        ])
+        new File("${project.parent.projectDir}/secrets/mysql-secrets.yaml").text = yaml.dump(secrets)
+    }
+}
+
+task genMongoConfig() {
+    doLast {
+        def secrets = createSecrets('mongodb-secrets', [
+                'rootpassword': "${UUID.randomUUID()}".bytes.encodeBase64().toString()
+        ])
+
+        new File("${project.parent.projectDir}/secrets/mongodb-secrets.yaml").text = yaml.dump(secrets)
+    }
+}
+
+task genRabbitConfig() {
+    doLast {
+        def password = "${UUID.randomUUID()}".toString()
+        def secrets = createSecrets('rabbit-secrets', [
+                'cookie'  : "${UUID.randomUUID()}"[0..10].bytes.encodeBase64().toString(),
+                'password': password.bytes.encodeBase64().toString()
+        ])
+
+        def configData = """auth_backends.1 = rabbit_auth_backend_http
+auth_backends.2 = internal
+auth_http.http_method = post
+auth_http.user_path = http://authentication-service.default.svc.cluster.local:8180/amqp/user
+auth_http.vhost_path = http://authentication-service.default.svc.cluster.local:8180/amqp/vhost
+auth_http.resource_path = http://authentication-service.default.svc.cluster.local:8180/amqp/resource
+auth_http.topic_path = http://authentication-service.default.svc.cluster.local:8180/amqp/topic
+loopback_users = none
+loopback_users.guest = false
+listeners.tcp.default = 5672
+default_pass = ${password}
+default_user = kryption
+default_vhost = /
+hipe_compile = false
+management.listener.port = 15672
+management.listener.ssl = false
+""".toString()
+
+        def pluginsData = """[rabbitmq_auth_backend_http,rabbitmq_management,rabbitmq_web_stomp].
+""".toString()
+
+        def configMap = createConfigMap('rabbit-config', ['rabbitmq.conf': configData, 'enabled_plugins': pluginsData])
+
+        new File("${project.parent.projectDir}/secrets/rabbit-secrets.yaml").text = yaml.dump(secrets)
+        new File("${project.parent.projectDir}/configs/rabbit-config.yaml").text = yaml.dump(configMap)
+    }
+}
+
+task genConfigs() {
+    dependsOn genMysqlConfig, genMongoConfig, genRabbitConfig
+}

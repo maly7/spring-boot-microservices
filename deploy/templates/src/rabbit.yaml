@@ -4,7 +4,6 @@ metadata:
   labels:
     service: rabbit
   name: rabbit
-  namespace: kryption
 spec:
   ports:
   - name: management
@@ -23,9 +22,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq-admin
-  namespace: kryption
 spec:
-  type: LoadBalancer
+  type: $lbtype
   ports:
     - port: 80
       targetPort: 15672
@@ -33,29 +31,12 @@ spec:
   selector:
     app: rabbit
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    volume: rabbit-data
-  name: rabbit-data
-  namespace: kryption
-  annotations:
-    volume.beta.kubernetes.io/storage-class: managed-premium
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     deployment: rabbit
   name: rabbit
-  namespace: kryption
 spec:
   replicas: 1
   template:
@@ -73,7 +54,7 @@ spec:
             - mountPath: /etc/rabbitmq
               name: config
       containers:
-      - image: kryptioneastus.azurecr.io/rabbitmq:3-web-stomp
+      - image: rabbitmq:3-management
         name: rabbit
         ports:
         - containerPort: 15672

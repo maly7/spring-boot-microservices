@@ -4,7 +4,6 @@ metadata:
   labels:
     service: mongodb
   name: mongodb
-  namespace: kryption
 spec:
   ports:
   - name: "mongodb"
@@ -13,29 +12,12 @@ spec:
   selector:
     db: mongodb
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    volume: mongodb-data
-  name: mongodb-data
-  namespace: kryption
-  annotations:
-    volume.beta.kubernetes.io/storage-class: managed-premium
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 25Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     deployment: mongodb
   name: mongodb
-  namespace: kryption
 spec:
   replicas: 1
   strategy:

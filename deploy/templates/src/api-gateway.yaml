@@ -2,9 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: api-gateway-lb
-  namespace: kryption
 spec:
-  type: LoadBalancer
+  type: $lbtype
   ports:
     - port: 80
       targetPort: 8080
@@ -18,9 +17,8 @@ metadata:
   labels:
     deployment: api-gateway
   name: api-gateway
-  namespace: kryption
 spec:
-  replicas: 2
+  replicas: $appReplicas
   strategy: {}
   template:
     metadata:
@@ -30,11 +28,12 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.kryption.svc.cluster.local/eureka
+          value: http://service-registry.default.svc.cluster.local/eureka
         - name: RABBIT_HOST
-          value: rabbit.kryption.svc.cluster.local
-        image: kryptioneastus.azurecr.io/api-gateway:latest
+          value: rabbit.default.svc.cluster.local
+        image: ${repo}api-gateway:$version
         name: api-gateway
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         resources: {}
