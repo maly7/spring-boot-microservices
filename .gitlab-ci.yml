@@ -27,6 +27,7 @@ build:
     - openssl pkcs8 -topk8 -inform PEM -outform DER -in $AUTH_KEY_LOC/private_key.pem -out $AUTH_KEY_LOC/private_key.der -nocrypt
     - openssl rsa -in $AUTH_KEY_LOC/private_key.pem -pubout -outform DER -out $AUTH_KEY_LOC/public_key.der
     - ./gradlew assemble -x :functional-tests:assemble
+    - ./gradlew versionFile
   artifacts:
     paths:
       - chat-service/build
@@ -54,12 +55,13 @@ publish:
   services:
     - docker:dind
   script:
+    - source version.txt
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
     - docker login -u $ACR_USER -p $ACR_PASS $ACR_REGISTRY
-    - docker build chat-service -f chat-service/Dockerfile -t $REGISTRY/chat-service:latest -t $ACR_REGISTRY/chat-service:latest
-    - docker build authentication-service -f authentication-service/Dockerfile -t $REGISTRY/authentication-service:latest -t $ACR_REGISTRY/authentication-service:latest
-    - docker build service-registry -f service-registry/Dockerfile -t $REGISTRY/service-registry:latest -t $ACR_REGISTRY/service-registry:latest
-    - docker build api-gateway -f api-gateway/Dockerfile -t $REGISTRY/api-gateway:latest -t $ACR_REGISTRY/api-gateway:latest
+    - docker build chat-service -f chat-service/Dockerfile -t $REGISTRY/chat-service:latest -t $ACR_REGISTRY/chat-service:latest -t $REGISTRY/chat-service:$APP_VERSION -t $ACR_REGISTRY/chat-service:$APP_VERSION
+    - docker build authentication-service -f authentication-service/Dockerfile -t $REGISTRY/authentication-service:latest -t $ACR_REGISTRY/authentication-service:latest -t $REGISTRY/authentication-service:$APP_VERSION -t $ACR_REGISTRY/authentication-service:$APP_VERSION
+    - docker build service-registry -f service-registry/Dockerfile -t $REGISTRY/service-registry:latest -t $ACR_REGISTRY/service-registry:latest -t $REGISTRY/service-registry:$APP_VERSION -t $ACR_REGISTRY/service-registry:$APP_VERSION
+    - docker build api-gateway -f api-gateway/Dockerfile -t $REGISTRY/api-gateway:latest -t $ACR_REGISTRY/api-gateway:latest -t $REGISTRY/api-gateway:$APP_VERSION -t $ACR_REGISTRY/api-gateway:$APP_VERSION
     - docker push $REGISTRY/chat-service
     - docker push $REGISTRY/authentication-service
     - docker push $REGISTRY/service-registry
