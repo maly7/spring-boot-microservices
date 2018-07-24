@@ -145,16 +145,29 @@ configure([project(':authentication-service'),
            project(':api-gateway')]) {
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
+    task writeEntrypoint() {
+        doLast {
+            new File("${projectDir}/entrypoint.sh").text =
+                    """#!/bin/bash
+
+keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASS -alias "Kryption Root CA" -noprompt
+openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASS -out server.p12
+java -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud -jar /app${project.name}-${project.version}.jar"""
+        }
+    }
+
     task writeDockerfile(type: Dockerfile) {
         destFile project.file('Dockerfile')
         from 'java:8'
         workingDir '/app'
+        environmentVariable 'TRUSTSTORE_PASS', 'secret'
+        environmentVariable 'KEYSTORE_PASS', 'secret'
         addFile("build/libs/${project.name}-${project.version}.jar", '/app')
-        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=cloud',
-                '-jar', "${project.name}-${project.version}.jar")
+        addFile("entrypoint.sh", "/")
+        entryPoint("/entrypoint.sh")
     }
 
-    writeDockerfile.dependsOn assemble
+    writeDockerfile.dependsOn assemble, writeEntrypoint
 
     task dockerBuild() {
         dependsOn writeDockerfile
