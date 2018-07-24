@@ -37,7 +37,22 @@ spec:
         ports:
         - containerPort: 8080
         resources: {}
+        volumeMounts:
+          - mountPath: /certs
+            name: certs
+          - mountPath: /trusts
+            name: trusts
       restartPolicy: Always
+      volumes:
+        - name: certs
+          secret:
+            secretName: api-gateway-tls
+        - name: trusts
+          secret:
+            secretName: ca-key-pair
+            items:
+              - key: tls.crt
+                path: tls.crt
   selector:
     matchLabels:
       app: api-gateway

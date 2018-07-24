@@ -65,6 +65,10 @@ spec:
             name: rabbit-data
           - mountPath: /etc/rabbitmq/
             name: config
+          - mountPath: /certs
+            name: certs
+          - mountPath: /trusts
+            name: trusts
       hostname: rabbit1
       restartPolicy: Always
       volumes:
@@ -76,6 +80,15 @@ spec:
         - name: configmap
           configMap:
             name: rabbit-config
+        - name: certs
+          secret:
+            secretName: rabbit-tls
+        - name: truts
+          secret:
+            secretName: ca-key-pair
+            items:
+              - key: tls.crt
+                path: tls.crt
   selector:
     matchLabels:
       app: rabbit
