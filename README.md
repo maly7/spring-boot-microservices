@@ -1,8 +1,12 @@
 ## Getting Started
 1. If running windows, make sure you install and use 64-bit java
-1. Install docker and docker-compose for your platform
-1. Install minikube for your platform (here's a good guide for [windows](https://medium.com/@JockDaRock/minikube-on-windows-10-with-hyper-v-6ef0f4dc158c)
-1. Configure minikube to use local docker-env (on windows run `minikube docker-env` and follow the directions on macOS/linux run `eval $(minikube docker-env)`)
+1. Install [docker edge](https://docs.docker.com/edge/) for your platform
+1. Install kubernetes cli
+1. Enable Kubernetes support for docker
+1. Use docker for desktop as the kuberntes context: `kubectl config use-context docker-for-desktop`
+1. Follow Steps 1 and 2 to configure cert-manager and helm: https://cert-manager.readthedocs.io/en/latest/getting-started/1-configuring-helm.html
+1. Follow Steps 1 and 2 to setup a cert authority: https://cert-manager.readthedocs.io/en/latest/tutorials/ca/creating-ca-issuer.html#optional-generate-a-signing-key-pair
+1. Create the issuer: `kubectl apply -f deploy/ca/issuer.yaml`
 1. Copy `setup/template.gradle.properties` into the root project directory as `gradle.properties`
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
