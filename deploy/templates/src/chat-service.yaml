@@ -38,18 +38,18 @@ spec:
             secretKeyRef:
               name: mongodb-secrets
               key: rootpassword
-        - name: MONGODB_URL
+        - name: spring.data.mongodb.uri
           value: mongodb://mongodb.default.svc.cluster.local/kryption
-        - name: MONGODB_USER
+        - name: spring.data.mongodb.username
           value: kryption
-        - name: RABBITMQ_HOST
-          value: rabbit
-        - name: RABBITMQ_PASS
+        - name: spring.rabbitmq.host
+          value: rabbit.default.svc.cluster.local
+        - name: spring.rabbitmq.password
           valueFrom:
             secretKeyRef:
               name: rabbit-secrets
               key: password
-        - name: RABBITMQ_USER
+        - name: spring.rabbitmq.username
           value: kryption
         image: ${repo}chat-service:$version
         name: chat-service
