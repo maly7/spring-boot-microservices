@@ -16,6 +16,7 @@ eureka:
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
     secure-port-enabled: true
+    non-secure-port-enabled: false
     secure-port: 8761
     hostname: https://service-registry.default.svc.cluster.local/eureka
   client:
