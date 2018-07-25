@@ -52,7 +52,7 @@ task local() {
                        'appReplicas'    : 1,
                        'lbtype'         : 'NodePort',
                        'version'        : 'latest',
-                       'imagePullPolicy': 'Always'
+                       'imagePullPolicy': 'IfNotPresent'
         ]
 
         src.listFiles().each { template ->
