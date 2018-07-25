@@ -25,9 +25,9 @@ metadata:
 spec:
   type: $lbtype
   ports:
-    - port: 80
-      targetPort: 15672
-      name: management
+  - port: 80
+    targetPort: 15672
+    name: management
   selector:
     app: rabbit
 ---
@@ -45,14 +45,14 @@ spec:
         app: rabbit
     spec:
       initContainers:
-        - name: copy-rabbitmq-config
-          image: busybox
-          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq']
-          volumeMounts:
-            - mountPath: /configmap
-              name: configmap
-            - mountPath: /etc/rabbitmq
-              name: config
+      - name: copy-rabbitmq-config
+        image: busybox
+        command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq']
+        volumeMounts:
+        - mountPath: /configmap
+          name: configmap
+        - mountPath: /etc/rabbitmq
+          name: config
       containers:
       - image: rabbitmq:3-management
         name: rabbit
@@ -61,34 +61,34 @@ spec:
         - containerPort: 15674
         - containerPort: 5672
         volumeMounts:
-          - mountPath: /var/lib/rabbitmq
-            name: rabbit-data
-          - mountPath: /etc/rabbitmq/
-            name: config
-          - mountPath: /certs
-            name: certs
-          - mountPath: /trusts
-            name: trusts
+        - mountPath: /var/lib/rabbitmq
+          name: rabbit-data
+        - mountPath: /etc/rabbitmq/
+          name: config
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
       hostname: rabbit1
       restartPolicy: Always
       volumes:
-        - name: rabbit-data
-          persistentVolumeClaim:
-            claimName: rabbit-data
-        - name: config
-          emptyDir: {}
-        - name: configmap
-          configMap:
-            name: rabbit-config
-        - name: certs
-          secret:
-            secretName: rabbit-tls
-        - name: truts
-          secret:
-            secretName: ca-key-pair
-            items:
-              - key: tls.crt
-                path: tls.crt
+      - name: rabbit-data
+        persistentVolumeClaim:
+          claimName: rabbit-data
+      - name: config
+        emptyDir: {}
+      - name: configmap
+        configMap:
+          name: rabbit-config
+      - name: certs
+        secret:
+          secretName: rabbit-tls
+      - name: truts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
   selector:
     matchLabels:
       app: rabbit

@@ -46,7 +46,7 @@ spec:
         image: mysql:5.7
         name: mysql
         args:
-          - "--ignore-db-dir=lost+found"
+        - "--ignore-db-dir=lost+found"
         ports:
         - containerPort: 3306
           name: mysql

@@ -57,21 +57,21 @@ spec:
         ports:
         - containerPort: 8280
         volumeMounts:
-          - mountPath: /certs
-            name: certs
-          - mountPath: /trusts
-            name: trusts
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
       restartPolicy: Always
       volumes:
-        - name: certs
-          secret:
-            secretName: chat-service-tls
-        - name: trusts
-          secret:
-            secretName: ca-key-pair
-            items:
-              - key: tls.crt
-                path: tls.crt
+      - name: certs
+        secret:
+          secretName: chat-service-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
   selector:
     matchLabels:
       app: chat-service
