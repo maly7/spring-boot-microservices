@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '0.1.2'
+    version '0.1.7'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
@@ -195,14 +195,6 @@ configure([project(':authentication-service'), project(':chat-service'), project
     dependencies {
         compile 'org.springframework.boot:spring-boot-starter-web'
     }
-}
-
-task start(type: Exec) {
-    commandLine 'minikube', 'start'
-}
-
-task stop(type: Exec) {
-    commandLine 'minikube', 'stop'
 }
 
 task versionFile() {
