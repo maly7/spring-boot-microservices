@@ -19,7 +19,8 @@ class ApplicationConfig {
                 .loadTrustMaterial(File("/app/trusts.jks"), "secret".toCharArray(), TrustSelfSignedStrategy()).build()
         )
         args.setEurekaJerseyClient(
-            EurekaJerseyClientImpl.EurekaJerseyClientBuilder().withSystemSSLConfiguration()
+            EurekaJerseyClientImpl.EurekaJerseyClientBuilder()
+                .withSystemSSLConfiguration()
                 .withClientName("registry-client")
                 .withMaxConnectionsPerHost(10)
                 .withMaxTotalConnections(10)
