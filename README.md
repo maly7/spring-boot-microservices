@@ -12,7 +12,7 @@
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
 1. Run `./gradlew :d:g:genConfigs` once to generate secrets (NOTE: if you ever change these you'll need to delete them from your k8s cluster and re-add them)
 1. Only when secrets change, run `./gradlew :d:localSecrets`
-1. To deploy the whole stack to your minikube run `./gradlew :d:deployLocal`
+1. To deploy the whole stack to your local k8s cluster run `./gradlew :d:deployLocal`
 1. To reload any app after the cluster is lunched run the `reload` task for that project
 1. To run just the authentication service run `./gradlew :a-s:bootRun` this will start a mysql container and then bootRun the relational store. To stop the mysql container run `./gradlew stopMysql`
 1. To run just the chat service run `./gradlew :c-s:bootRun` this will start a mongo db container and then bootRun the document store. To stop the mongo db container run `./gradlew stopMongo`
@@ -41,11 +41,3 @@ Our custom docker images are built and published to the gitlab docker repository
 
 ### Running Tests
 1. The chat-service tests require a 64-bit version of java to run the embedded MongoDB
-
-### Helpful Minikube commands
-* `minikube start` and `minikube stop` to start/stop the cluster
-* `minikube service $SERVICE_NAME --url` to get the addressable url for an exposed service
-
-### Minikube on windows
-* Currently we need to use version 0.27 so we can use the start/stop commands on the cluster.
-* When first launching a cluster you'll need to stop it, then turn off dynamic memory management 
