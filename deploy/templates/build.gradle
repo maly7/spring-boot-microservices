@@ -28,9 +28,10 @@ task azure() {
     mustRunAfter cleanAzure
 
     doLast {
-        def binding = ['repo'       : azureRepo,
-                       'appReplicas': 2,
-                       'lbtype'     : 'LoadBalancer'
+        def binding = ['repo'           : azureRepo,
+                       'appReplicas'    : 2,
+                       'lbtype'         : 'LoadBalancer',
+                       'imagePullPolicy': 'IfNotPresent'
         ]
 
         src.listFiles().each { template ->
@@ -47,13 +48,14 @@ task local() {
     mustRunAfter cleanLocal
 
     doLast {
-        def binding = ['repo'       : '',
-                       'appReplicas': 1,
-                       'lbtype'     : 'NodePort'
+        def binding = ['repo'           : '',
+                       'appReplicas'    : 1,
+                       'lbtype'         : 'NodePort',
+                       'version'        : 'latest',
+                       'imagePullPolicy': 'Always'
         ]
 
         src.listFiles().each { template ->
-            setVersion(binding, template)
             def text = template.text
             def boundText = engine.createTemplate(text).make(binding)
             new File("${parent.projectDir}/local/${template.name}").text = boundText

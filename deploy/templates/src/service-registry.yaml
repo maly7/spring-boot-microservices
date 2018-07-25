@@ -45,16 +45,16 @@ spec:
         - name: eureka.client.service-url.default-zone
           value: https://service-registry.default.svc.cluster.local/eureka
         - name: javax.net.ssl.keyStore
-          value: "file:/app/server.p12"
+          value: "/app/server.p12"
         - name: javax.net.ssl.keyStorePassword
           value: secret
         - name: javax.net.ssl.trustStore
-          value: "file:/app/trust.jks"
+          value: "/app/trust.jks"
         - name: javax.net.ssl.trustStorePassword
           value: secret
         name: service-registry
         image: ${repo}service-registry:$version
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: $imagePullPolicy
         ports:
         - containerPort: 8761
         volumeMounts:
