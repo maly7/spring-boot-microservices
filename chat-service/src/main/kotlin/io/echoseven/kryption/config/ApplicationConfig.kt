@@ -1,5 +1,7 @@
 package io.echoseven.kryption.config
 
+import com.netflix.discovery.DiscoveryClient
+import io.echoseven.kryption.commons.discovery.SSLConfiguredDiscoveryClientOptionalArgs
 import io.echoseven.kryption.properties.MessagingProperties
 import io.echoseven.kryption.service.UserService
 import org.springframework.amqp.core.AmqpAdmin
@@ -45,4 +47,8 @@ class ApplicationConfig {
             Optional.of(userService.getCurrentUserId())
         }
     }
+
+    @Bean
+    fun discoveryClientOptionalArgs(): DiscoveryClient.DiscoveryClientOptionalArgs =
+        SSLConfiguredDiscoveryClientOptionalArgs()
 }

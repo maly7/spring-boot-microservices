@@ -1,6 +1,8 @@
 package io.echoseven.kryption.config
 
+import com.netflix.discovery.DiscoveryClient
 import io.echoseven.kryption.auditing.LocalDateTimeProvider
+import io.echoseven.kryption.commons.discovery.SSLConfiguredDiscoveryClientOptionalArgs
 import io.jsonwebtoken.SignatureAlgorithm
 import org.apache.commons.io.IOUtils
 import org.springframework.context.annotation.Bean
@@ -30,4 +32,8 @@ class ApplicationConfig {
 
     @Bean
     fun signatureAlgorithm(): SignatureAlgorithm = SignatureAlgorithm.RS256
+
+    @Bean
+    fun discoveryClientOptionalArgs(): DiscoveryClient.DiscoveryClientOptionalArgs =
+        SSLConfiguredDiscoveryClientOptionalArgs()
 }
