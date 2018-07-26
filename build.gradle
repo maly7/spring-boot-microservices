@@ -165,9 +165,9 @@ configure([project(':authentication-service'),
             new File("${projectDir}/entrypoint.sh").text =
                     """#!/bin/bash
 
-keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASS -alias "Kryption Root CA" -noprompt
-openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASS -out server.p12
-java -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASS -jar /app/${
+keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASSWORD -alias "Kryption Root CA" -noprompt
+openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASSWORD -out server.p12
+java -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -jar /app/${
                         project.name
                     }-${project.version}.jar"""
         }
@@ -177,8 +177,8 @@ java -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=
         destFile project.file('Dockerfile')
         from 'java:8'
         workingDir '/app'
-        environmentVariable 'TRUSTSTORE_PASS', 'secret'
-        environmentVariable 'KEYSTORE_PASS', 'secret'
+        environmentVariable 'TRUSTSTORE_PASSWORD', 'secret'
+        environmentVariable 'KEYSTORE_PASSWORD', 'secret'
         addFile("build/libs/${project.name}-${project.version}.jar", '/app')
         addFile("entrypoint.sh", "/")
         entryPoint("/entrypoint.sh")

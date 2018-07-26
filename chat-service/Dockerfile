@@ -1,7 +1,7 @@
 FROM java:8
 WORKDIR /app
-ENV TRUSTSTORE_PASS secret
-ENV KEYSTORE_PASS secret
+ENV TRUSTSTORE_PASSWORD secret
+ENV KEYSTORE_PASSWORD secret
 ADD build/libs/chat-service-0.1.11.jar /app
 ADD entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
