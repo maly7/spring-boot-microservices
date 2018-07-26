@@ -8,3 +8,5 @@ include 'deploy'
 include 'rabbitmq'
 include 'deploy:generate'
 include 'deploy:templates'
+include 'commons'
+
