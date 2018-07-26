@@ -6,7 +6,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 8443
       name: tomcat
   selector:
     app: api-gateway
@@ -19,7 +19,7 @@ spec:
   type: LoadBalancer
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 8443
       name: tomcat
   selector:
     app: api-gateway

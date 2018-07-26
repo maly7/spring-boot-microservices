@@ -5,8 +5,8 @@ metadata:
 spec:
   type: $lbtype
   ports:
-  - port: 80
-    targetPort: 8080
+  - port: 443
+    targetPort: 8443
     name: tomcat
   selector:
     app: api-gateway
@@ -28,14 +28,14 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: http://service-registry.default.svc.cluster.local/eureka
+          value: https://service-registry.default.svc.cluster.local/eureka
         - name: RABBIT_HOST
           value: rabbit.default.svc.cluster.local
         image: ${repo}api-gateway:$version
         name: api-gateway
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 8443
         resources: {}
         volumeMounts:
         - mountPath: /certs

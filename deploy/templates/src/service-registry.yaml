@@ -21,7 +21,7 @@ metadata:
 spec:
   type: $lbtype
   ports:
-  - port: 80
+  - port: 443
     targetPort: 8761
     name: eureka
   selector:

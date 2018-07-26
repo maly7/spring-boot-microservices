@@ -5,7 +5,7 @@ import org.junit.Before
 
 open class FunctionalTest {
 
-    private val baseUri = System.getProperty("funcTestUri", "http://localhost:8080")
+    private val baseUri = System.getProperty("funcTestUri", "https://localhost:8443")
 
     @Before
     open fun setup() {
