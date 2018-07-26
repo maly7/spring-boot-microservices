@@ -53,7 +53,7 @@ spec:
           value: kryption
         image: ${repo}chat-service:$version
         name: chat-service
-        imagePullPolicy: $imagePullPolicy
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8280
         volumeMounts:

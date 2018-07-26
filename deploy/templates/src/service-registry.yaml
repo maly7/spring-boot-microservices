@@ -46,7 +46,7 @@ spec:
           value: https://service-registry.default.svc.cluster.local/eureka
         name: service-registry
         image: ${repo}service-registry:$version
-        imagePullPolicy: $imagePullPolicy
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8761
         volumeMounts:
