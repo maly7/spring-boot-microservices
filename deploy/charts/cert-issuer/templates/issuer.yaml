@@ -1,0 +1,9 @@
+# kind: Deployment
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: {{ .Release.Name }}-ca-issuer
+  namespace: {{ .Values.issuerNamespace }}
+spec:
+  ca:
+    secretName: {{ .Release.Name }}-ca-key-pair

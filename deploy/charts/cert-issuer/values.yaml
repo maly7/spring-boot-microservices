@@ -1,0 +1,6 @@
+issuerNamespace: default
+caKey: ca.key
+caCert: ca.crt
+
+cert-manager:
+  name: cert-manager
