@@ -20,3 +20,14 @@ task localSecrets() {
         }
     }
 }
+
+task installCertManager() {
+    doLast {
+        exec {
+            commandLine 'helm', 'install', '--name', 'cert-manager', '--namespace', 'kube-system', 'stable/cert-manager'
+        }
+        exec {
+            commandLine 'helm', 'install', "${projectDir}/charts/cert-issuer"
+        }
+    }
+}
