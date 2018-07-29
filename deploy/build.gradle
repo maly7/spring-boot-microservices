@@ -43,7 +43,3 @@ task installNginxIngress() {
 task installClusterDeps() {
     dependsOn installCertManager, installNginxIngress
 }
-
-task installLocalDeps() {
-    dependsOn installCertManager
-}
