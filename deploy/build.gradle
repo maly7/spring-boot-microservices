@@ -27,7 +27,7 @@ task installCertManager() {
             commandLine 'helm', 'install', '--name', 'cert-manager', '--namespace', 'kube-system', 'stable/cert-manager'
         }
         exec {
-            commandLine 'helm', 'install', "${projectDir}/charts/cert-issuer"
+            commandLine 'helm', 'install', '--name', 'cert-issuer', '--namespace', 'default', "${projectDir}/charts/cert-issuer"
         }
     }
 }
