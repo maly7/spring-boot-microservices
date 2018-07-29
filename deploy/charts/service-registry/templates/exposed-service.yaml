@@ -11,5 +11,8 @@ spec:
   - port: {{ .Values.service.port }}
     targetPort: 8761
     name: eureka
+    {{- if eq .Values.service.type "NodePort" }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: service-registry
