@@ -1,0 +1,8 @@
+image:
+  repository: 
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 443
