@@ -1,4 +1,4 @@
 {{ .Chart.Name }} successfully installed!
 
 Your release is available at {{ .Release.Name }}
-Your issuer is available at {{ .Release.Name }}-ca-issuer with its key pair at {{ .Release.Name }}-ca-key-pair
+Your issuer is available at ca-issuer with its key pair at ca-key-pair
