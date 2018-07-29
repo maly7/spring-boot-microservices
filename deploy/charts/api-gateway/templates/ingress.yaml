@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: api-gateway-ingress
+  name: api-gateway
   labels:
     app: {{ template "api-gateway.name" . }}
     chart: {{ template "api-gateway.chart" . }}
