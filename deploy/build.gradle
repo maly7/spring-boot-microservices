@@ -31,3 +31,15 @@ task installCertManager() {
         }
     }
 }
+
+task installNginxIngress() {
+    doLast {
+        exec {
+            commandLine 'helm', 'install', '--name', 'nginx-ingress', '--namespace', 'kube-system', 'stable/nginx-ingress'
+        }
+    }
+}
+
+task installClusterDeps() {
+    dependsOn installCertManager, installNginxIngress
+}
