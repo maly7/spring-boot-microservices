@@ -7,7 +7,7 @@
 1. Install the cert-manager
     1. Create the CA key `openssl genrsa -out /path/to/project/deploy/charts/cert-issuer/ca.key 2048`
     1. Create the Self Signed cert `openssl req -x509 -new -nodes -key ca.key -subj "/CN=Kryption Root CA" -days 3650 -reqexts v3_req -extensions v3_ca -out /path/to/project/deploy/charts/cert-issuer/ca.crt`
-1. Prepare the cluster by running `./gradlew :d:installClusterDeps`
+1. Prepare the cluster by running `./gradlew :d:installLocalDeps`
 1. Copy `setup/template.gradle.properties` into the root project directory as `gradle.properties`
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
@@ -22,11 +22,11 @@
 ### Functional Tests
 The functional-tests project contains a set of api-based functional tests written using [Rest Assured](https://github.com/rest-assured/rest-assured/). These tests should be run periodically and before every merge. In the future this will be part of the CI build.
 
-Make sure you have minikube up and running and your gradle property `systemProp.funcTestUri` set to the minikube service url `./gradlew :f-t:integTest`.
+To run the functional test suite run `./gradlew :f-t:integTest`.
 
-To get the right funcTestUri run `minikube service api-gateway-lb --url` and set it to that output 
+If you need to run against a different server rather than localhost, then specify systemProp.funcTestUri to be that host
 
-### Generating RSA Key
+### Generating RSA Key for JWT
 1. `openssl genrsa -out authentication-service/src/main/resources/keys/private_key.pem 2048`
 1. `openssl pkcs8 -topk8 -inform PEM -outform DER -in authentication-service/src/main/resources/keys/private_key.pem -out authentication-service/src/main/resources/keys/private_key.der -nocrypt`
 1. `openssl rsa -in authentication-service/src/main/resources/keys/private_key.pem -pubout -outform DER -out authentication-service/src/main/resources/keys/public_key.der`
