@@ -3,8 +3,9 @@ kind: Deployment
 metadata:
   labels:
     deployment: service-registry
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: service-registry
-  release: {{ .Release.Name }}
 spec:
   replicas: 1
   template:

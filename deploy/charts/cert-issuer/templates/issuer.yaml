@@ -3,7 +3,9 @@ kind: Issuer
 metadata:
   name: ca-issuer
   namespace: {{ .Values.issuerNamespace }}
-  release: {{ .Release.Name }}
+  labels:
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ca:
     secretName: ca-key-pair
