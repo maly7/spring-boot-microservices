@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  labels:
+    service: api-gateway
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8443
+      protocol: TCP
+      name: https
+  selector:
+    app: api-gateway
+    release: {{ .Release.Name }}
