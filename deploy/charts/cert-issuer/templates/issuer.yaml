@@ -4,7 +4,6 @@ metadata:
   name: ca-issuer
   namespace: {{ .Values.issuerNamespace }}
   release: {{ .Release.Name }}
-  heritage: {{ .Release.ServiceName }}
 spec:
   ca:
     secretName: ca-key-pair
