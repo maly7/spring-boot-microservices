@@ -15,4 +15,3 @@ spec:
       name: https
   selector:
     app: api-gateway
-    release: {{ .Release.Name }}
