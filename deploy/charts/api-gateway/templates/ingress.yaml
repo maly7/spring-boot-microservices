@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -29,5 +30,6 @@ spec:
           - path: /
             backend:
               serviceName: api-gateway
-              servicePort: {{ $servicePort }}
+              servicePort: https
   {{- end }}
+{{- end }}
