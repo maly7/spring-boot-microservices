@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: service-registry
+  name: service-registry
+  release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service-registry
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: https://service-registry.default.svc.cluster.local/eureka
+        name: service-registry
+        image: {{ .Values.image.repository }}service-registry:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8761
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
+      restartPolicy: Always
+      volumes:
+      - name: certs
+        secret:
+          secretName: service-registry-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
+  selector:
+    matchLabels:
+      app: service-registry
