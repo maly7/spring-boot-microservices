@@ -7,7 +7,7 @@
 1. Install the cert-manager
     1. Create the CA key `openssl genrsa -out /path/to/project/deploy/charts/cert-issuer/ca.key 2048`
     1. Create the Self Signed cert `openssl req -x509 -new -nodes -key ca.key -subj "/CN=Kryption Root CA" -days 3650 -reqexts v3_req -extensions v3_ca -out /path/to/project/deploy/charts/cert-issuer/ca.crt`
-1. Prepare the cluster by running `./gradlew :d:installLocalDeps`
+1. Prepare the cluster by running `./gradlew :d:installCertManager`
 1. Copy `setup/template.gradle.properties` into the root project directory as `gradle.properties`
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
