@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: api-gateway
+  name: api-gateway
+  release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: https://service-registry.{{ .Release.Namespace }}.svc.cluster.local/eureka
+        - name: RABBIT_HOST
+          value: rabbit.{{ .Release.Namespace }}.svc.cluster.local
+        image: {{ .Values.image.repository }}api-gateway:{{ .Values.image.tag }}
+        name: api-gateway
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8443
+        resources: {}
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
+      restartPolicy: Always
+      volumes:
+      - name: certs
+        secret:
+          secretName: api-gateway-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
+  selector:
+    matchLabels:
+      app: api-gateway

@@ -1,0 +1,15 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: api-gateway-ingress
+  release: {{ .Release.Name }}
+spec:
+  secretName: api-gateway-ingress-tls
+  issuerRef:
+    name: {{ .Values.ingress.issuer }}
+    kind: Issuer
+  commonName: api-gateway
+  dnsNames:
+  {{- range .Values.ingress.hosts }}
+  - {{ . | quote }}
+  {{- end }}
