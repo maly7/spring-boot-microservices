@@ -1,7 +1,3 @@
-# Default values for api-gateway.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
 image:
@@ -20,9 +16,9 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
   path: /
   hosts:
-    - localhost
+  - localhost
   issuer: ca-issuer
   tls:
-   - secretName: api-gateway-ingress-tls
-     hosts:
-       - localhost
+  - secretName: api-gateway-ingress-tls
+    hosts:
+    - localhost

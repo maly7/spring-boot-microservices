@@ -1,0 +1,1 @@
+Api Gateway installed and configured for  {{ .Release.Name }}
