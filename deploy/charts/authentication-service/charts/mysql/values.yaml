@@ -76,13 +76,12 @@ resources:
     cpu: 100m
 
 # Custom mysql configuration files used to override default mysql settings
-configurationFiles: {}
-#  mysql.cnf: |-
-#    [mysqld]
-#    skip-name-resolve
-#    ssl-ca=/ssl/ca.pem
-#    ssl-cert=/ssl/server-cert.pem
-#    ssl-key=/ssl/server-key.pem
+configurationFiles: 
+ mysql.cnf: |-
+   [mysqld]
+   ssl-ca=/ssl/ca/ca.pem
+   ssl-cert=/ssl/certs/server-cert.pem
+   ssl-key=/ssl/certs/server-key.pem
 
 # Custom mysql init SQL files used to initialize the database
 initializationFiles: {}
@@ -112,7 +111,9 @@ service:
 
 ssl:
   enabled: false
+  existingCerts:
   secret: mysql-ssl-certs
+  caSecret: ca-key-pair
   certificates:
 #  - name: mysql-ssl-certs
 #    ca: |-
