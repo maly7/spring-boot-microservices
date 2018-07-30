@@ -17,18 +17,20 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: https://service-registry.{{ .Release.Namespace }}.svc.cluster.local/eureka
+          value: https://{{ template "eureka.hostname" . }}/eureka
+        - name: eureka.instance.hostname
+          value: {{ template "api-gateway.hostname" . }}
         - name: RABBIT_HOST
           value: rabbit.{{ .Release.Namespace }}.svc.cluster.local
         - name: KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "api-gateway.name" . }}-secrets
+              name: {{ template "api-gateway.secrets" . }}
               key: keyStorePassword
         - name: TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "api-gateway.name" . }}-secrets
+              name: {{ template "api-gateway.secrets" . }}
               key: trustStorePassword
         - name: JAVA_OPTS
           value: {{ .Values.javaOpts | quote }}
