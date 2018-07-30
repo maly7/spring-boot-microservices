@@ -1,31 +1,31 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: api-gateway
+  name: {{ template "api-gateway.name" .  }}
   release: {{ .Release.Name }}
   chart: {{ template "api-gateway.chart" . }}
   release: {{ .Release.Name }}
   heritage: {{ .Release.Service }}
 spec:
-  secretName: api-gateway-tls
+  secretName: {{ template "api-gateway.name" .  }}-tls
   issuerRef:
     name: ca-issuer
     kind: Issuer
-  commonName: api-gateway
+  commonName: {{ template "api-gateway.name" .  }}
   dnsNames:
-  - api-gateway.{{ .Release.Namespace }}.svc.cluster.local
+  - {{ template "api-gateway.name" .  }}.{{ .Release.Namespace }}.svc.cluster.local
   - localhost
 {{- if .Values.ingress.enabled -}}
 ---
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: api-gateway-ingress
+  name: {{ template "api-gateway.name" .  }}-ingress
   chart: {{ template "api-gateway.chart" . }}
   release: {{ .Release.Name }}
   heritage: {{ .Release.Service }}
 spec:
-  secretName: api-gateway-ingress-tls
+  secretName: {{ template "api-gateway.name" .  }}-ingress-tls
   issuerRef:
     name: {{ .Values.ingress.issuer }}
     kind: Issuer

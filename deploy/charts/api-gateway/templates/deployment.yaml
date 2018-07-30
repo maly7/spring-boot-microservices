@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    deployment: api-gateway
+    deployment: {{ template "api-gateway.name" .  }}
     chart: {{ template "api-gateway.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: api-gateway
+  name: {{ template "api-gateway.name" .  }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: {{ template "api-gateway.name" .  }}
     spec:
       containers:
       - env:
@@ -23,17 +23,17 @@ spec:
         - name: KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: api-gateway-secrets
+              name: {{ template "api-gateway.name" .  }}-secrets
               key: keyStorePassword
         - name: TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: api-gateway-secrets
+              name: {{ template "api-gateway.name" .  }}-secrets
               key: trustStorePassword
         - name: JAVA_OPTS
           value: {{ .Values.javaOpts | quote }}
         image: {{ .Values.image.repository }}api-gateway:{{ .Values.image.tag }}
-        name: api-gateway
+        name: {{ template "api-gateway.name" .  }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8443
@@ -47,7 +47,7 @@ spec:
       volumes:
       - name: certs
         secret:
-          secretName: api-gateway-tls
+          secretName: {{ template "api-gateway.name" .  }}-tls
       - name: trusts
         secret:
           secretName: ca-key-pair
@@ -56,4 +56,4 @@ spec:
             path: tls.crt
   selector:
     matchLabels:
-      app: api-gateway
+      app: {{ template "api-gateway.name" .  }}

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway
+  name: {{ template "api-gateway.name" .  }}
   labels:
-    service: api-gateway
+    service: {{ template "api-gateway.name" .  }}
     chart: {{ template "api-gateway.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -18,4 +18,4 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:
-    app: api-gateway
+    app: {{ template "api-gateway.name" .  }}
