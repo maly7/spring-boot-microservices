@@ -4,6 +4,7 @@ metadata:
   name: ca-issuer
   namespace: {{ .Values.issuerNamespace }}
   labels:
+    chart: {{ template "cert-issuer.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
