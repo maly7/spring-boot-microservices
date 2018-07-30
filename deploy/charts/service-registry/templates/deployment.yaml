@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   labels:
     deployment: service-registry
+    chart: {{ template "service-registry.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   name: service-registry
