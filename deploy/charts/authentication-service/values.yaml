@@ -13,3 +13,15 @@ service:
   type: ClusterIP
   port: 443
   targetPort: 8143
+
+mysql:
+  existingSecret: mysql-secrets
+  mysqlUser: kryption
+  mysqlDatabase: kryption
+  mysqlPassword:
+  mysqlRootPassword:
+  persistence:
+    enabled: true
+    existingClaim: mysql-data
+  ssl:
+    enabled: true
