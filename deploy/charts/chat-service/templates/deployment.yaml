@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "chat-service.name" . }}
+  labels:
+    deployment: {{ template "chat-service.name" . }}
+    chart: {{ template "chat-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "chat-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "chat-service.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}{{ template "chat-service.name" . }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+          - name: eureka.client.service-url.default-zone
+            value: https://{{ template "eureka.hostname" . }}/eureka
+          - name: eureka.instance.hostname
+            value: {{ template "chat-service.hostname" . }}
+          - name: spring.data.mongodb.host
+            value: {{ template "mongodb.host" . }}
+          - name: spring.data.mongodb.password
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-secrets
+                key: rootpassword
+          - name: spring.data.mongodb.uri
+            value: mongodb://{{ template "mongodb.host" . }}/kryption?ssl=true
+          - name: spring.data.mongodb.username
+            value: kryption
+          - name: spring.rabbitmq.host
+            value: {{ template "rabbitmq.host" . }}
+          - name: spring.rabbitmq.password
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-secrets
+                key: password
+          - name: spring.rabbitmq.username
+            value: kryption
+          - name: KEYSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "chat-service.name" . }}-secrets
+                key: keyStorePassword
+          - name: TRUSTSTORE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "chat-service.name" . }}-secrets
+                key: trustStorePassword
+          - name: JAVA_OPTS
+            value: {{ .Values.javaOpts | quote }}
+          volumeMounts:
+            - mountPath: /certs
+              name: certs
+            - mountPath: /trusts
+              name: trusts
+      restartPolicy: Always
+      volumes:
+        - name: certs
+          secret:
+            secretName: chat-service-tls
+        - name: trusts
+          secret:
+            secretName: ca-key-pair
+            items:
+            - key: tls.crt
+              path: tls.crt

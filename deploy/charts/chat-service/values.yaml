@@ -1,0 +1,19 @@
+# Default values for chat-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 
+  tag: latest
+  pullPolicy: IfNotPresent
+
+keyStorePassword:
+trustStorePassword:
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 8243
