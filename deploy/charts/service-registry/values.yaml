@@ -4,6 +4,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
+  expose: true
   type: NodePort
   port: 443
   nodePort: 30761

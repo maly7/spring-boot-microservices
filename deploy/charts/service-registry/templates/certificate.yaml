@@ -3,6 +3,7 @@ kind: Certificate
 metadata:
   name: service-registry
   labels:
+    chart: {{ template "service-registry.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
