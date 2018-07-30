@@ -33,5 +33,5 @@ Create chart name and version as used by the chart label.
 
 {{/* Get the service hostname for this chart */}}
 {{- define "service-registry.hostname" -}}
-{{include "service-registry.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ include "service-registry.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}

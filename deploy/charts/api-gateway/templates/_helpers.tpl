@@ -30,3 +30,16 @@ Create chart name and version as used by the chart label.
 {{- define "api-gateway.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Get the service hostname for this chart */}}
+{{- define "api-gateway.hostname" -}}
+{{ include "api-gateway.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
+
+{{/* Get the name of the secrets for the api-gateway */}}
+{{- define "api-gateway.secrets" -}}
+{{ include "api-gateway.name" . }}-secrets
+{{- end -}}
+{{- define "eureka.hostname" -}}
+service-registry.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}

@@ -33,7 +33,7 @@ Create chart name and version as used by the chart label.
 
 {{/* Get the service hostname for this chart */}}
 {{- define "authentication-service.hostname" -}}
-{{include "authentication-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ include "authentication-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}
 
 {{- define "mysql.hostname" -}}
