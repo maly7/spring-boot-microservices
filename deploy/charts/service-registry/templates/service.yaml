@@ -14,5 +14,4 @@ spec:
     targetPort: 8761
   selector:
     app: service-registry
-    release: {{ .Release.Name }}
   type: ClusterIP
