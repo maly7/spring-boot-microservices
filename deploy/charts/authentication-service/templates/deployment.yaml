@@ -37,7 +37,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mysql-secrets
-              key: password
+              key: mysql-password
         - name: spring.datasource.username
           value: kryption
         - name: spring.datasource.url

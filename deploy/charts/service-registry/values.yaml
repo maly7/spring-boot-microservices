@@ -3,6 +3,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+keyStorePassword:
+trustStorePassword:
+
 service:
   expose: true
   type: NodePort
