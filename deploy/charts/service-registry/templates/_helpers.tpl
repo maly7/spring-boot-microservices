@@ -30,3 +30,8 @@ Create chart name and version as used by the chart label.
 {{- define "service-registry.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Get the service hostname for this chart */}}
+{{- define "service-registry.hostname" -}}
+{{include "service-registry.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
