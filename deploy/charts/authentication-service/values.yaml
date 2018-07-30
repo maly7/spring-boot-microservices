@@ -9,6 +9,10 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+keyStorePassword:
+trustStorePassword:
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
+
 service:
   type: ClusterIP
   port: 443
@@ -34,3 +38,9 @@ mysql:
     secret: mysql-tls
     existingCerts: mysql
     caSecret: ca-key-pair
+  configurationFiles: 
+    mysql.cnf: |-
+      [mysqld]
+      ssl-ca=/ssl/ca/ca.pem
+      ssl-cert=/ssl/certs/server-cert.pem
+      ssl-key=/ssl/certs/server-key.pem

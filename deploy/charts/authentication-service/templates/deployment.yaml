@@ -9,27 +9,12 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ template "authentication-service.name" . }}
   template:
     metadata:
       labels:
         app: {{ template "authentication-service.name" . }}
     spec:
       containers:
-        name: {{ template "authentication-service.name" . }}
-        image: "{{ .Values.image.repository }}{{ template "authentication-service.name" . }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        ports:
-        - name: https
-          containerPort: {{ .Values.service.targetPort }}
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /certs
-          name: certs
-        - mountPath: /trusts
-          name: trusts
       - env:
         - name: eureka.client.service-url.default-zone
           value: https://service-registry.{{ .Release.Namespace }}.svc.cluster.local/eureka
@@ -41,9 +26,31 @@ spec:
         - name: spring.datasource.username
           value: kryption
         - name: spring.datasource.url
-          value: jdbc:mysql://mysql.{{ .Release.Namespace }}.svc.cluster.local:3306/kryption?autoReconnect=true&useSSL=true&verifyServerCertificate=false
+          value: jdbc:mysql://{{ .Release.Name }}-mysql.{{ .Release.Namespace }}.svc.cluster.local:3306/kryption?autoReconnect=true&useSSL=true&verifyServerCertificate=false
         - name: eureka.instance.hostname
-          value: https://authentication-service.{{ .Release.Namespace }}.svc.cluster.local
+          value: https://{{ template "authentication-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+        - name: KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "authentication-service.name" . }}-secrets
+              key: keyStorePassword
+        - name: TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "authentication-service.name" . }}-secrets
+              key: trustStorePassword
+        - name: JAVA_OPTS
+          value: {{ .Values.javaOpts | quote }}
+        name: {{ template "authentication-service.name" . }}
+        image: "{{ .Values.image.repository }}{{ template "authentication-service.name" . }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
       restartPolicy: Always
       volumes:
       - name: certs
@@ -55,3 +62,6 @@ spec:
           items:
           - key: tls.crt
             path: tls.crt
+  selector:
+    matchLabels:
+      app: {{ template "authentication-service.name" . }}
