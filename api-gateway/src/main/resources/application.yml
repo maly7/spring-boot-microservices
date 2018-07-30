@@ -12,6 +12,10 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      httpclient:
+        ssl:
+          trustedX509Certificates:
+          - /trusts/tls.crt
       routes:
       - id: chat_route
         uri: lb://CHAT-SERVICE

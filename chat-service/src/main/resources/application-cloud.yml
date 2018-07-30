@@ -8,6 +8,9 @@ eureka:
     appname: chat-service
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
+    secure-port: 443
+    secure-port-enabled: true
+    non-secure-port-enabled: false
 
 logging:
   file: /data/logs/chat-service.log

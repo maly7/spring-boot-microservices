@@ -30,3 +30,16 @@ Create chart name and version as used by the chart label.
 {{- define "authentication-service.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/* Get the service hostname for this chart */}}
+{{- define "authentication-service.hostname" -}}
+{{include "authentication-service.name" .}}.{{ .Release.Namespace}}.svc.cluster.local
+{{- end -}}
+
+{{- define "mysql.hostname" -}}
+{{ .Release.Name }}-mysql.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
+
+{{- define "eureka.hostname" -}}
+service-registry.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
