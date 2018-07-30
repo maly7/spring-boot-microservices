@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    deployment: {{ template "service-registry.name" .  }}
+    deployment: {{ template "service-registry.name" . }}
     chart: {{ template "service-registry.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-  name: {{ template "service-registry.name" .  }}
+  name: {{ template "service-registry.name" . }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "service-registry.name" .  }}
+        app: {{ template "service-registry.name" . }}
     spec:
       containers:
       - env:
@@ -21,16 +21,16 @@ spec:
         - name: KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "service-registry.name" .  }}-secrets
+              name: {{ template "service-registry.name" . }}-secrets
               key: keyStorePassword
         - name: TRUSTSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "service-registry.name" .  }}-secrets
+              name: {{ template "service-registry.name" . }}-secrets
               key: trustStorePassword
         - name: JAVA_OPTS
           value: {{ .Values.javaOpts | quote }}
-        name: {{ template "service-registry.name" .  }}
+        name: {{ template "service-registry.name" . }}
         image: {{ .Values.image.repository }}service-registry:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -44,7 +44,7 @@ spec:
       volumes:
       - name: certs
         secret:
-          secretName: {{ template "service-registry.name" .  }}-tls
+          secretName: {{ template "service-registry.name" . }}-tls
       - name: trusts
         secret:
           secretName: ca-key-pair
@@ -53,4 +53,4 @@ spec:
             path: tls.crt
   selector:
     matchLabels:
-      app: {{ template "service-registry.name" .  }}
+      app: {{ template "service-registry.name" . }}
