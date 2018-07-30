@@ -1,0 +1,37 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "api-gateway.name" . }}
+  release: {{ .Release.Name }}
+  chart: {{ template "api-gateway.chart" . }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+spec:
+  secretName: {{ template "api-gateway.name" . }}-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: {{ template "api-gateway.name" . }}
+  dnsNames:
+  - {{ template "api-gateway.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  - localhost
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "api-gateway.name" . }}-ingress
+  chart: {{ template "api-gateway.chart" . }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+spec:
+  secretName: {{ template "api-gateway.name" . }}-ingress-tls
+  issuerRef:
+    name: {{ .Values.ingress.issuer }}
+    kind: Issuer
+  commonName: {{ .Values.ingress.commonName }}
+  dnsNames:
+  {{- range .Values.ingress.hosts }}
+  - {{ . | quote }}
+  {{- end }}
+{{- end }}

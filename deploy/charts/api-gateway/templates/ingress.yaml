@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: api-gateway
+  name: {{ template "api-gateway.name" }}
   labels:
     app: {{ template "api-gateway.name" . }}
     chart: {{ template "api-gateway.chart" . }}
@@ -29,7 +29,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: api-gateway
+              serviceName: {{ template "api-gateway.name" }}
               servicePort: https
   {{- end }}
 {{- end }}
