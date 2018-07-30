@@ -5,6 +5,10 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+keyStorePassword:
+trustStorePassword:
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
+
 service:
   type: NodePort
   port: 443
