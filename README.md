@@ -1,6 +1,7 @@
 ## Getting Started
 1. If running windows, make sure you install and use 64-bit java
 1. Install [docker](https://docs.docker.com/) for your platform
+1. Configure docker to allow more ram and cpu usage (at least 4GB of ram)
 1. Install kubernetes cli
 1. Install helm
 1. Enable Kubernetes support for docker
