@@ -26,7 +26,7 @@ spec:
         - name: spring.datasource.username
           value: kryption
         - name: spring.datasource.url
-          value: jdbc:mysql://{{ .Release.Name }}-mysql.{{ .Release.Namespace }}.svc.cluster.local:3306/kryption?autoReconnect=true&useSSL=true&verifyServerCertificate=false
+          value: jdbc:mysql://{{ .Release.Name }}-mysql.{{ .Release.Namespace }}.svc.cluster.local:3306/kryption?autoReconnect=true&useSSL=true
         - name: eureka.instance.hostname
           value: https://{{ template "authentication-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
         - name: KEYSTORE_PASSWORD
