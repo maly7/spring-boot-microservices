@@ -109,7 +109,9 @@ spec:
         {{- end }}
         {{- if .Values.ssl.enabled }}
         - name: certificates
-          mountPath: /ssl
+          mountPath: /ssl/certs
+        - name: certificate-ca
+          mountPath: /ssl/ca
         {{- end }}
       {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -159,6 +161,17 @@ spec:
       - name: certificates
         secret:
           secretName: {{ .Values.ssl.secret }}
+          items:
+          - key: tls.key
+            path: server-key.pem
+          - key: tls.crt
+            path: server-cert.pem
+      - name: certificate-ca
+        secret:
+          secretName: {{ .Values.ssl.caSecret }}
+          items:
+          - key: tls.crt
+            path: ca.pem
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
