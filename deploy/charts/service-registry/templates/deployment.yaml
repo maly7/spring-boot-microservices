@@ -17,7 +17,9 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: "https://service-registry.{{ .Release.Namespace }}.svc.cluster.local/eureka"
+          value: "https://{{ template "service-registry.hostname" . }}/eureka"
+        - name: eureka.instance.hostname
+          value: {{ template "service-registry.hostname" . }}
         - name: KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -31,7 +33,7 @@ spec:
         - name: JAVA_OPTS
           value: {{ .Values.javaOpts | quote }}
         name: {{ template "service-registry.name" . }}
-        image: {{ .Values.image.repository }}service-registry:{{ .Values.image.tag }}
+        image: {{ .Values.image.repository }}{{ template "service-registry.name" . }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8761

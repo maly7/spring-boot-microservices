@@ -17,7 +17,7 @@ spec:
       containers:
       - env:
         - name: eureka.client.service-url.default-zone
-          value: https://{{template "eureka.hostname" . }}/eureka
+          value: https://{{ template "eureka.hostname" . }}/eureka
         - name: spring.datasource.password
           valueFrom:
             secretKeyRef:
@@ -26,9 +26,9 @@ spec:
         - name: spring.datasource.username
           value: kryption
         - name: spring.datasource.url
-          value: jdbc:mysql://{{template "mysql.hostname" .}}:3306/kryption?autoReconnect=true&useSSL=true
+          value: jdbc:mysql://{{ template "mysql.hostname" . }}:3306/kryption?autoReconnect=true&useSSL=true
         - name: eureka.instance.hostname
-          value: {{ template "authentication-service.hostname" .}}
+          value: {{ template "authentication-service.hostname" . }}
         - name: eureka.instance.secure
         - name: KEYSTORE_PASSWORD
           valueFrom:
