@@ -13,7 +13,7 @@ spec:
     kind: Issuer
   commonName: {{ template "authentication-service.name" . }}
   dnsNames:
-  - {{ template "authentication-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  - {{ template "authentication-service.hostname" . }}
   - localhost
 ---
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -31,5 +31,5 @@ spec:
     kind: Issuer
   commonName: mysql
   dnsNames:
-  - mysql.{{ .Release.Namespace }}.svc.cluster.local
+  - {{ template "mysql.hostname" . }}
   - localhost

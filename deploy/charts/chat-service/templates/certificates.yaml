@@ -1,0 +1,53 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "chat-service.name" . }}
+  labels:
+    chart: {{ template "chat-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: {{ template "chat-service.name" . }}-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: {{ template "chat-service.name" . }}
+  dnsNames:
+  - {{ template "chat-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  - localhost
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: mongodb
+  labels:
+    chart: {{ template "chat-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: mongodb-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: mongodb
+  dnsNames:
+    - {{ template "mongodb.hostname" . }}
+    - localhost
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: rabbitmq
+  labels:
+    chart: {{ template "chat-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: rabbitmq
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: rabbitmq
+  dnsNames:
+    - {{ template "rabbitmq.hostname" . }}
+    - localhost

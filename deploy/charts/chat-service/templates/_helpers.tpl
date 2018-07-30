@@ -39,3 +39,12 @@ Create chart name and version as used by the chart label.
 {{- define "eureka.hostname" -}}
 service-registry.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}
+
+
+{{- define "mongodb.hostname" -}}
+{{ .Release.Name }}-mongodb.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
+
+{{- define "rabbitmq.hostname" -}}
+{{ .Release.Name }}-rabbitmq.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
