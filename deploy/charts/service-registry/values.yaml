@@ -10,4 +10,4 @@ service:
 
 keyStorePassword:
 trustStorePassword:
-javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.trustStorePassword=$TRUSTSTORE_PASSWORD -Djavax.net.ssl.keyStore=/app/server.p12 -Djavax.net.ssl.keyStorePassword=$KEYSTORE_PASSWORD
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
