@@ -18,6 +18,18 @@ spec:
           value: https://service-registry.{{ .Release.Namespace }}.svc.cluster.local/eureka
         - name: RABBIT_HOST
           value: rabbit.{{ .Release.Namespace }}.svc.cluster.local
+        - name: KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: api-gateway-secrets
+              key: keyStorePassword
+        - name: TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: api-gateway-secrets
+              key: trustStorePassword
+        - name: JAVA_OPTS
+          value: {{ .Values.javaOpts | quote }}
         image: {{ .Values.image.repository }}api-gateway:{{ .Values.image.tag }}
         name: api-gateway
         imagePullPolicy: {{ .Values.image.pullPolicy }}
