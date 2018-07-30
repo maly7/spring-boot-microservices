@@ -5,13 +5,10 @@ image:
 
 keyStorePassword:
 trustStorePassword:
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
 
 service:
   expose: true
   type: NodePort
   port: 443
   nodePort: 30761
-
-keyStorePassword:
-trustStorePassword:
-javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
