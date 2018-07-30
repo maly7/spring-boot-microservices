@@ -2,8 +2,10 @@
 1. If running windows, make sure you install and use 64-bit java
 1. Install [docker](https://docs.docker.com/) for your platform
 1. Install kubernetes cli
+1. Install helm
 1. Enable Kubernetes support for docker
 1. Use docker for desktop as the kuberntes context: `kubectl config use-context docker-for-desktop`
+1. Initialize helm/tiller `helm init`
 1. Install the cert-manager
     1. Create the CA key `openssl genrsa -out /path/to/project/deploy/charts/cert-issuer/ca.key 2048`
     1. Create the Self Signed cert `openssl req -x509 -new -nodes -key ca.key -subj "/CN=Kryption Root CA" -days 3650 -reqexts v3_req -extensions v3_ca -out /path/to/project/deploy/charts/cert-issuer/ca.crt`
