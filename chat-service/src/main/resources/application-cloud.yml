@@ -1,3 +1,12 @@
+server:
+  port: 8243
+  ssl:
+    enabled: true
+    key-store: file:/app/server.p12
+    key-store-type: pkcs12
+    key-store-password: ${KEYSTORE_PASSWORD}
+    key-alias: chat-service
+
 eureka:
   client:
     service-url:
