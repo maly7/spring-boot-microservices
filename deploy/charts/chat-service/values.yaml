@@ -17,3 +17,22 @@ service:
   type: ClusterIP
   port: 443
   targetPort: 8243
+
+claims:
+  mongodb:
+    storage: 10Gi
+    volumeMode:
+    annotations: {}
+
+mongodb:
+  existingSecret: mongodb-secrets
+  mongodbUsername: kryption
+  mongodbDatabase: kryption
+  persistence:
+    existingClaim: mongodb-pvc
+  configmap:
+    net:
+      ssl:
+        mode: requireSSL
+        PEMKeyFile: /ssl/keys/mongodb.pem
+        CAFile: /ssl/ca/tls.crt

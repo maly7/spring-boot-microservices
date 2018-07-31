@@ -33,12 +33,12 @@ spec:
           - name: spring.data.mongodb.password
             valueFrom:
               secretKeyRef:
-                name: mongodb-secrets
-                key: rootpassword
+                name: {{ .Values.mongodb.existingSecret }}
+                key: mongodb-password
           - name: spring.data.mongodb.uri
-            value: mongodb://{{ template "mongodb.host" . }}/kryption?ssl=true
+            value: mongodb://{{ template "mongodb.host" . }}/{{ .Values.mongodb.mongodbDatabase }}?ssl=true
           - name: spring.data.mongodb.username
-            value: kryption
+            value: {{ .Values.mongodb.mongodbUsername }}
           - name: spring.rabbitmq.host
             value: {{ template "rabbitmq.host" . }}
           - name: spring.rabbitmq.password
