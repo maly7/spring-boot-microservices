@@ -9,23 +9,23 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  {{- if .Values.sslEnabled }}
-  initContainers:
-    - name: ssl-configurer
-      image: busybox
-      command: ['sh', 'c', 'cat /certs/tls.key /certs/tls.crt > /ssl/keys/mongodb.pem']
-      volumeMounts:
-      - mountPath: /certs
-        name: certs
-      - mountPath: /ssl/keys
-        name: keys
-  {{- end }}
   template:
     metadata:
       labels:
         app: {{ template "mongodb.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      {{- if .Values.sslEnabled }}
+      initContainers:
+      - name: ssl-configurer
+        image: busybox
+        command: ['sh', '-c', 'cat /certs/tls.key /certs/tls.crt > /ssl/keys/mongodb.pem']
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /ssl/keys
+          name: keys
+      {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
@@ -50,7 +50,11 @@ spec:
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+              {{- else }}
               name: {{ template "mongodb.fullname" . }}
+              {{- end }}
               key: mongodb-root-password
         {{- end }}
         - name: MONGODB_USERNAME
@@ -59,7 +63,11 @@ spec:
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if .Values.existingSecret }}
+              name: {{ .Values.existingSecret }}
+              {{- else }}
               name: {{ template "mongodb.fullname" . }}
+              {{- end }}
               key: mongodb-password
         {{- end }}
         - name: MONGODB_DATABASE
@@ -106,6 +114,8 @@ spec:
         {{- if .Values.sslEnabled }}
         - name: trusts
           mountPath: /ssl/ca
+        - name: keys
+          mountPath: /ssl/keys
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
