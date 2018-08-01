@@ -40,7 +40,6 @@ Create chart name and version as used by the chart label.
 service-registry.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}
 
-
 {{- define "mongodb.hostname" -}}
 {{ .Release.Name }}-mongodb.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}
