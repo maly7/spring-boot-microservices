@@ -82,6 +82,11 @@ spec:
           exec:
             command:
             - mongo
+          {{- if .Values.sslEnabled }}
+            - --ssl
+            - --sslCAFile=/ssl/ca/tls.crt
+            - --sslPEMKeyFile=/ssl/keys/mongodb.pem
+          {{- end }}
             - --eval
             - "db.adminCommand('ping')"
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -92,9 +97,14 @@ spec:
         {{- end }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
-          exec:
+          exec: 
             command:
             - mongo
+          {{- if .Values.sslEnabled }}
+            - --ssl
+            - --sslCAFile=/ssl/ca/tls.crt
+            - --sslPEMKeyFile=/ssl/keys/mongodb.pem
+          {{- end }}
             - --eval
             - "db.adminCommand('ping')"
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
