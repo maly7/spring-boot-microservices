@@ -30,9 +30,14 @@ mongodb:
   mongodbDatabase: kryption
   persistence:
     existingClaim: mongodb-pvc
-  configmap:
-    net:
-      ssl:
-        mode: requireSSL
-        PEMKeyFile: /ssl/keys/mongodb.pem
-        CAFile: /ssl/ca/tls.crt
+  mongodbExtraFlags: 
+    - --sslMode=requireSSL
+    - --sslPEMKeyFile=/ssl/keys/mongodb.pem
+    - --CAFile=/ssl/ca/tls/crt
+  # configmap:
+  #   net:
+  #     ssl:
+  #       mode: requireSSL
+  #       allowConnectionsWithoutCertificates: true
+  #       PEMKeyFile: /ssl/keys/mongodb.pem
+  #       CAFile: /ssl/ca/tls.crt
