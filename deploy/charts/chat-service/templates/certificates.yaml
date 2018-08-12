@@ -33,6 +33,7 @@ spec:
   dnsNames:
     - {{ template "mongodb.hostname" . }}
     - localhost
+    - "127.0.0.1"
 ---
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
