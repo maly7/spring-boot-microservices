@@ -147,7 +147,11 @@ spec:
               mountPath: /etc/rabbitmq
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
-              mountPath: /etc/cert
+              mountPath: /ssl/cert
+            {{- if .Values.rabbitmqCert.existingCa }}
+            - name: ca
+              mountPath: /ssl/ca
+            {{- end }}
             {{- end }}
         {{ if .Values.prometheus.exporter.enabled }}
         - name: {{ .Chart.Name }}-exporter
@@ -212,6 +216,14 @@ spec:
           secret:
             defaultMode: 420
             secretName: {{ template "rabbitmq-ha.certSecretName" . }}
+        {{- if .Values.rabbitmqCert.existingCa }}
+        - name: ca
+          secret:
+            secretName: {{ .Values.rabbitmqCert.existingCa }}
+            items:
+            - key: tls.crt
+              path: tls.crt
+        {{- end }}
         {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
