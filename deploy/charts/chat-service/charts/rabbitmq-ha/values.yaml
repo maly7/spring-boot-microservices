@@ -73,6 +73,17 @@ rabbitmqLDAPPlugin:
     # auth_ldap.port       = 389
     # auth_ldap.log        = false
 
+rabbitmqHttpAuthPlugin:
+  enabled: false
+  config: |
+    # auth_backends.1 = rabbit_auth_backend_http
+    # auth_backends.2 = internal
+    # auth_http.http_method = post
+    # auth_http.user_path = http://authentication-service.kryption.svc.cluster.local/amqp/user
+    # auth_http.vhost_path = http://authentication-service.kryption.svc.cluster.local/amqp/vhost
+    # auth_http.resource_path = http://authentication-service.kryption.svc.cluster.local/amqp/resource
+    # auth_http.topic_path = http://authentication-service.kryption.svc.cluster.local/amqp/topic
+
 ## MQTT Plugin
 ## Ref: http://www.rabbitmq.com/mqtt.html
 rabbitmqMQTTPlugin:
