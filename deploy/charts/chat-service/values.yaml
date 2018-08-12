@@ -33,7 +33,7 @@ mongodb:
   mongodbExtraFlags: 
     - --sslMode=requireSSL
     - --sslPEMKeyFile=/ssl/keys/mongodb.pem
-    - --CAFile=/ssl/ca/tls/crt
+    - --sslCAFile=/ssl/ca/tls.crt
   # configmap:
   #   net:
   #     ssl:
