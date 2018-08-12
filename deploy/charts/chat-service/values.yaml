@@ -40,6 +40,7 @@ mongodb:
     runAsUser: 1001
 
 rabbitmq-ha:
+  rabbitmqUsername: kryption
   prometheus:
     exporter:
       enabled: false
@@ -53,7 +54,7 @@ rabbitmq-ha:
       auth_backends.1 = rabbit_auth_backend_http
       auth_backends.2 = internal
       auth_http.http_method = post
-      auth_http.user_path = http://authentication-service.kryption.svc.cluster.local/amqp/user
-      auth_http.vhost_path = http://authentication-service.kryption.svc.cluster.local/amqp/vhost
-      auth_http.resource_path = http://authentication-service.kryption.svc.cluster.local/amqp/resource
-      auth_http.topic_path = http://authentication-service.kryption.svc.cluster.local/amqp/topic
+      auth_http.user_path = http://authentication-service.default.svc.cluster.local/amqp/user
+      auth_http.vhost_path = http://authentication-service.default.svc.cluster.local/amqp/vhost
+      auth_http.resource_path = http://authentication-service.default.svc.cluster.local/amqp/resource
+      auth_http.topic_path = http://authentication-service.default.svc.cluster.local/amqp/topic
