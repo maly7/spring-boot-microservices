@@ -38,8 +38,8 @@ data:
       rabbitmq_auth_mechanism_ssl,
       {{- end }}
 
-      {{- if .Values.rabbitmqHttpAuth.enabled }}
-      rabbitmq_auth_backend_http
+      {{- if .Values.rabbitmqHttpAuthPlugin.enabled }}
+      rabbitmq_auth_backend_http,
       {{- end }}
 
       rabbitmq_consistent_hash_exchange,
@@ -60,8 +60,8 @@ data:
 {{ .Values.rabbitmqAuth.config | indent 4 }}
     {{- end }}
 
-    {{- if .Values.rabbitmqHttpAuth.enabled }}
-{{ .Values.rabbitmqHttpAuth.config | indent 4 }}
+    {{- if .Values.rabbitmqHttpAuthPlugin.enabled }}
+{{ .Values.rabbitmqHttpAuthPlugin.config | indent 4 }}
     {{- end }}
 
     ## Clustering
