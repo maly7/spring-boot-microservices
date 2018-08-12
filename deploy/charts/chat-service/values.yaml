@@ -49,7 +49,7 @@ rabbitmq-ha:
   rabbitmqCert:
     enabled: true
     existingSecret: rabbitmq-tls
-    existing-ca: ca-key-pair
+    existingCa: ca-key-pair
   rabbitmqAmqpsSupport:
     enabled: true
     config: |
