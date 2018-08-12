@@ -46,6 +46,19 @@ rabbitmq-ha:
       enabled: false
     operator:
       enabled: false
+  rabbitmqCert:
+    enabled: true
+    existingSecret: rabbitmq-tls
+    existing-ca: ca-key-pair
+  rabbitmqAmqpsSupport:
+    enabled: true
+    config: |
+      listeners.ssl.default             = 5671
+      ssl_options.cacertfile            = /ssl/ca/tls.crt
+      ssl_options.certfile              = /ssl/cert/tls.crt
+      ssl_options.keyfile               = /ssl/cert/tls.key
+      ssl_options.verify                = verify_peer
+      ssl_options.fail_if_no_peer_cert  = false
   rabbitmqWebSTOMPPlugin:
     enabled: true
   rabbitmqHttpAuthPlugin:
@@ -54,7 +67,7 @@ rabbitmq-ha:
       auth_backends.1 = rabbit_auth_backend_http
       auth_backends.2 = internal
       auth_http.http_method = post
-      auth_http.user_path = http://authentication-service.default.svc.cluster.local/amqp/user
-      auth_http.vhost_path = http://authentication-service.default.svc.cluster.local/amqp/vhost
-      auth_http.resource_path = http://authentication-service.default.svc.cluster.local/amqp/resource
-      auth_http.topic_path = http://authentication-service.default.svc.cluster.local/amqp/topic
+      auth_http.user_path = https://authentication-service.default.svc.cluster.local/amqp/user
+      auth_http.vhost_path = https://authentication-service.default.svc.cluster.local/amqp/vhost
+      auth_http.resource_path = https://authentication-service.default.svc.cluster.local/amqp/resource
+      auth_http.topic_path = https://authentication-service.default.svc.cluster.local/amqp/topic
