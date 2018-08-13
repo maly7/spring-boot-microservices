@@ -1,0 +1,6 @@
+# Values file to load for windows users
+
+# Need to disable mongodb persistence because of an issue, find out more here: https://github.com/docker-library/mongo/issues/190
+mongodb:
+  persistence:
+    enabled: false
