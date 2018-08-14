@@ -40,6 +40,9 @@ mongodb:
     runAsUser: 1001
 
 rabbitmq-ha:
+  service:
+    type: NodePort
+    rabbitmqManagerNodePort: 31672
   rabbitmqUsername: kryption
   prometheus:
     exporter:
