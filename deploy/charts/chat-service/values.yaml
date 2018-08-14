@@ -48,7 +48,7 @@ rabbitmq-ha:
       enabled: false
   rabbitmqCert:
     enabled: true
-    existingSecret: rabbitmq-tls
+    existingSecret: rabbitmq
     existingCa: ca-key-pair
   rabbitmqAmqpsSupport:
     enabled: true
