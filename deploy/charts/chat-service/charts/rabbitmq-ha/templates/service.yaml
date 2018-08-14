@@ -15,7 +15,9 @@ metadata:
 {{ toYaml .Values.extraLabels | indent 4 }}
 {{- end }}
 spec:
+{{- if contains "NodePort" .Values.service.type | not }}
   clusterIP: "{{ .Values.service.clusterIP }}"
+{{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}
@@ -32,6 +34,7 @@ spec:
       protocol: TCP
       port: {{ .Values.rabbitmqManagerPort }}
       targetPort: http
+      nodePort: {{ .Values.service.rabbitmqManagerNodePort }}
     - name: amqp
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
