@@ -6,6 +6,9 @@ server:
     key-store-type: pkcs12
     key-store-password: ${KEYSTORE_PASSWORD}
     key-alias: chat-service
+    trust-store: file:/app/trusts.jks
+    trust-store-password: ${TRUSTSTORE_PASSWORD}
+    trust-store-type: jks
 
 eureka:
   client:
