@@ -23,3 +23,10 @@ eureka:
 
 logging:
   file: /data/logs/chat-service.log
+
+spring:
+  rabbitmq:
+    ssl:
+      enabled: true
+      trust-store: file:/app/trusts.jks
+      trust-store-password: ${TRUSTSTORE_PASSWORD}
