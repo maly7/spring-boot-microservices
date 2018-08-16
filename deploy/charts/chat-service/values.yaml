@@ -11,7 +11,7 @@ image:
 
 keyStorePassword:
 trustStorePassword:
-javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.keyStore=/app/server.p12 
 
 service:
   type: ClusterIP
@@ -39,7 +39,11 @@ mongodb:
     fsGroup: 1001
     runAsUser: 1001
 
+rabbitmqUsername: kryption
+amqpsNodePort: 5671
+
 rabbitmq-ha:
+  replicaCount: 1
   service:
     type: NodePort
     rabbitmqManagerNodePort: 31672
@@ -55,6 +59,7 @@ rabbitmq-ha:
     existingCa: ca-key-pair
   rabbitmqAmqpsSupport:
     enabled: true
+    amqpsNodePort: 5671
     config: |
       listeners.ssl.default             = 5671
       ssl_options.cacertfile            = /ssl/ca/tls.crt

@@ -39,15 +39,19 @@ spec:
             value: mongodb://{{ template "mongodb.hostname" . }}/{{ .Values.mongodb.mongodbDatabase }}?ssl=true
           - name: spring.data.mongodb.username
             value: {{ .Values.mongodb.mongodbUsername }}
-          # - name: spring.rabbitmq.host
-          #   value: {{ template "rabbitmq.hostname" . }}
-          # - name: spring.rabbitmq.password
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: rabbitmq-secrets
-          #       key: password
-          # - name: spring.rabbitmq.username
-          #   value: kryption
+          - name: spring.rabbitmq.host
+            value: {{ template "rabbitmq.hostname" . }}
+          - name: spring.rabbitmq.password
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-rabbitmq-ha
+                key: rabbitmq-password
+          - name: spring.rabbitmq.username
+            value: {{ .Values.rabbitmqUsername }}
+          - name: spring.rabbitmq.port
+            value: {{ .Values.amqpsNodePort | quote }}
+          - name: spring.data.mongodb.authentication-database
+            value: {{ .Values.mongodb.mongodbDatabase | quote }}
           - name: KEYSTORE_PASSWORD
             valueFrom:
               secretKeyRef:
