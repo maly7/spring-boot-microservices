@@ -29,5 +29,5 @@ class ClientConfig {
 
     @Bean
     fun okHttpClientFactory(env: Environment, builder: OkHttpClient.Builder): OkHttpClientFactory =
-        CustomSSLOkHttpClientFactory(builder, env.getProperty("TRUSTSTORE_PASSWORD")!!)
+        CustomSSLOkHttpClientFactory(builder)
 }
