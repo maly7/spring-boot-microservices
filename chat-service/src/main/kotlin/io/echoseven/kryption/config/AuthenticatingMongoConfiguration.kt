@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.core.env.Environment
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
 import javax.net.ssl.SSLContext
 
@@ -20,15 +19,8 @@ class AuthenticatingMongoConfiguration : AbstractMongoConfiguration() {
     @Autowired
     lateinit var mongoProperties: MongoProperties
 
-    @Autowired
-    lateinit var env: Environment
-
     @Bean
     override fun mongoClient(): MongoClient {
-        // TODO: find a better way of doing this
-        System.setProperty("javax.net.ssl.trustStorePassword", env.getProperty("TRUSTSTORE_PASSWORD"))
-        System.setProperty("javax.net.ssl.keyStorePassword", env.getProperty("KEYSTORE_PASSWORD"))
-
         return MongoClient(
             listOf(ServerAddress(mongoProperties.host, mongoProperties.port)),
             MongoCredential.createCredential(
