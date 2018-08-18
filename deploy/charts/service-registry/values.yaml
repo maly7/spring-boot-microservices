@@ -5,7 +5,7 @@ image:
 
 keyStorePassword:
 trustStorePassword:
-javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.trustStorePassword=$(TRUSTSTORE_PASSWORD)
 
 service:
   expose: true
