@@ -69,6 +69,8 @@ configure([project(':authentication-service'),
     apply plugin: 'kotlin-spring'
     apply plugin: 'io.spring.dependency-management'
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     compileKotlin {
         kotlinOptions {
@@ -98,9 +100,6 @@ configure([project(':authentication-service'),
 
 
     apply plugin: 'org.springframework.boot'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 
     sourceSets {
         integTest {
