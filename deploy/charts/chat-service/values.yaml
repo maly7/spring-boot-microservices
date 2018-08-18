@@ -69,6 +69,11 @@ rabbitmq-ha:
       ssl_options.fail_if_no_peer_cert  = false
   rabbitmqWebSTOMPPlugin:
     enabled: true
+    config: |
+      web_stomp.ssl.port       = 15674
+      web_stomp.ssl.certfile   = /ssl/cert/tls.crt
+      web_stomp.ssl.keyfile    = /ssl/cert/tls.key
+      web_stomp.ssl.cacertfile = /ssl/ca/tls.crt
   rabbitmqHttpAuthPlugin:
     enabled: true
     config: |
