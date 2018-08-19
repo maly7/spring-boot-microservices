@@ -6,7 +6,7 @@ import io.echoseven.kryption.domain.UserResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 
-@FeignClient(name = "authentication-service", url = "https://authentication-service")
+@FeignClient(name = "authentication-service", url = "\${auth.url}")
 interface AuthenticationClient {
 
     @PostMapping("/user")
