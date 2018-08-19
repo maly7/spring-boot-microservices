@@ -28,6 +28,10 @@ class ClientConfig {
         SSLConfiguredDiscoveryClientOptionalArgs()
 
     @Bean
+    fun okHttpClient(builder: OkHttpClient.Builder): OkHttpClient =
+        builder.build()
+
+    @Bean
     fun okHttpClientFactory(env: Environment, builder: OkHttpClient.Builder): OkHttpClientFactory =
         CustomSSLOkHttpClientFactory(builder)
 }
