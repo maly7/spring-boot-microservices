@@ -41,6 +41,7 @@ mongodb:
 
 rabbitmqUsername: kryption
 amqpsNodePort: 5671
+sslWebStompPort: 15675
 
 rabbitmq-ha:
   replicaCount: 1
@@ -69,8 +70,9 @@ rabbitmq-ha:
       ssl_options.fail_if_no_peer_cert  = false
   rabbitmqWebSTOMPPlugin:
     enabled: true
+    sslPort: 15675
     config: |
-      web_stomp.ssl.port       = 15674
+      web_stomp.ssl.port       = 15675
       web_stomp.ssl.certfile   = /ssl/cert/tls.crt
       web_stomp.ssl.keyfile    = /ssl/cert/tls.key
       web_stomp.ssl.cacertfile = /ssl/ca/tls.crt

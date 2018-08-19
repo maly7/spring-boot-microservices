@@ -41,6 +41,12 @@ spec:
       protocol: TCP
       port: 15674
       targetPort: stomp-ws
+    {{- if .Values.rabbitmqWebSTOMPPlugin.sslPort }}
+    - name: stomp-wss
+      protocol: TCP
+      port: {{ .Values.rabbitmqWebSTOMPPlugin.sslPort }}
+      targetPort: stomp-wss
+    {{- end }}
     {{- end }}
     {{- if .Values.rabbitmqMQTTPlugin.enabled }}
     - name: mqtt-tcp

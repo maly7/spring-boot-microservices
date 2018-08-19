@@ -36,7 +36,7 @@ spring:
         filters:
         - RewritePath=/auth/(?<remaining>.*), /$\{remaining}
       - id: realtime_route
-        uri: ws://${RABBIT_HOST:rabbit}:15674/ws
+        uri: ${WEB_STOMP_URI}
         predicates:
         - Path=/realtime/chat/**
 
