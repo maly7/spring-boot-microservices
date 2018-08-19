@@ -115,3 +115,4 @@ deploy/local/*.yaml
 version.txt
 *.crt
 *.key
+*.jks
