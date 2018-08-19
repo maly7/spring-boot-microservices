@@ -17,3 +17,6 @@ logging:
 auth:
   url:
     http://localhost:8089
+
+mongodb:
+  basic-auth: false
