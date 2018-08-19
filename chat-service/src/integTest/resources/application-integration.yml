@@ -13,3 +13,7 @@ spring:
 logging:
   level:
     org.springframework.web: debug
+
+auth:
+  url:
+    http://localhost:8089

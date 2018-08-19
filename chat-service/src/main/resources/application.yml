@@ -42,3 +42,6 @@ logging:
 chat:
   messaging:
     user-exchange: user.updates
+
+auth:
+  url: http://authentication-service
