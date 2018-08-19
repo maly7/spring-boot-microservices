@@ -29,6 +29,10 @@ To run the functional test suite run `./gradlew :f-t:integTest`.
 
 If you need to run against a different server rather than localhost, then specify systemProp.funcTestUri to be that host
 
+Make sure to setup a truststore for functional tests by:
+1. Generate the truststore: `keytool -import -trustcacerts -file deploy/charts/cert-issuer/ca.crt -keystore trusts.jks -storepass $STORE_PASS -alias "Kryption Root CA" -noprompt`
+1. Specify the location and password for the truststore using gradle properties
+
 ### Generating RSA Key for JWT
 1. `openssl genrsa -out authentication-service/src/main/resources/keys/private_key.pem 2048`
 1. `openssl pkcs8 -topk8 -inform PEM -outform DER -in authentication-service/src/main/resources/keys/private_key.pem -out authentication-service/src/main/resources/keys/private_key.der -nocrypt`
