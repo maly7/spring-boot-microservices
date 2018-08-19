@@ -33,3 +33,6 @@ spring:
       enabled: true
       trust-store: file:/app/trusts.jks
       trust-store-password: ${TRUSTSTORE_PASSWORD}
+
+auth:
+  url: https://authentication-service

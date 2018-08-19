@@ -20,6 +20,10 @@ spec:
           value: https://{{ template "eureka.hostname" . }}/eureka
         - name: eureka.instance.hostname
           value: {{ template "api-gateway.hostname" . }}
+        - name: chat.url
+          value: "https://chat-service"
+        - name: auth.url
+          value: "https://authentication-service"
         - name: WEB_STOMP_URI
           value: wss://chat-service-rabbitmq-ha.{{ .Release.Namespace }}.svc.cluster.local:15675/ws
         - name: KEYSTORE_PASSWORD
