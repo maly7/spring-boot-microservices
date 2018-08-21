@@ -51,4 +51,5 @@ spec:
   commonName: rabbitmq
   dnsNames:
     - {{ template "rabbitmq.hostname" . }}
+    - {{ template "rabbitmq.discovery.hostname" . }}
     - localhost

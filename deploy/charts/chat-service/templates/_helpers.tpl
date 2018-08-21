@@ -47,3 +47,7 @@ service-registry.{{ .Release.Namespace }}.svc.cluster.local
 {{- define "rabbitmq.hostname" -}}
 {{ .Release.Name }}-rabbitmq-ha.{{ .Release.Namespace }}.svc.cluster.local
 {{- end -}}
+
+{{- define "rabbitmq.discovery.hostname" -}}
+{{ .Release.Name }}-rabbitmq-ha-discovery.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}

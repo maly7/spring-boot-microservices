@@ -40,7 +40,7 @@ spec:
           - name: spring.data.mongodb.username
             value: {{ .Values.mongodb.mongodbUsername }}
           - name: spring.rabbitmq.host
-            value: {{ template "rabbitmq.hostname" . }}
+            value: {{ template "rabbitmq.discovery.hostname" . }}
           - name: spring.rabbitmq.password
             valueFrom:
               secretKeyRef:
