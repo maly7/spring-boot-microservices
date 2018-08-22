@@ -193,6 +193,14 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
                 workingDir project.projectDir.path
                 commandLine 'docker', 'build', '.', '-t', "${project.name}:${project.version}", '-t', "${project.name}:latest"
             }
+            def imageIdOutput = new ByteArrayOutputStream()
+            exec {
+                commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
+                standardOutput = imageIdOutput
+            }
+            exec {
+                commandLine 'docker', 'tag', "${project.name}:latest", "${project.name}:${imageIdOutput.toString().trim()}"
+            }
         }
     }
 
@@ -204,7 +212,7 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
                 standardOutput = imageIdOutput
             }
             exec {
-                commandLine 'helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.id=${imageIdOutput.toString().trim()}"
+                commandLine 'helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.tag=${imageIdOutput.toString().trim()}"
             }
         }
     }
