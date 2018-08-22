@@ -1,13 +1,13 @@
 package io.echoseven.kryption.commons.client
 
-import okhttp3.OkHttpClient
+import okhttp3.OkHttpClient.Builder
 import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
 import javax.net.ssl.SSLContext
 
 class CustomSSLOkHttpClientFactory(
-    val builder: okhttp3.OkHttpClient.Builder
+    val builder: Builder
 ) : DefaultOkHttpClientFactory(builder) {
-    override fun createBuilder(disableSslValidation: Boolean): OkHttpClient.Builder {
+    override fun createBuilder(disableSslValidation: Boolean): Builder {
         if (disableSslValidation) {
             return super.createBuilder(disableSslValidation)
         }

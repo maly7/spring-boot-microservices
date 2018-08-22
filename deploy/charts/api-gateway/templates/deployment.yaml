@@ -25,7 +25,7 @@ spec:
         - name: auth.url
           value: "https://authentication-service"
         - name: WEB_STOMP_URI
-          value: wss://chat-service-rabbitmq-ha.{{ .Release.Namespace }}.svc.cluster.local:15675/ws
+          value: wss://chat-service-rabbitmq-ha-discovery.{{ .Release.Namespace }}.svc.cluster.local:15675/ws
         - name: KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:

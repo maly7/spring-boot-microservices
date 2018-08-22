@@ -61,7 +61,7 @@ fun getSocketUri(): String {
     val funcTestUri = System.getProperty("funcTestUri", "")
 
     val host = if (funcTestUri.isEmpty()) {
-        "localhost:8443"
+        "localhost:30000"
     } else {
         val uri = URI(funcTestUri)
         "${uri.host}:${uri.port}"
