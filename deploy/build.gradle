@@ -50,4 +50,13 @@ task deployLocal() {
 
 task deployAzure() {
     dependsOn installClusterDeps
+
+    doLast {
+        apps.each { app ->
+            exec {
+                commandLine 'helm', 'install', '--name', "${app}", '--namespace', 'default', '-f',
+                        "${rootDir}/deploy/azure/values/${app}.yaml", "${rootDir}/deploy/charts/${app}"
+            }
+        }
+    }
 }
