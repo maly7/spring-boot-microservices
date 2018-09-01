@@ -147,17 +147,17 @@ persistence:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 30
+  initialDelaySeconds: 180
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 60
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
+  timeoutSeconds: 120
+  failureThreshold: 10
   successThreshold: 1
 
 # Entries for the MongoDB config file
