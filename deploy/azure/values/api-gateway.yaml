@@ -1,2 +1,5 @@
 image:
   tage: 0.2.0
+
+service:
+  type: LoadBalancer
