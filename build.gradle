@@ -216,6 +216,14 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
             }
         }
     }
+
+    task uninstall() {
+        doLast {
+            exec {
+                commandLine 'helm', 'del', '--purge', "${project.name}"
+            }
+        }
+    }
 }
 
 configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
