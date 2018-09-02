@@ -21,7 +21,7 @@ claims:
     annotations: {}
 
 mongodb:
-  existing-secrets: mongodb-secrets
+  existingSecret: mongodb-secrets
   usePassword: true
   mongodbUsername: kryption
   mongodbDatabase: kryption
@@ -40,6 +40,7 @@ mongodb:
     runAsUser: 1001
 
 rabbitmqUsername: kryption
+rabbitmqExistingSecret: rabbitmq-secrets
 amqpsNodePort: 5671
 sslWebStompPort: 15675
 
