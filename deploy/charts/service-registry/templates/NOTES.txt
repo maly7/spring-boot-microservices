@@ -1,1 +1,1 @@
-Eureka service registry insalled for release {{ .Release.Name }}
+Eureka service registry installed for release {{ .Release.Name }}
