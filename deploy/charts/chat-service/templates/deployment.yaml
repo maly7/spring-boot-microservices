@@ -33,7 +33,7 @@ spec:
           - name: spring.data.mongodb.password
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.mongodb.existingSecret }}
+                name: {{ .Values.mongodb.secretRef }}
                 key: mongodb-password
           - name: spring.data.mongodb.uri
             value: mongodb://{{ template "mongodb.hostname" . }}/{{ .Values.mongodb.mongodbDatabase }}?ssl=true
