@@ -1,5 +1,4 @@
 dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compile 'com.squareup.okhttp3:okhttp'
-//    compile 'commons-net:commons-net:3.6'
 }
