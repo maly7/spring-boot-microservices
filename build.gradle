@@ -243,6 +243,17 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
             }
         }
     }
+
+    task install() {
+        doLast {
+            def args = ['helm', 'install', '--name', "${project.name}", '--namespace', 'default', "${rootDir}/deploy/charts/${project.name}"]
+            getLocalHelmArgs args, project.name
+
+            exec {
+                commandLine args
+            }
+        }
+    }
 }
 
 configure([project(':authentication-service'), project(':chat-service'), project(':service-registry'), project(':functional-tests')]) {
