@@ -3,7 +3,7 @@ package io.echoseven.kryption.config
 import com.netflix.discovery.DiscoveryClient
 import feign.codec.ErrorDecoder
 import io.echoseven.kryption.clients.error.ClientErrorDecoder
-import io.echoseven.kryption.commons.client.CustomSSLOkHttpClientFactory
+import io.echoseven.kryption.commons.client.TrustingSSLOkHttpClientFactory
 import io.echoseven.kryption.commons.discovery.SSLConfiguredDiscoveryClientOptionalArgs
 import okhttp3.OkHttpClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
@@ -32,6 +32,9 @@ class ClientConfig {
         builder.build()
 
     @Bean
-    fun okHttpClientFactory(env: Environment, builder: OkHttpClient.Builder): OkHttpClientFactory =
-        CustomSSLOkHttpClientFactory(builder)
+    fun okHttpClientFactory(env: Environment, builder: OkHttpClient.Builder): OkHttpClientFactory {
+        val trustStoreLocation = env.getRequiredProperty("javax.net.ssl.trustStore")
+        val trustStorePassword = env.getRequiredProperty("javax.net.ssl.trustStorePassword")
+        return TrustingSSLOkHttpClientFactory(builder, trustStoreLocation, trustStorePassword)
+    }
 }
