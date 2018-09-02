@@ -35,7 +35,6 @@ mysql:
   ssl:
     enabled: true
     secret: mysql-tls
-    existingCerts: mysql
     caSecret: ca-key-pair
   configurationFiles: 
     mysql.cnf: |-
