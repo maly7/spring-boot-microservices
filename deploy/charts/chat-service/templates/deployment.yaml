@@ -33,7 +33,7 @@ spec:
           - name: spring.data.mongodb.password
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.mongodb.secretRef }}
+                name: {{ .Values.mongodb.existingSecret }}
                 key: mongodb-password
           - name: spring.data.mongodb.uri
             value: mongodb://{{ template "mongodb.hostname" . }}/{{ .Values.mongodb.mongodbDatabase }}?ssl=true
@@ -44,7 +44,7 @@ spec:
           - name: spring.rabbitmq.password
             valueFrom:
               secretKeyRef:
-                name: {{ .Release.Name }}-rabbitmq-ha
+                name: {{ .Values.rabbitmqExistingSecret }}
                 key: rabbitmq-password
           - name: spring.rabbitmq.username
             value: {{ .Values.rabbitmqUsername }}
