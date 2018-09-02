@@ -19,6 +19,25 @@ spec:
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
+  name: mongodb
+  labels:
+    chart: {{ template "chat-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: mongodb-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: mongodb
+  dnsNames:
+    - {{ template "mongodb.hostname" . }}
+    - localhost
+    - "127.0.0.1"
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
   name: rabbitmq
   labels:
     chart: {{ template "chat-service.chart" . }}
