@@ -1,9 +1,8 @@
 image:
   tage: 0.2.0
 
-mongodb:
-  persistence:
-    size: 25Gi
+claims:
+  mongodb:
     annotations:
       volume.beta.kubernetes.io/storage-class: managed-premium
 
