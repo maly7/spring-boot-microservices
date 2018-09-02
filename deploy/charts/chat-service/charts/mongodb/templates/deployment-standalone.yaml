@@ -50,8 +50,8 @@ spec:
         - name: MONGODB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
+              {{- if .Values.secretRef }}
+              name: {{ .Values.secretRef }}
               {{- else }}
               name: {{ template "mongodb.fullname" . }}
               {{- end }}
@@ -63,8 +63,8 @@ spec:
         - name: MONGODB_PASSWORD
           valueFrom:
             secretKeyRef:
-              {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
+              {{- if .Values.secretRef }}
+              name: {{ .Values.secretRef }}
               {{- else }}
               name: {{ template "mongodb.fullname" . }}
               {{- end }}

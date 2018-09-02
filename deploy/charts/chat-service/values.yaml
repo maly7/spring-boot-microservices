@@ -21,11 +21,15 @@ claims:
     annotations: {}
 
 mongodb:
-  existingSecret: mongodb-secrets
+  secretRef: mongodb-secrets
+  usePassword: true
   mongodbUsername: kryption
   mongodbDatabase: kryption
   persistence:
-    existingClaim: mongodb-pvc
+    enabled: true
+    size: 10Gi
+  accessModes:
+    - ReadWriteOnce
   mongodbExtraFlags: 
     - --sslMode=requireSSL
     - --sslPEMKeyFile=/ssl/keys/mongodb.pem
