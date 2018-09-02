@@ -1,4 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     ext {
@@ -44,6 +45,17 @@ allprojects {
         loadEnv = { env ->
             envToLoad.each {
                 env.put("${it}".toString(), "${System.properties[it]}".toString())
+            }
+        }
+
+        getLocalHelmArgs = { args, name ->
+            def valuesFile = new File("${rootDir}/deploy/local/${name}.yaml")
+            def windowsValues = new File("${rootDir}/deploy/local/${name}-windows.yaml")
+
+            if (windowsValues.exists() && Os.isFamily(Os.FAMILY_WINDOWS)) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${name}-windows.yaml"])
+            } else if (valuesFile.exists()) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${name}.yaml"])
             }
         }
     }
@@ -208,14 +220,18 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
     }
 
     task reload() {
+        dependsOn dockerBuild
         doLast {
             def imageIdOutput = new ByteArrayOutputStream()
             exec {
                 commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
                 standardOutput = imageIdOutput
             }
+
+            def args = ['helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.tag=${imageIdOutput.toString().trim()}"]
+            getLocalHelmArgs args, project.name
             exec {
-                commandLine 'helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.tag=${imageIdOutput.toString().trim()}"
+                commandLine args
             }
         }
     }
