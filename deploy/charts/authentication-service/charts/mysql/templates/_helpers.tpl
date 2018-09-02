@@ -30,3 +30,7 @@ Generate chart secret name
 {{- define "mysql.secretName" -}}
 {{ default (include "mysql.fullname" .) .Values.existingSecret }}
 {{- end -}}
+
+{{- define "mysql.hostname" -}}
+{{ .Release.Name }}-mysql.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}

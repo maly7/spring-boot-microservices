@@ -13,6 +13,6 @@ spec:
     kind: Issuer
   commonName: mysql
   dnsNames:
-  - mysql.{{ .Release.Namespace }}.svc.cluster.local
-  - localhost
+    - {{ template "mysql.hostname" . }}
+    - localhost
 {{- end }}
