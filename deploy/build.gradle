@@ -1,25 +1,6 @@
-task deployLocal() {
-    dependsOn getTasksByName('local', true)
-    doLast {
-        exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/configs"
-        }
-        exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local/claims"
-        }
-        exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local"
-        }
-    }
-}
+import org.apache.tools.ant.taskdefs.condition.Os
 
-task localSecrets() {
-    doLast {
-        exec {
-            commandLine 'kubectl', 'apply', '-f', 'secrets'
-        }
-    }
-}
+def apps = ['service-registry', 'chat-service', 'authentication-service', 'api-gateway']
 
 task installCertManager() {
     doLast {
@@ -42,4 +23,40 @@ task installNginxIngress() {
 
 task installClusterDeps() {
     dependsOn installCertManager, installNginxIngress
+}
+
+task deployLocal() {
+    dependsOn installCertManager
+    mustRunAfter installCertManager
+
+    doLast {
+        apps.each { app ->
+            def args = ['helm', 'install', '--name', "${app}", '--namespace', 'default', "${rootDir}/deploy/charts/${app}"]
+            def valuesFile = new File("${rootDir}/deploy/local/${app}.yaml")
+            def windowsValues = new File("${rootDir}/deploy/local/${app}-windows.yaml")
+
+            if (windowsValues.exists() && Os.isFamily(Os.FAMILY_WINDOWS)) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${app}-windows.yaml"])
+            } else if (valuesFile.exists()) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${app}.yaml"])
+            }
+
+            exec {
+                commandLine args
+            }
+        }
+    }
+}
+
+task deployAzure() {
+    dependsOn installClusterDeps
+
+    doLast {
+        apps.each { app ->
+            exec {
+                commandLine 'helm', 'install', '--name', "${app}", '--namespace', 'default', '-f',
+                        "${rootDir}/deploy/azure/values/${app}.yaml", "${rootDir}/deploy/charts/${app}"
+            }
+        }
+    }
 }

@@ -1,0 +1,7 @@
+image:
+  tage: 0.2.0
+
+claims:
+  mysql:
+    annotations:
+      volume.beta.kubernetes.io/storage-class: managed-premium

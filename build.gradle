@@ -19,8 +19,8 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
             name 'gradle-plugins'
         }
-
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '0.1.11'
+    version '0.2.0'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
@@ -90,6 +90,13 @@ configure([project(':authentication-service'),
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
         }
     }
+
+    dependencies {
+        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        compile 'org.jetbrains.kotlin:kotlin-reflect'
+
+        testCompile 'org.jetbrains.kotlin:kotlin-test'
+    }
 }
 
 configure([project(':authentication-service'),
@@ -129,12 +136,8 @@ configure([project(':authentication-service'),
         compile 'org.springframework.boot:spring-boot-configuration-processor'
 
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
-        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        compile 'org.jetbrains.kotlin:kotlin-reflect'
 
         testCompile 'org.springframework.boot:spring-boot-starter-test'
-        testCompile 'org.jetbrains.kotlin:kotlin-test'
-
         testCompile 'com.beust:klaxon:2.1.13'
         testCompile 'com.github.tomakehurst:wiremock-standalone:2.16.0'
     }
@@ -166,7 +169,9 @@ configure([project(':authentication-service'),
 
 keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASSWORD -alias "Kryption Root CA" -noprompt
 openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASSWORD -out server.p12
-exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -jar /app/${project.name}-${project.version}.jar
+exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -jar /app/${project.name}-${
+                        project.version
+                    }.jar
 """
         }
     }
@@ -191,16 +196,34 @@ exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -
                 workingDir project.projectDir.path
                 commandLine 'docker', 'build', '.', '-t', "${project.name}:${project.version}", '-t', "${project.name}:latest"
             }
+            def imageIdOutput = new ByteArrayOutputStream()
+            exec {
+                commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
+                standardOutput = imageIdOutput
+            }
+            exec {
+                commandLine 'docker', 'tag', "${project.name}:latest", "${project.name}:${imageIdOutput.toString().trim()}"
+            }
         }
     }
 
     task reload() {
         doLast {
+            def imageIdOutput = new ByteArrayOutputStream()
             exec {
-                commandLine 'kubectl', 'delete', 'deploy', project.name
+                commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
+                standardOutput = imageIdOutput
             }
             exec {
-                commandLine 'kubectl', 'apply', '-f', "${rootProject.projectDir}/deploy/local/${project.name}.yaml"
+                commandLine 'helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.tag=${imageIdOutput.toString().trim()}"
+            }
+        }
+    }
+
+    task uninstall() {
+        doLast {
+            exec {
+                commandLine 'helm', 'del', '--purge', "${project.name}"
             }
         }
     }
