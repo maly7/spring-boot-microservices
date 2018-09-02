@@ -1,17 +1,18 @@
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: {{ template "chat-service.name" . }}
+  name: rabbitmq
   labels:
     chart: {{ template "chat-service.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  secretName: {{ template "chat-service.name" . }}-tls
+  secretName: rabbitmq
   issuerRef:
     name: ca-issuer
     kind: Issuer
-  commonName: {{ template "chat-service.name" . }}
+  commonName: rabbitmq
   dnsNames:
-  - {{ template "chat-service.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
-  - localhost
+    - {{ template "rabbitmq-ha.hostname" . }}
+    - {{ template "rabbitmq-ha.discovery.hostname" . }}
+    - localhost

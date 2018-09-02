@@ -48,3 +48,11 @@ Generate chart ssl secret name
 {{- define "rabbitmq-ha.certSecretName" -}}
 {{ default (print (include "rabbitmq-ha.fullname" .) "-cert") .Values.rabbitmqCert.existingSecret }}
 {{- end -}}
+
+{{- define "rabbitmq-ha.hostname" -}}
+{{ .Release.Name }}-rabbitmq-ha.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
+
+{{- define "rabbitmq-ha.discovery.hostname" -}}
+{{ .Release.Name }}-rabbitmq-ha-discovery.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
