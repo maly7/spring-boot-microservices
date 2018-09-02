@@ -14,12 +14,6 @@ service:
   port: 443
   targetPort: 8243
 
-claims:
-  mongodb:
-    storage: 10Gi
-    volumeMode:
-    annotations: {}
-
 mongodb:
   existingSecret: mongodb-secrets
   usePassword: true
