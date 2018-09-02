@@ -21,7 +21,6 @@ buildscript {
             name 'gradle-plugins'
         }
         jcenter()
-        mavenCentral()
     }
 
     dependencies {
