@@ -1,4 +1,4 @@
-def apps = ['service-registry', 'chat-service', 'authentication-service', 'api-gateway']
+def charts = ['secrets', 'service-registry', 'chat-service', 'authentication-service', 'api-gateway']
 
 task installCertManager() {
     doLast {
@@ -28,9 +28,9 @@ task deployLocal() {
     mustRunAfter installCertManager
 
     doLast {
-        apps.each { app ->
-            def args = ['helm', 'install', '--name', "${app}", '--namespace', 'default', "${rootDir}/deploy/charts/${app}"]
-            getLocalHelmArgs args, app
+        charts.each { chart ->
+            def args = ['helm', 'install', '--name', "${chart}", '--namespace', 'default', "${rootDir}/deploy/charts/${chart}"]
+            getLocalHelmArgs args, chart
 
             exec {
                 commandLine args
@@ -43,7 +43,7 @@ task deployAzure() {
     dependsOn installClusterDeps
 
     doLast {
-        apps.each { app ->
+        charts.each { app ->
             exec {
                 commandLine 'helm', 'install', '--name', "${app}", '--namespace', 'default', '-f',
                         "${rootDir}/deploy/azure/values/${app}.yaml", "${rootDir}/deploy/charts/${app}"
