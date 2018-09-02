@@ -62,3 +62,7 @@ Return the proper image name
 {{- $tag := .Values.image.tag | toString -}}
 {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
 {{- end -}}
+
+{{- define "mongodb.hostname" -}}
+{{ .Release.Name }}-mongodb.{{ .Release.Namespace }}.svc.cluster.local
+{{- end -}}
