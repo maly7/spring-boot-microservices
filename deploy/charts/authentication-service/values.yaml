@@ -28,7 +28,10 @@ mysql:
   mysqlRootPassword:
   persistence:
     enabled: true
-    existingClaim: mysql-data
+    annotations: {}
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
   ssl:
     enabled: true
     secret: mysql-tls
