@@ -21,7 +21,7 @@ claims:
     annotations: {}
 
 mongodb:
-  secretRef: mongodb-secrets
+  existing-secrets: mongodb-secrets
   usePassword: true
   mongodbUsername: kryption
   mongodbDatabase: kryption
@@ -44,6 +44,7 @@ amqpsNodePort: 5671
 sslWebStompPort: 15675
 
 rabbitmq-ha:
+  existingSecret: rabbitmq-secrets
   replicaCount: 1
   service:
     type: NodePort
