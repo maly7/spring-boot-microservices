@@ -8,7 +8,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- with .Values.persistence.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
+  volumeMode: {{ .Values.persistence.volumeMode }}
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
   resources:
