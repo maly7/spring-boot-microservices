@@ -4,8 +4,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 buildscript {
     ext {
         kotlinVersion = '1.2.51'
-        springBootVersion = '2.0.3.RELEASE'
-        springCloudVersion = 'Finchley.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
+        springCloudVersion = 'Finchley.SR1'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
