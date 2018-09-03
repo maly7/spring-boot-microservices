@@ -1,0 +1,17 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "authentication-service.name" . }}
+  labels:
+    chart: {{ template "authentication-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: {{ template "authentication-service.name" . }}-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: {{ template "authentication-service.name" . }}
+  dnsNames:
+  - {{ template "authentication-service.hostname" . }}
+  - localhost

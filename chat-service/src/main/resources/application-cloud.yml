@@ -1,13 +1,38 @@
+server:
+  port: 8243
+  ssl:
+    enabled: true
+    key-store: file:/app/server.p12
+    key-store-type: pkcs12
+    key-store-password: ${KEYSTORE_PASSWORD}
+    key-alias: chat-service
+    trust-store: file:/app/trusts.jks
+    trust-store-password: ${TRUSTSTORE_PASSWORD}
+    trust-store-type: jks
+
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+      defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     registry-fetch-interval-seconds: 30
   instance:
     appname: chat-service
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
+    secure-port: 443
+    secure-port-enabled: true
+    non-secure-port-enabled: false
 
 logging:
   file: /data/logs/chat-service.log
+
+spring:
+  rabbitmq:
+    ssl:
+      enabled: true
+      trust-store: file:/app/trusts.jks
+      trust-store-password: ${TRUSTSTORE_PASSWORD}
+
+auth:
+  url: https://authentication-service

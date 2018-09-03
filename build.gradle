@@ -1,4 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     ext {
@@ -19,7 +20,6 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
             name 'gradle-plugins'
         }
-
         jcenter()
     }
 
@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '0.1'
+    version '0.2.0'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
@@ -46,6 +46,17 @@ allprojects {
                 env.put("${it}".toString(), "${System.properties[it]}".toString())
             }
         }
+
+        getLocalHelmArgs = { args, name ->
+            def valuesFile = new File("${rootDir}/deploy/local/${name}.yaml")
+            def windowsValues = new File("${rootDir}/deploy/local/${name}-windows.yaml")
+
+            if (windowsValues.exists() && Os.isFamily(Os.FAMILY_WINDOWS)) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${name}-windows.yaml"])
+            } else if (valuesFile.exists()) {
+                args.addAll(['-f', "${rootDir}/deploy/local/${name}.yaml"])
+            }
+        }
     }
 }
 
@@ -53,7 +64,9 @@ configure([project(':authentication-service'),
            project(':chat-service'),
            project(':service-registry'),
            project(':functional-tests'),
-           project(':api-gateway')]) {
+           project(':api-gateway'),
+           project(':commons')]) {
+
     repositories {
         maven {
             url 'https://repo.spring.io/milestone/'
@@ -65,8 +78,6 @@ configure([project(':authentication-service'),
 
     apply plugin: 'kotlin'
     apply plugin: 'kotlin-spring'
-    apply plugin: 'com.bmuschko.docker-remote-api'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
     sourceCompatibility = 1.8
@@ -84,6 +95,29 @@ configure([project(':authentication-service'),
             jvmTarget = "1.8"
         }
     }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    dependencies {
+        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        compile 'org.jetbrains.kotlin:kotlin-reflect'
+
+        testCompile 'org.jetbrains.kotlin:kotlin-test'
+    }
+}
+
+configure([project(':authentication-service'),
+           project(':chat-service'),
+           project(':service-registry'),
+           project(':functional-tests'),
+           project(':api-gateway')]) {
+
+
+    apply plugin: 'org.springframework.boot'
 
     sourceSets {
         integTest {
@@ -104,24 +138,17 @@ configure([project(':authentication-service'),
             dependency 'io.jsonwebtoken:jjwt:0.9.0'
             dependency 'commons-io:commons-io:2.6'
         }
-
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-        }
     }
 
     dependencies {
-        compile 'org.springframework.boot:spring-boot-starter-actuator'
+        compile project(':commons')
 
+        compile 'org.springframework.boot:spring-boot-starter-actuator'
         compile 'org.springframework.boot:spring-boot-configuration-processor'
 
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
-        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        compile 'org.jetbrains.kotlin:kotlin-reflect'
 
         testCompile 'org.springframework.boot:spring-boot-starter-test'
-        testCompile 'org.jetbrains.kotlin:kotlin-test'
-
         testCompile 'com.beust:klaxon:2.1.13'
         testCompile 'com.github.tomakehurst:wiremock-standalone:2.16.0'
     }
@@ -143,18 +170,35 @@ configure([project(':authentication-service'),
            project(':chat-service'),
            project(':service-registry'),
            project(':api-gateway')]) {
+    apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
+
+    task writeEntrypoint() {
+        doLast {
+            new File("${projectDir}/entrypoint.sh").text =
+                    """#!/bin/bash
+
+keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASSWORD -alias "Kryption Root CA" -noprompt
+openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASSWORD -out server.p12
+exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -jar /app/${project.name}-${
+                        project.version
+                    }.jar
+"""
+        }
+    }
 
     task writeDockerfile(type: Dockerfile) {
         destFile project.file('Dockerfile')
         from 'java:8'
         workingDir '/app'
+        environmentVariable 'TRUSTSTORE_PASSWORD', 'secret'
+        environmentVariable 'KEYSTORE_PASSWORD', 'secret'
         addFile("build/libs/${project.name}-${project.version}.jar", '/app')
-        entryPoint('java', '-Xmx2000m', '-Djava.security.egd=file:/dev/./urandom', '-Dspring.profiles.active=cloud',
-                '-jar', "${project.name}-${project.version}.jar")
+        addFile("entrypoint.sh", "/")
+        entryPoint("/entrypoint.sh")
     }
 
-    writeDockerfile.dependsOn assemble
+    writeDockerfile.dependsOn assemble, writeEntrypoint
 
     task dockerBuild() {
         dependsOn writeDockerfile
@@ -163,16 +207,49 @@ configure([project(':authentication-service'),
                 workingDir project.projectDir.path
                 commandLine 'docker', 'build', '.', '-t', "${project.name}:${project.version}", '-t', "${project.name}:latest"
             }
+            def imageIdOutput = new ByteArrayOutputStream()
+            exec {
+                commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
+                standardOutput = imageIdOutput
+            }
+            exec {
+                commandLine 'docker', 'tag', "${project.name}:latest", "${project.name}:${imageIdOutput.toString().trim()}"
+            }
         }
     }
 
     task reload() {
+        dependsOn dockerBuild
+        doLast {
+            def imageIdOutput = new ByteArrayOutputStream()
+            exec {
+                commandLine 'docker', 'image', 'ls', "${project.name}:latest", '--format', '"{{.ID}}"'
+                standardOutput = imageIdOutput
+            }
+
+            def args = ['helm', 'upgrade', "${project.name}", "${rootDir}/deploy/charts/${project.name}", "--set=image.tag=${imageIdOutput.toString().trim()}"]
+            getLocalHelmArgs args, project.name
+            exec {
+                commandLine args
+            }
+        }
+    }
+
+    task uninstall() {
         doLast {
             exec {
-                commandLine 'kubectl', 'delete', 'deploy', project.name
+                commandLine 'helm', 'del', '--purge', "${project.name}"
             }
+        }
+    }
+
+    task install() {
+        doLast {
+            def args = ['helm', 'install', '--name', "${project.name}", '--namespace', 'default', "${rootDir}/deploy/charts/${project.name}"]
+            getLocalHelmArgs args, project.name
+
             exec {
-                commandLine 'kubectl', 'apply', '-f', "${rootProject.projectDir}/deploy/local/${project.name}.yaml"
+                commandLine args
             }
         }
     }
@@ -182,14 +259,6 @@ configure([project(':authentication-service'), project(':chat-service'), project
     dependencies {
         compile 'org.springframework.boot:spring-boot-starter-web'
     }
-}
-
-task start(type: Exec) {
-    commandLine 'minikube', 'start'
-}
-
-task stop(type: Exec) {
-    commandLine 'minikube', 'stop'
 }
 
 task versionFile() {

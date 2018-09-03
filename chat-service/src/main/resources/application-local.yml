@@ -2,3 +2,6 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+
+mongodb:
+  basic-auth: true

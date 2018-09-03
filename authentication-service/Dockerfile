@@ -1,5 +1,8 @@
 FROM java:8
 WORKDIR /app
-ADD build/libs/authentication-service-0.1.jar /app
-ENTRYPOINT ["java", "-Xmx2000m", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=cloud", "-jar", "authentication-service-0.1.jar"]
+ENV TRUSTSTORE_PASSWORD secret
+ENV KEYSTORE_PASSWORD secret
+ADD build/libs/authentication-service-0.2.0.jar /app
+ADD entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
 EXPOSE 8180

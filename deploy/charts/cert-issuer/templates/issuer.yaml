@@ -1,0 +1,12 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: ca-issuer
+  namespace: {{ .Values.issuerNamespace }}
+  labels:
+    chart: {{ template "cert-issuer.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ca:
+    secretName: ca-key-pair

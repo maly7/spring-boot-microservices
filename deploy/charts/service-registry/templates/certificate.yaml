@@ -1,0 +1,17 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "service-registry.name" . }}
+  labels:
+    chart: {{ template "service-registry.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  secretName: {{ template "service-registry.name" . }}-tls
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+  commonName: {{ template "service-registry.name" . }}
+  dnsNames:
+  - {{ template "service-registry.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  - localhost

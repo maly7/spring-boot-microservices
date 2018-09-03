@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: {{ template "api-gateway.name" . }}
+    chart: {{ template "api-gateway.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "api-gateway.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "api-gateway.name" . }}
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: https://{{ template "eureka.hostname" . }}/eureka
+        - name: eureka.instance.hostname
+          value: {{ template "api-gateway.hostname" . }}
+        - name: chat.url
+          value: "https://chat-service"
+        - name: auth.url
+          value: "https://authentication-service"
+        - name: WEB_STOMP_URI
+          value: wss://chat-service-rabbitmq-ha-discovery.{{ .Release.Namespace }}.svc.cluster.local:15675/ws
+        - name: KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "api-gateway.secrets" . }}
+              key: keyStorePassword
+        - name: TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "api-gateway.secrets" . }}
+              key: trustStorePassword
+        - name: JAVA_OPTS
+          value: {{ .Values.javaOpts | quote }}
+        image: {{ .Values.image.repository }}{{ template "api-gateway.name" . }}:{{ .Values.image.tag }}
+        name: {{ template "api-gateway.name" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8443
+        resources: {}
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
+      restartPolicy: Always
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ template "api-gateway.name" . }}-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
+  selector:
+    matchLabels:
+      app: {{ template "api-gateway.name" . }}

@@ -61,11 +61,11 @@ fun getSocketUri(): String {
     val funcTestUri = System.getProperty("funcTestUri", "")
 
     val host = if (funcTestUri.isEmpty()) {
-        "localhost:8080"
+        "localhost:30000"
     } else {
         val uri = URI(funcTestUri)
         "${uri.host}:${uri.port}"
     }
 
-    return "ws://$host/realtime/chat"
+    return "wss://$host/realtime/chat"
 }

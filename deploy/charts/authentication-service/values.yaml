@@ -1,0 +1,44 @@
+replicaCount: 1
+
+image:
+  repository: 
+  tag: latest
+  pullPolicy: IfNotPresent
+
+keyStorePassword:
+trustStorePassword:
+javaOpts: -Xmx2000m -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=cloud  -Djavax.net.ssl.trustStore=/app/trusts.jks -Djavax.net.ssl.trustStorePassword=$(TRUSTSTORE_PASSWORD)
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 8143
+
+claims:
+  mysql:
+    storage: 10Gi
+    volumeMode:
+    annotations: {}
+
+mysql:
+  existingSecret: mysql-secrets
+  mysqlUser: kryption
+  mysqlDatabase: kryption
+  mysqlPassword:
+  mysqlRootPassword:
+  persistence:
+    enabled: true
+    annotations: {}
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
+  ssl:
+    enabled: true
+    secret: mysql-tls
+    caSecret: ca-key-pair
+  configurationFiles: 
+    mysql.cnf: |-
+      [mysqld]
+      ssl-ca=/ssl/ca/ca.pem
+      ssl-cert=/ssl/certs/server-cert.pem
+      ssl-key=/ssl/certs/server-key.pem

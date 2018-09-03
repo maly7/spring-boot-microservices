@@ -1,22 +1,53 @@
-task deployLocal() {
-    dependsOn getTasksByName('local', true)
+def charts = ['kryption-secrets', 'service-registry', 'chat-service', 'authentication-service', 'api-gateway']
+
+task installCertManager() {
     doLast {
         exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/configs"
+            commandLine 'helm', 'install', '--name', 'cert-manager', '--namespace', 'kube-system', 'stable/cert-manager'
         }
         exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local/claims"
-        }
-        exec {
-            commandLine 'kubectl', 'apply', '-f', "${projectDir}/local"
+            commandLine 'helm', 'install', '--name', 'cert-issuer', '--namespace', 'default', "${projectDir}/charts/cert-issuer"
         }
     }
 }
 
-task localSecrets() {
+task installNginxIngress() {
     doLast {
         exec {
-            commandLine 'kubectl', 'apply', '-f', 'secrets'
+            commandLine 'helm', 'install', '--name', 'nginx-ingress', '--namespace', 'kube-system', 'stable/nginx-ingress'
+        }
+    }
+}
+
+task installClusterDeps() {
+    dependsOn installCertManager, installNginxIngress
+}
+
+task deployLocal() {
+    dependsOn installCertManager
+    mustRunAfter installCertManager
+
+    doLast {
+        charts.each { chart ->
+            def args = ['helm', 'install', '--name', "${chart}", '--namespace', 'default', "${rootDir}/deploy/charts/${chart}"]
+            getLocalHelmArgs args, chart
+
+            exec {
+                commandLine args
+            }
+        }
+    }
+}
+
+task deployAzure() {
+    dependsOn installClusterDeps
+
+    doLast {
+        charts.each { app ->
+            exec {
+                commandLine 'helm', 'install', '--name', "${app}", '--namespace', 'default', '-f',
+                        "${rootDir}/deploy/azure/values/${app}.yaml", "${rootDir}/deploy/charts/${app}"
+            }
         }
     }
 }

@@ -6,6 +6,10 @@ spring:
     name: chat-service
   profiles:
     active: local
+  cloud:
+    httpclientfactories:
+      ok:
+        enabled: true
   data:
     mongodb:
       authentication-database: admin
@@ -38,3 +42,6 @@ logging:
 chat:
   messaging:
     user-exchange: user.updates
+
+auth:
+  url: http://authentication-service

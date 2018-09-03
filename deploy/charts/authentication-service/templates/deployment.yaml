@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "authentication-service.name" . }}
+  labels:
+    deployment: {{ template "authentication-service.name" . }}
+    chart: {{ template "authentication-service.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "authentication-service.name" . }}
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: https://{{ template "eureka.hostname" . }}/eureka
+        - name: spring.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secrets
+              key: mysql-password
+        - name: spring.datasource.username
+          value: kryption
+        - name: spring.datasource.url
+          value: jdbc:mysql://{{ template "mysql.hostname" . }}:3306/kryption?autoReconnect=true&useSSL=true
+        - name: eureka.instance.hostname
+          value: {{ template "authentication-service.hostname" . }}
+        - name: eureka.instance.secure
+        - name: KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "authentication-service.name" . }}-secrets
+              key: keyStorePassword
+        - name: TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "authentication-service.name" . }}-secrets
+              key: trustStorePassword
+        - name: JAVA_OPTS
+          value: {{ .Values.javaOpts | quote }}
+        name: {{ template "authentication-service.name" . }}
+        image: "{{ .Values.image.repository }}{{ template "authentication-service.name" . }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
+      restartPolicy: Always
+      volumes:
+      - name: certs
+        secret:
+          secretName: authentication-service-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
+  selector:
+    matchLabels:
+      app: {{ template "authentication-service.name" . }}

@@ -1,0 +1,17 @@
+image:
+  tage: 0.2.0
+
+mongodb:
+  persistence:
+    size: 25Gi
+    annotations:
+      volume.beta.kubernetes.io/storage-class: managed-premium
+
+rabbitmq-ha:
+  service:
+    type: LoadBalancer
+  persistentVolume:
+    enabled: true
+    size: 15Gi
+    annotations:
+      volume.beta.kubernetes.io/storage-class: managed-premium

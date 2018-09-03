@@ -25,6 +25,9 @@ task dockerDown(type: Exec) {
 
 task runRabbit(type: Exec) {
     commandLine 'docker-compose', '-f', 'rabbit-compose.yml', 'up', '-d', '--build'
+    doLast {
+        sleep(20000L)
+    }
 }
 
 task stopRabbit(type: Exec) {

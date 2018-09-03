@@ -1,11 +1,26 @@
+server:
+  port: 8143
+  ssl:
+    enabled: true
+    key-store: file:/app/server.p12
+    key-store-type: pkcs12
+    key-store-password: ${KEYSTORE_PASSWORD}
+    key-alias: authentication-service
+    trust-store: file:/app/trusts.jks
+    trust-store-password: ${TRUSTSTORE_PASSWORD}
+    trust-store-type: jks
+
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+      defaultZone: http://localhost:8761/eureka/
   instance:
     appname: authentication-service
     status-page-url-path: /actuator/info
     health-check-url-path: /actuator/health
+    secure-port: 443
+    secure-port-enabled: true
+    non-secure-port-enabled: false
 
 logging:
   file: /data/logs/auth-service.log

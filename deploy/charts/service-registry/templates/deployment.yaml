@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    deployment: {{ template "service-registry.name" . }}
+    chart: {{ template "service-registry.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "service-registry.name" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "service-registry.name" . }}
+    spec:
+      containers:
+      - env:
+        - name: eureka.client.service-url.default-zone
+          value: "https://{{ template "service-registry.hostname" . }}/eureka"
+        - name: eureka.instance.hostname
+          value: {{ template "service-registry.hostname" . }}
+        - name: KEYSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "service-registry.name" . }}-secrets
+              key: keyStorePassword
+        - name: TRUSTSTORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "service-registry.name" . }}-secrets
+              key: trustStorePassword
+        - name: JAVA_OPTS
+          value: {{ .Values.javaOpts | quote }}
+        name: {{ template "service-registry.name" . }}
+        image: {{ .Values.image.repository }}{{ template "service-registry.name" . }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 8761
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /trusts
+          name: trusts
+      restartPolicy: Always
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ template "service-registry.name" . }}-tls
+      - name: trusts
+        secret:
+          secretName: ca-key-pair
+          items:
+          - key: tls.crt
+            path: tls.crt
+  selector:
+    matchLabels:
+      app: {{ template "service-registry.name" . }}
