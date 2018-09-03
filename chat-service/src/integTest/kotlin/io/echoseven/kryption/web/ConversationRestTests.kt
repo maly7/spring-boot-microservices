@@ -91,7 +91,7 @@ class ConversationRestTests : ConversationSupport() {
         val conversationId = restTemplate.sendConversationMessage(userToken, contact.id!!, "Some text").body!!.id!!
         val response = restTemplate.deleteEntity("/conversation/$conversationId", authHeaders(userToken))
 
-        assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The response should be 204 No Content")
         assertFalse(conversationRepository.findById(conversationId).isPresent, "The conversation should be deleted")
 
         assertThat(
@@ -114,7 +114,7 @@ class ConversationRestTests : ConversationSupport() {
         val conversationId = restTemplate.sendConversationMessage(userToken, contact.id!!, "Some text").body!!.id!!
         val response = restTemplate.deleteEntity("/conversation/$conversationId", authHeaders(contactToken))
 
-        assertEquals(HttpStatus.OK, response.statusCode, "The response should be 200 OK")
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The response should be 204 No Content")
         assertFalse(conversationRepository.findById(conversationId).isPresent, "The conversation should be deleted")
 
         assertThat(
@@ -148,12 +148,12 @@ class ConversationRestTests : ConversationSupport() {
         val otherMessageId = conversation.messages.last().id!!
 
         val response = restTemplate.deleteEntity("/conversation/message/$messageId", authHeaders(userToken))
-        assertEquals(HttpStatus.OK, response.statusCode, "The sender should be able to delete")
+        assertEquals(HttpStatus.NO_CONTENT, response.statusCode, "The sender should be able to delete")
         assertFalse(conversationMessageRepository.findById(messageId).isPresent, "The message should be deleted")
 
         val otherDeleteResponse =
             restTemplate.deleteEntity("/conversation/message/$otherMessageId", authHeaders(contactToken))
-        assertEquals(HttpStatus.OK, otherDeleteResponse.statusCode, "The receiver should be able to delete")
+        assertEquals(HttpStatus.NO_CONTENT, otherDeleteResponse.statusCode, "The receiver should be able to delete")
         assertFalse(
             conversationMessageRepository.findById(otherMessageId).isPresent,
             "The other message should be deleted"
