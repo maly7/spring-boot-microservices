@@ -3,7 +3,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     ext {
-        kotlinVersion = '1.2.51'
+        kotlinVersion = '1.2.61'
         springBootVersion = '2.0.4.RELEASE'
         springCloudVersion = 'Finchley.SR1'
         dockerPluginVersion = '3.2.5'
@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '0.2.1'
+    version '0.2.2'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
