@@ -40,7 +40,7 @@ class ConversationTests : FunctionalTest() {
         .When()
             .delete("/chat/conversation/$chatId")
         .then()
-            .statusCode(HttpStatus.OK.value())
+            .statusCode(HttpStatus.NO_CONTENT.value())
 
         givenAuthHeader(userToken)
         .When()
@@ -58,6 +58,6 @@ class ConversationTests : FunctionalTest() {
         .When()
             .delete("/chat/conversation/message/$messageId")
         .then()
-            .statusCode(HttpStatus.OK.value())
+            .statusCode(HttpStatus.NO_CONTENT.value())
     }
 }

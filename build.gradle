@@ -4,8 +4,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 buildscript {
     ext {
         kotlinVersion = '1.2.51'
-        springBootVersion = '2.0.3.RELEASE'
-        springCloudVersion = 'Finchley.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
+        springCloudVersion = 'Finchley.SR1'
         dockerPluginVersion = '3.2.5'
         dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
     }
@@ -35,7 +35,7 @@ buildscript {
 
 allprojects {
     group 'io.echoseven.kryption'
-    version '0.2.0'
+    version '0.2.1'
 
     ext {
         envToLoad = ['MYSQL_USER', 'MYSQL_PASSWORD', 'MYSQL_ROOT_PASSWORD', 'MONGODB_USER',
@@ -44,6 +44,15 @@ allprojects {
         loadEnv = { env ->
             envToLoad.each {
                 env.put("${it}".toString(), "${System.properties[it]}".toString())
+            }
+        }
+
+        loadSysProps = { sysProps ->
+            project.properties.findAll {
+                it.key.startsWith('kryption')
+            }.each {
+                def key = it.key.split('kryption.')[1]
+                sysProps.put(key, it.value.toString())
             }
         }
 
@@ -154,6 +163,9 @@ configure([project(':authentication-service'),
     }
 
     task integTest(type: Test) {
+        doFirst {
+            loadSysProps(systemProperties)
+        }
         description = 'Run integration tests (located in src/integTest)'
         testClassesDirs = sourceSets.integTest.output.classesDirs
         classpath = sourceSets.integTest.runtimeClasspath
