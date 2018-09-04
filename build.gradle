@@ -47,6 +47,15 @@ allprojects {
             }
         }
 
+        loadSysProps = { sysProps ->
+            project.properties.findAll {
+                it.key.startsWith('kryption')
+            }.each {
+                def key = it.key.split('kryption.')[1]
+                sysProps.put(key, it.value.toString())
+            }
+        }
+
         getLocalHelmArgs = { args, name ->
             def valuesFile = new File("${rootDir}/deploy/local/${name}.yaml")
             def windowsValues = new File("${rootDir}/deploy/local/${name}-windows.yaml")
@@ -154,6 +163,9 @@ configure([project(':authentication-service'),
     }
 
     task integTest(type: Test) {
+        doFirst {
+            loadSysProps(systemProperties)
+        }
         description = 'Run integration tests (located in src/integTest)'
         testClassesDirs = sourceSets.integTest.output.classesDirs
         classpath = sourceSets.integTest.runtimeClasspath
