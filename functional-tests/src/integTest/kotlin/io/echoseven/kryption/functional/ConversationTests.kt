@@ -43,9 +43,9 @@ class ConversationTests : FunctionalTest() {
             .statusCode(HttpStatus.NO_CONTENT.value())
 
         givenAuthHeader(userToken)
-            .When()
+        .When()
             .get("/chat/conversation/$chatId")
-            .then()
+        .then()
             .statusCode(HttpStatus.FORBIDDEN.value())
     }
 
