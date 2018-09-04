@@ -37,15 +37,15 @@ class ConversationTests : FunctionalTest() {
             .then().extract().path<String>("id")
 
         givenAuthHeader(userToken)
-        .When()
+            .When()
             .delete("/chat/conversation/$chatId")
-        .then()
-            .statusCode(HttpStatus.OK.value())
+            .then()
+            .statusCode(HttpStatus.NO_CONTENT.value())
 
         givenAuthHeader(userToken)
-        .When()
+            .When()
             .get("/chat/conversation/$chatId")
-        .then()
+            .then()
             .statusCode(HttpStatus.FORBIDDEN.value())
     }
 
@@ -55,9 +55,9 @@ class ConversationTests : FunctionalTest() {
             .then().extract().path<String>("messages[0].id")
 
         givenAuthHeader(userToken)
-        .When()
+            .When()
             .delete("/chat/conversation/message/$messageId")
-        .then()
-            .statusCode(HttpStatus.OK.value())
+            .then()
+            .statusCode(HttpStatus.NO_CONTENT.value())
     }
 }
