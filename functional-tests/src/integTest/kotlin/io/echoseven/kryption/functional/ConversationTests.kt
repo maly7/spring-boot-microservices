@@ -37,9 +37,9 @@ class ConversationTests : FunctionalTest() {
             .then().extract().path<String>("id")
 
         givenAuthHeader(userToken)
-            .When()
+        .When()
             .delete("/chat/conversation/$chatId")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value())
 
         givenAuthHeader(userToken)
@@ -55,9 +55,9 @@ class ConversationTests : FunctionalTest() {
             .then().extract().path<String>("messages[0].id")
 
         givenAuthHeader(userToken)
-            .When()
+        .When()
             .delete("/chat/conversation/message/$messageId")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value())
     }
 }
