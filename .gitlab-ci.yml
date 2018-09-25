@@ -6,10 +6,7 @@ variables:
   AUTH_KEY_LOC: authentication-service/src/main/resources/keys
 
 stages:
-- build_auth
-- build_chat
-- build_registry
-- build_gateway
+- build
 - test
 - publish
 
@@ -23,8 +20,35 @@ cache:
   - authentication-service/build
   - service-registry/build
 
-build:
-  stage: build_auth
+.build:
+  stage: build
+  script:
+  - ./gradlew :$APP:assemble
+  - ./gradlew versionFile
+  artifacts:
+    paths:
+    - $APP/build
+    untracked: true
+  variables:
+  - $APP
+
+.publish:
+  stage: publish
+  image: docker:latest
+  services:
+  - docker:dind
+  variables:
+  - $APP
+  script:
+  - source version.txt
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
+  - docker login -u $ACR_USER -p $ACR_PASS $ACR_REGISTRY
+  - docker build $APP -f $APP/Dockerfile -t $REGISTRY/$APP:latest -t $ACR_REGISTRY/$APP:latest -t $REGISTRY/$APP:$APP_VERSION -t $ACR_REGISTRY/$APP:$APP_VERSION
+  only:
+  - master
+
+build_auth:
+  stage: build
   script:
   - openssl genrsa -out $AUTH_KEY_LOC/private_key.pem 2048
   - openssl pkcs8 -topk8 -inform PEM -outform DER -in $AUTH_KEY_LOC/private_key.pem -out $AUTH_KEY_LOC/private_key.der -nocrypt
@@ -37,68 +61,57 @@ build:
     untracked: true
 
 build_chat:
-  stage: build_chat
-  script:
-  - ./gradlew :chat-service:assemble
-  - ./gradlew versionFile
-  artifacts:
-    paths:
-    - chat-service/build
-    untracked: true
+  extends: .build
+  variables:
+    APP: 'chat-service'
 
 build_registry:
-  stage: build_registry
-  script:
-  - ./gradlew :service-registry:assemble
-  - ./gradlew versionFile
-  artifacts:
-    paths:
-    - service-registry/build
-    untracked: true
+  extends: .build
+  variables:
+    APP: 'service-registry'
 
 build_gateway:
-  stage: build_gateway
-  script:
-  - ./gradlew :api-gateway:assemble
-  - ./gradlew versionFile
-  artifacts:
-    paths:
-    - api-gateway/build
-    untracked: true
+  extends: .build
+  variables:
+    APP: 'api-gateway'
 
-test:
+test_chat:
   stage: test
   services:
   - name: rabbitmq:3-management
     alias: rabbit
   script:
-  - ./gradlew check -x :functional-tests:check -Dspring.rabbitmq.host=rabbit
+  - ./gradlew :chat-service:check -Dspring.rabbitmq.host=rabbit
   artifacts:
     when: always
     paths:
     - chat-service/build/reports
-    - authentication-service/build/reports
 
-publish:
-  stage: publish
-  image: docker:latest
-  services:
-  - docker:dind
+test_auth:
+  stage: test
   script:
-  - source version.txt
-  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $REGISTRY
-  - docker login -u $ACR_USER -p $ACR_PASS $ACR_REGISTRY
-  - docker build chat-service -f chat-service/Dockerfile -t $REGISTRY/chat-service:latest -t $ACR_REGISTRY/chat-service:latest -t $REGISTRY/chat-service:$APP_VERSION -t $ACR_REGISTRY/chat-service:$APP_VERSION
-  - docker build authentication-service -f authentication-service/Dockerfile -t $REGISTRY/authentication-service:latest -t $ACR_REGISTRY/authentication-service:latest -t $REGISTRY/authentication-service:$APP_VERSION -t $ACR_REGISTRY/authentication-service:$APP_VERSION
-  - docker build service-registry -f service-registry/Dockerfile -t $REGISTRY/service-registry:latest -t $ACR_REGISTRY/service-registry:latest -t $REGISTRY/service-registry:$APP_VERSION -t $ACR_REGISTRY/service-registry:$APP_VERSION
-  - docker build api-gateway -f api-gateway/Dockerfile -t $REGISTRY/api-gateway:latest -t $ACR_REGISTRY/api-gateway:latest -t $REGISTRY/api-gateway:$APP_VERSION -t $ACR_REGISTRY/api-gateway:$APP_VERSION
-  - docker push $REGISTRY/chat-service
-  - docker push $REGISTRY/authentication-service
-  - docker push $REGISTRY/service-registry
-  - docker push $REGISTRY/api-gateway
-  - docker push $ACR_REGISTRY/chat-service
-  - docker push $ACR_REGISTRY/authentication-service
-  - docker push $ACR_REGISTRY/service-registry
-  - docker push $ACR_REGISTRY/api-gateway
-  only:
-  - master
+  - ./gradlew :auth-service:check
+  artifacts:
+    when: always
+    paths:
+    - auth-service/build/reports
+
+publish_chat:
+  extends: .publish
+  variables:
+    APP: 'chat-service'
+
+publish_auth:
+  extends: .publish
+  variables:
+    APP: 'authentication-service'
+
+publish_registry:
+  extends: .publish
+  variables:
+    APP: 'service-registry'
+
+publish_gateway:
+  extends: .publish
+  variables:
+    APP: 'api-gateway'
