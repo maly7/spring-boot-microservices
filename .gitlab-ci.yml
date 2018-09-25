@@ -94,7 +94,7 @@ test_auth:
   artifacts:
     when: always
     paths:
-    - auth-service/build/reports
+    - authentication-service/build/reports
 
 publish_chat:
   extends: .publish
