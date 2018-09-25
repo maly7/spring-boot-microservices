@@ -24,7 +24,7 @@ cache:
   stage: build
   script:
   - ./gradlew :$APP:assemble
-  - ./gradlew :$APP:versionFile
+  - ./gradlew versionFile
   artifacts:
     paths:
     - $APP/build
