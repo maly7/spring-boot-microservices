@@ -51,7 +51,7 @@ management:
 
 logging:
   level:
-    io.echoseven.kryption: debug
+    com.github.maly7: debug
   file: /data/logs/gateway.log
 
 eureka:

@@ -8,7 +8,7 @@ services:
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: kryption
+      MYSQL_DATABASE: demoapp
     ports:
       - "3306:3306"
     expose:

@@ -22,8 +22,8 @@ claims:
 
 mysql:
   existingSecret: mysql-secrets
-  mysqlUser: kryption
-  mysqlDatabase: kryption
+  mysqlUser: demoapp
+  mysqlDatabase: demoapp
   mysqlPassword:
   mysqlRootPassword:
   persistence:

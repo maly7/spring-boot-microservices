@@ -7,7 +7,7 @@ buildscript {
         springBootVersion = '2.0.4.RELEASE'
         springCloudVersion = 'Finchley.SR1'
         dockerPluginVersion = '3.2.5'
-        dockerRegistry = 'registry.gitlab.com/maly7/kryption-api/'
+        dockerRegistry = 'maly7/spring-boot-microservices'
     }
 
     repositories {
@@ -34,7 +34,7 @@ buildscript {
 }
 
 allprojects {
-    group 'io.echoseven.kryption'
+    group 'com.github.maly7'
     version '0.3.0'
 
     ext {
@@ -49,9 +49,9 @@ allprojects {
 
         loadSysProps = { sysProps ->
             project.properties.findAll {
-                it.key.startsWith('kryption')
+                it.key.startsWith('demoapp')
             }.each {
-                def key = it.key.split('kryption.')[1]
+                def key = it.key.split('demoapp.')[1]
                 sysProps.put(key, it.value.toString())
             }
         }
@@ -190,7 +190,7 @@ configure([project(':authentication-service'),
             new File("${projectDir}/entrypoint.sh").text =
                     """#!/bin/bash
 
-keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASSWORD -alias "Kryption Root CA" -noprompt
+keytool -import -trustcacerts -file /trusts/tls.crt -keystore trusts.jks -storepass \$TRUSTSTORE_PASSWORD -alias "Demo App Root CA" -noprompt
 openssl pkcs12 -export -in /certs/tls.crt -inkey /certs/tls.key -CAfile /trusts/tls.crt -name "${project.name}" -passout pass:\$KEYSTORE_PASSWORD -out server.p12
 exec java \$JAVA_OPTS -Djavax.net.ssl.trustStorePassword=\$TRUSTSTORE_PASSWORD -jar /app/${project.name}-${
                         project.version
