@@ -24,9 +24,9 @@ spec:
               name: mysql-secrets
               key: mysql-password
         - name: spring.datasource.username
-          value: kryption
+          value: demoapp
         - name: spring.datasource.url
-          value: jdbc:mysql://{{ template "mysql.hostname" . }}:3306/kryption?autoReconnect=true&useSSL=true
+          value: jdbc:mysql://{{ template "mysql.hostname" . }}:3306/demoapp?autoReconnect=true&useSSL=true
         - name: eureka.instance.hostname
           value: {{ template "authentication-service.hostname" . }}
         - name: eureka.instance.secure

@@ -17,8 +17,8 @@ service:
 mongodb:
   existingSecret: mongodb-secrets
   usePassword: true
-  mongodbUsername: kryption
-  mongodbDatabase: kryption
+  mongodbUsername: demoapp
+  mongodbDatabase: demoapp
   persistence:
     enabled: true
     size: 10Gi
@@ -33,7 +33,7 @@ mongodb:
     fsGroup: 1001
     runAsUser: 1001
 
-rabbitmqUsername: kryption
+rabbitmqUsername: demoapp
 rabbitmqExistingSecret: rabbitmq-secrets
 amqpsNodePort: 5671
 sslWebStompPort: 15675
@@ -44,7 +44,7 @@ rabbitmq-ha:
   service:
     type: NodePort
     rabbitmqManagerNodePort: 31672
-  rabbitmqUsername: kryption
+  rabbitmqUsername: demoapp
   prometheus:
     exporter:
       enabled: false

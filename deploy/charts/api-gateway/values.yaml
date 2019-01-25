@@ -16,7 +16,7 @@ service:
 
 ingress:
   enabled: false
-  commonName: Kryption
+  commonName: DemoApp
   annotations:
     kubernetes.io/ingress.class: nginx
     certmanager.k8s.io/cluster-issuer: ca-issuer

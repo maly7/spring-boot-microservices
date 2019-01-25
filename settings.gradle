@@ -1,4 +1,4 @@
-rootProject.name = 'kryption-api'
+rootProject.name = 'spring-boot-microservices'
 include 'authentication-service'
 include 'chat-service'
 include 'service-registry'

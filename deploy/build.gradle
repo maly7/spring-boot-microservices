@@ -1,4 +1,4 @@
-def charts = ['kryption-secrets', 'service-registry', 'chat-service', 'authentication-service', 'api-gateway']
+def charts = ['app-secrets', 'service-registry', 'chat-service', 'authentication-service', 'api-gateway']
 
 task installCertManager() {
     doLast {

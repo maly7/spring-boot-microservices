@@ -15,10 +15,10 @@ spring:
       authentication-database: admin
       username: ${MONGODB_USER}
       password: ${MONGODB_PASSWORD}
-      database: kryption
+      database: demoapp
       host: ${MONGODB_HOST:localhost}
       port: 27017
-      uri: ${MONGODB_URL:mongodb://localhost/kryption}
+      uri: ${MONGODB_URL:mongodb://localhost/demoapp}
   rabbitmq:
     username: ${RABBITMQ_USER}
     password: ${RABBITMQ_PASS}
@@ -37,7 +37,7 @@ management:
 
 logging:
   level:
-    io.echoseven.kryption: debug
+    com.github.maly7: debug
 
 chat:
   messaging:
