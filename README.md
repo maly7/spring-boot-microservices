@@ -5,11 +5,11 @@
 1. Install kubernetes cli
 1. Install helm
 1. Enable Kubernetes support for docker
-1. Use docker for desktop as the kuberntes context: `kubectl config use-context docker-for-desktop`
+1. Use docker for desktop as the kubernetes context: `kubectl config use-context docker-for-desktop`
 1. Initialize helm/tiller `helm init`
 1. Install the cert-manager
     1. Create the CA key `openssl genrsa -out /path/to/project/deploy/charts/cert-issuer/ca.key 2048`
-    1. Create the Self Signed cert `openssl req -x509 -new -nodes -key ca.key -subj "/CN=Kryption Root CA" -days 3650 -reqexts v3_req -extensions v3_ca -out /path/to/project/deploy/charts/cert-issuer/ca.crt`
+    1. Create the Self Signed cert `openssl req -x509 -new -nodes -key ca.key -subj "/CN=Demo App Root CA" -days 3650 -reqexts v3_req -extensions v3_ca -out /path/to/project/deploy/charts/cert-issuer/ca.crt`
 1. Copy `setup/template.gradle.properties` into the root project directory as `gradle.properties`
 1. Generate RSA key to be used by JWT 
 1. Add values for the properties in the template file, they can be anything since they'll be set for the databases when we run docker
@@ -26,22 +26,13 @@ To run the functional test suite run `./gradlew :f-t:integTest`.
 If you need to run against a different server rather than localhost, then specify systemProp.funcTestUri to be that host
 
 Make sure to setup a truststore for functional tests by:
-1. Generate the truststore: `keytool -import -trustcacerts -file deploy/charts/cert-issuer/ca.crt -keystore trusts.jks -storepass $STORE_PASS -alias "Kryption Root CA" -noprompt`
+1. Generate the truststore: `keytool -import -trustcacerts -file deploy/charts/cert-issuer/ca.crt -keystore trusts.jks -storepass $STORE_PASS -alias "Demo App Root CA" -noprompt`
 1. Specify the location and password for the truststore using gradle properties
 
 ### Generating RSA Key for JWT
 1. `openssl genrsa -out authentication-service/src/main/resources/keys/private_key.pem 2048`
 1. `openssl pkcs8 -topk8 -inform PEM -outform DER -in authentication-service/src/main/resources/keys/private_key.pem -out authentication-service/src/main/resources/keys/private_key.der -nocrypt`
 1. `openssl rsa -in authentication-service/src/main/resources/keys/private_key.pem -pubout -outform DER -out authentication-service/src/main/resources/keys/public_key.der`
-
-### Publishing Docker Images
-Our custom docker images are built and published to the gitlab docker repository after each master build. But should you need to publish images do the following:
-1. run `docker login registry.gitlab.com/maly7/kryption-api/ -u $username`
-1. enter your gitlab credentials at the prompts
-1. ` docker build -t registry.gitlab.com/maly7/kryption-api/chat-service:$version ./chat-service`
-1. `docker build -t registry.gitlab.com/maly7/kryption-api/authentication-service:$version ./authentication-service/`
-1. `docker push registry.gitlab.com/maly7/kryption-api/authentication-service`
-1. `docker push registry.gitlab.com/maly7/kryption-api/chat-service`
 
 ### Running Tests
 1. The chat-service tests require a 64-bit version of java to run the embedded MongoDB

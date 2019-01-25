@@ -7,7 +7,7 @@ spring:
   profiles:
     active: local
   datasource:
-    url: ${RELATIONAL_JDBC_URL:jdbc:mysql://localhost:3306/kryption}
+    url: ${RELATIONAL_JDBC_URL:jdbc:mysql://localhost:3306/demoapp}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.jdbc.Driver
@@ -35,8 +35,8 @@ management:
 
 logging:
   level:
-    io.echoseven.kryption: debug
+    com.github.maly7: debug
 
-kryption:
+demoapp:
   jwt:
     secret: keys/private_key.der
